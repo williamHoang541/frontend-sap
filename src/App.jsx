@@ -1,20 +1,44 @@
-// import { useState } from "react";
+import { useState } from "react";
 import { Routes, Route } from "react-router-dom";
+import { Container } from "react-bootstrap";
 import Login from "./pages/Login/Login";
+import Navbar from "./components/Navbar/Navbar";
+import Sidebar from "./components/Sidebar/Sidebar";
+import DashBoard from "./pages/DashBoard/DashBoard";
+import { Layout } from "antd";
 
-const App = () => {
-// const [sidebar, setSidebar] = useState(true);
+const LayOut = ({ children }) => {
+  const [collapsed, setCollapsed] = useState(false);
 
   return (
+    <Layout style={{ minHeight: "100vh" }}>
+      <Sidebar collapsed={collapsed} />
+      <Layout>
+        <Navbar collapsed={collapsed} setCollapsed={setCollapsed} />
+        <Container fluid style={{ padding: "16px" }}>
+          {children}
+        </Container>
+      </Layout>
+    </Layout>
+  );
+};
+
+const App = () => {
+  return (
     <div>
-      {/* <Navbar setSidebar={setSidebar}/> */}
       <Routes>
-        {/* <Route path='/' element={<Home sidebar={sidebar}/>} /> */}
-        <Route path='/' element={<Login/>} />
-        
+        <Route path="/" element={<Login />} />
+        <Route
+          path="/dashboard"
+          element={
+            <LayOut>
+              <DashBoard />
+            </LayOut>
+          }
+        />
       </Routes>
     </div>
-  )
-}
+  );
+};
 
-export default App
+export default App;

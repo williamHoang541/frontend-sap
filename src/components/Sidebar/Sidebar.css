@@ -1,0 +1,30 @@
+
+:where(.css-dev-only-do-not-override-5wsri9).ant-layout-sider{
+    background-color: #fff !important;
+}
+
+.sidebar-logo, .sidebar-logo-icon{
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.sidebar-logo{
+    padding: 0 10px;
+    height: 65px;
+    background-color: #f5f5f5;
+}
+
+.sidebar-logo-icon{
+    flex-direction: row;
+}
+
+.sidebar-logo-img{
+    width: 55px;
+    height: auto;
+}
+
+.sidebar-text{
+    color: #033e8c;
+    font-size: 20px;
+}

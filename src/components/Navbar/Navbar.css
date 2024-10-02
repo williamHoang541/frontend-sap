@@ -20,12 +20,22 @@
   color: #033e8c !important;
 }
 
+:where(.css-dev-only-do-not-override-5wsri9).ant-layout{
+    position: sticky;
+    top: 0;
+    z-index: 9999;
+}
+
 .header {
   display: flex;
   flex-direction: row;
   padding: 0 20px 0 0;
   align-items: center;
   justify-content: space-between;
+  position: sticky;
+  top: 0;
+  z-index: 9999;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
 }
 
 .navbar-search {
@@ -206,14 +216,13 @@
   padding: 15px;
   color: #667797;
   font-size: 14px;
-  height: 60px;
+  height: 50px;
   border-radius: 8px;
 }
 
 .navbar-profile-wrapper:hover {
   background: hsl(219, 94%, 96.1%);
   color: #033e8c;
-  cursor: pointer;
 }
 
 .navbar-icon {

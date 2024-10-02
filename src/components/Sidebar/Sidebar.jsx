@@ -3,7 +3,6 @@ import "phosphor-icons";
 import logo from "../../assets/LogoSAP.png";
 import { Layout } from "antd";
 import MenuList from "../MenuList/MenuList";
-import Navbar from "../Navbar/Navbar";
 
 
 const { Sider } = Layout;

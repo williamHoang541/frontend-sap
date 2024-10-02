@@ -58,9 +58,14 @@
   padding-left: 27px;
 }
 
-.menu-bar{
-    display: flex;
-    flex-direction: column;
-    position: relative;
-    height: auto;
+:where(.css-dev-only-do-not-override-5wsri9).ant-layout-sider .ant-layout-sider-children{
+    position: fixed;
+}
+
+.menu-bar {
+  display: flex;
+  flex-direction: column;
+  position: relative;
+  height: auto;
+  margin-top: 25px;
 }

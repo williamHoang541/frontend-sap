@@ -15,7 +15,7 @@ const LayOut = ({ children }) => {
       <Sidebar collapsed={collapsed} />
       <Layout>
         <Navbar collapsed={collapsed} setCollapsed={setCollapsed} />
-        <Container fluid style={{ padding: "16px" }}>
+        <Container fluid style={{ padding: "16px"}}>
           {children}
         </Container>
       </Layout>

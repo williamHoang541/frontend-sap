@@ -1,0 +1,101 @@
+.all-course {
+    margin-bottom: 400px;
+}
+.all-course-header {
+    background-color: #fff;
+    border-radius: 10px;
+    border-bottom: 1px solid rgba(224, 224, 224, 1);
+    margin-bottom: 74px;
+    padding: 13px 40px 13px 18px;
+    color: rgba(2, 62, 115, 0.8);
+    font-size: 17.9px;
+    font-weight: 600;
+    line-height: 26.25px;
+}
+
+.all-course-table {
+    background-color: #fff;
+    border-radius: 10px;
+}
+
+.all-course-title {
+    padding: 20px;
+    border-bottom: 1px solid rgba(224, 224, 224, 1);
+    font-size: 18px;
+    color: #333;
+    font-weight: 600;
+}
+
+.table .status {
+    padding: 5px;
+    border-radius: 5px;
+}
+
+.table .status.Available {
+    /* background-color: #384b70; */
+    color: rgb(15, 54, 89);
+    vertical-align: middle;
+    box-sizing: border-box;
+    height: 24px;
+    font-size: 0.875rem;
+    background-color: rgb(220, 252, 231);
+    border-radius: 8px;
+}
+
+.table .status.Expired {
+    color: rgb(15, 54, 89);
+    vertical-align: middle;
+    box-sizing: border-box;
+    height: 24px;
+    background-color: rgb(255, 226, 229);
+    border-radius: 8px;
+}
+
+.edit-icon {
+    display: flex;
+    align-items: center;
+    background-color: #6a73fa;
+    color: #fff;
+    border: none;
+    padding: 5px 10px;
+    border-radius: 5px;
+    margin-right: 10px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+.edit-btn,
+.delete-btn {
+    display: inline-flex;
+    align-items: center;
+    text-decoration: none;
+    width: 22.75px;
+    height: 22.75px;
+    padding: 5.625px 6.125px 7.125px 6.125px;
+    border-radius: 5px;
+    transition: background-color 0.3s ease;
+    margin-right: 10px;
+}
+
+.edit-btn {
+    background-color: #033e8c;
+    border: 1px solid #033e8c;
+}
+
+.edit-btn:hover {
+    background-color: #0b2c6e;
+}
+
+.delete-btn {
+    border: 1px solid #ff1616;
+    background-color: #ff1616;
+}
+
+.delete-btn:hover {
+    background-color: #b8001f;
+}
+
+.tableCell svg {
+    font-size: 24px;
+    color: #fff;
+}

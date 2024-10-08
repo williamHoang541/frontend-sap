@@ -12,6 +12,7 @@ import { PiCertificate, PiUsersThree, PiCoinsLight } from "react-icons/pi";
 import { LuUsers2 } from "react-icons/lu";
 import { IoAnalytics } from "react-icons/io5";
 import { IoSettingsOutline } from "react-icons/io5";
+import { MdOutlineTopic } from "react-icons/md";
 
 const MenuList = () => {
   const items = [
@@ -47,6 +48,21 @@ const MenuList = () => {
         {
           key: "addcourse",
           label: <Link to="/course/add-course">- Add Course</Link>,
+        },
+      ],
+    },
+    {
+      key: "courses",
+      icon: <MdOutlineTopic />,
+      label: "Topic Area",
+      children: [
+        {
+          key: "all_topic_area",
+          label: <Link to="/topic/all-topic">- All Topic</Link>,
+        },
+        {
+          key: "add_topic_area",
+          label: <Link to="/course/add-course">- Add Topic</Link>,
         },
       ],
     },
@@ -107,25 +123,6 @@ const MenuList = () => {
         {
           key: "addtest",
           label: <Link to="/test/add-test">- Add Test</Link>,
-        },
-      ],
-    },
-    {
-      key: "sampletest",
-      icon: <PiExamLight />,
-      label: "Sample Test",
-      children: [
-        {
-          key: "allsampletest",
-          label: (
-            <Link to="/sample-test/all-sample-test">- All Sample Test</Link>
-          ),
-        },
-        {
-          key: "addsampletest",
-          label: (
-            <Link to="/sample-test/add-sample-test">- Add Sample Test</Link>
-          ),
         },
       ],
     },

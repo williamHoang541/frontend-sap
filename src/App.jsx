@@ -6,6 +6,7 @@ import Navbar from "./components/Navbar/Navbar";
 import Sidebar from "./components/Sidebar/Sidebar";
 import DashBoard from "./pages/DashBoard/DashBoard";
 import AllCourse from "./pages/AllCourse/AllCourse";
+import AddCourse from "./pages/AddCourse/AddCourse";
 import { Layout } from "antd";
 
 const LayOut = ({ children }) => {
@@ -42,6 +43,14 @@ const App = () => {
                     element={
                         <LayOut>
                             <AllCourse />
+                        </LayOut>
+                    }
+                />
+                <Route
+                    path="/course/add-course"
+                    element={
+                        <LayOut>
+                            <AddCourse />
                         </LayOut>
                     }
                 />

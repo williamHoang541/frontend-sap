@@ -32,7 +32,6 @@
 }
 
 .table .status.Available {
-    /* background-color: #384b70; */
     color: rgb(15, 54, 89);
     vertical-align: middle;
     box-sizing: border-box;

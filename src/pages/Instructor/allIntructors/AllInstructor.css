@@ -1,0 +1,94 @@
+.instructor {
+  display: flex;
+  flex-direction: column;
+  gap: 30px;
+  margin-bottom: 30px;
+  margin-top: 10px;
+  /* height: 100vh; */
+}
+
+.instructor_title_container{
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+    background-color: #fff;
+    padding: 15px;
+    border-radius: 3px;
+}
+
+.instructor_instructor_right{
+    display: flex;
+    flex-direction: row;
+    gap: 10px;
+}
+
+.instructor_title{
+    font-size: 18px;
+    font-weight: 550;
+}
+
+.instructor_title, .instructor_all_instructors{
+    color: #023e73;
+}
+
+.instructor_instructor, .instructor_all_instructors, .instructor_icon_right{
+    font-size: 13px;
+}
+
+.instructor_instructor, .instructor_icon_right{
+    color: #828690;
+}
+
+.instructor_button_delete{
+    padding: revert !important;
+    background-color: #ffd8d8;
+    color: #ff1616 !important;
+    font-size: 16px !important;
+}
+
+.instructor_button_delete:hover{
+    background-color: #ff1616 !important;
+    color: #fff !important;
+}
+
+.instructor_button_edit{
+    padding: revert !important;
+    background-color: #d8e7ff;
+    color: #033e8c !important;
+    font-size: 16px !important;
+    margin-right: 5px;
+}
+
+.instructor_button_edit:hover{
+    background-color: #033e8c !important;
+    color: #fff !important;
+}
+
+.instructor_table_container{
+    background-color: #fff;
+    padding: 10px;
+    border-radius: 3px;
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+
+.instructor_table_container a{
+    display: flex;
+    justify-content: flex-end;
+}
+
+.instructor_add{
+    padding: 10px;
+    width: 100px;
+    border-radius: 5px;
+    color: #fff;
+    background-color: #033e8c;
+    border: none;
+    cursor: pointer;
+}
+
+.instructor_add:hover{
+    background-color: #1e78ff;
+}

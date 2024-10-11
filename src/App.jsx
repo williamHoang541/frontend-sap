@@ -8,6 +8,7 @@ import DashBoard from "./pages/DashBoard/DashBoard";
 import { Layout } from "antd";
 import { PATH_NAME } from "./constant/pathname";
 import Student from "./pages/Student/Student";
+import AllInstructor from "./pages/Instructor/allIntructors/AllInstructor";
 
 const LayOut = ({ children }) => {
   const [collapsed, setCollapsed] = useState(false);
@@ -43,6 +44,14 @@ const App = () => {
           element={
             <LayOut>
               <Student />
+            </LayOut>
+          }
+        />
+        <Route
+          path={PATH_NAME.INSTRUCTOR}
+          element={
+            <LayOut>
+              <AllInstructor />
             </LayOut>
           }
         />

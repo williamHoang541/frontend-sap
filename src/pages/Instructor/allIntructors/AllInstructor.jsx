@@ -1,11 +1,14 @@
-import React, { useEffect, useState } from "react";
-import "./Student.css";
+import { useEffect, useState } from "react";
+import "./AllInstructor.css";
 import { SlArrowRight } from "react-icons/sl";
-import { Button, Popconfirm, Table } from "antd";
-import qs from "qs";
+import { Button, Table } from "antd";
 import { RiDeleteBin6Line } from "react-icons/ri";
+import { MdModeEditOutline } from "react-icons/md";
+import qs from "qs";
+import { Link } from "react-router-dom";
+import { PATH_NAME } from "../../../constant/pathname";
 
-const Student = () => {
+const AllInstructor = () => {
   const [data, setData] = useState([]); // Khởi tạo mảng dữ liệu
   const [loading, setLoading] = useState(false);
   const [tableParams, setTableParams] = useState({
@@ -68,18 +71,33 @@ const Student = () => {
       title: "Action",
       dataIndex: "action",
       render: (_, record) => (
-        <Button
-          type="link"
-          danger
-          onClick={() => handleDelete(record.login.uuid)}
-          className="student_button_delete"
-        >
-          <RiDeleteBin6Line />
-        </Button>
+        <>
+          <Button
+            type="link"
+            onClick={() => handleEdit(record)}
+            className="instructor_button_edit"
+          >
+            <MdModeEditOutline />
+          </Button>
+          <Button
+            type="link"
+            danger
+            onClick={() => handleDelete(record.login.uuid)}
+            className="instructor_button_delete"
+          >
+            <RiDeleteBin6Line />
+          </Button>
+        </>
       ),
       width: "10%",
     },
   ];
+
+  const handleEdit = (record) => {
+    // Thực hiện hành động chỉnh sửa tại đây
+    console.log("Edit record:", record);
+    // Bạn có thể mở một modal hoặc điều hướng đến trang chỉnh sửa ở đây
+  };
 
   const handleDelete = (uuid) => {
     setData((prevData) => prevData.filter((item) => item.login.uuid !== uuid));
@@ -125,19 +143,22 @@ const Student = () => {
   };
 
   return (
-    <div className="student">
-      <div className="student_title_container">
-        <div className="student_title_left">
-          <div className="student_title">All Students</div>
+    <div className="instructor">
+      <div className="instructor_title_container">
+        <div className="instructor_title_left">
+          <div className="instructor_title">All Instructors</div>
         </div>
-        <div className="student_student_right">
-          <div className="student_student">Students</div>
-          <SlArrowRight className="student_icon_right" />
-          <div className="student_all_students">All Students</div>
+        <div className="instructor_instructor_right">
+          <div className="instructor_instructor">Instructors</div>
+          <SlArrowRight className="instructor_icon_right" />
+          <div className="instructor_all_instructors">All Instructors</div>
         </div>
       </div>
 
-      <div className="student_table_container">
+      <div className="instructor_table_container">
+        <Link to={PATH_NAME.ADD_INSTRUCTOR}>
+          <button className="instructor_add">Add New</button>
+        </Link>
         <Table
           columns={columns}
           rowKey={(record) => record.login.uuid}
@@ -151,4 +172,4 @@ const Student = () => {
   );
 };
 
-export default Student;
+export default AllInstructor;

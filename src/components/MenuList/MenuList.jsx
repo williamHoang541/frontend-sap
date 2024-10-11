@@ -79,11 +79,11 @@ const MenuList = () => {
       children: [
         {
           key: "allinstructors",
-          label: <Link to="/instructor/all-instructor">- All Instructors</Link>,
+          label: <Link to={PATH_NAME.INSTRUCTOR}>- All Instructors</Link>,
         },
         {
           key: "addinstructor",
-          label: <Link to="/instructor/add-instructor">- Add Instructor</Link>,
+          label: <Link to={PATH_NAME.ADD_INSTRUCTOR}>- Add Instructor</Link>,
         },
       ],
     },

@@ -6,6 +6,8 @@ import Navbar from "./components/Navbar/Navbar";
 import Sidebar from "./components/Sidebar/Sidebar";
 import DashBoard from "./pages/DashBoard/DashBoard";
 import { Layout } from "antd";
+import { PATH_NAME } from "./constant/pathname";
+import Student from "./pages/Student/Student";
 
 const LayOut = ({ children }) => {
   const [collapsed, setCollapsed] = useState(false);
@@ -29,10 +31,18 @@ const App = () => {
       <Routes>
         <Route path="/" element={<Login />} />
         <Route
-          path="/dashboard"
+          path={PATH_NAME.DASHBOARD}
           element={
             <LayOut>
               <DashBoard />
+            </LayOut>
+          }
+        />
+        <Route
+          path={PATH_NAME.STUDENT}
+          element={
+            <LayOut>
+              <Student />
             </LayOut>
           }
         />

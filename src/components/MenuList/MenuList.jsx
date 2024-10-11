@@ -1,6 +1,7 @@
 import { Menu } from "antd";
 import "./MenuList.css";
 import { Link } from "react-router-dom";
+import { PATH_NAME } from "../../constant/pathname";
 import { RxDashboard } from "react-icons/rx";
 import {
   PiGraduationCap,
@@ -19,7 +20,7 @@ const MenuList = () => {
     {
       key: "dashboard",
       icon: <RxDashboard />,
-      label: <Link to="/dashboard">Dashboard</Link>,
+      label: <Link to={PATH_NAME.DASHBOARD}>Dashboard</Link>,
     },
     {
       key: "module",
@@ -52,7 +53,7 @@ const MenuList = () => {
       ],
     },
     {
-      key: "courses",
+      key: "topic_area",
       icon: <MdOutlineTopic />,
       label: "Topic Area",
       children: [
@@ -69,7 +70,7 @@ const MenuList = () => {
     {
       key: "students",
       icon: <PiUsersThree />,
-      label: <Link to="/student">Students</Link>,
+      label: <Link to={PATH_NAME.STUDENT}>Students</Link>,
     },
     {
       key: "instructors",

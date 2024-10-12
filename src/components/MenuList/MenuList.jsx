@@ -90,7 +90,7 @@ const MenuList = () => {
     {
       key: "fee",
       icon: <PiCoinsLight />,
-      label: <Link to="/fee">Fee</Link>,
+      label: <Link to={PATH_NAME.FEE}>Fee</Link>,
     },
     {
       key: "sessions",

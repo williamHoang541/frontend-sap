@@ -1,15 +1,17 @@
 import { useEffect, useState } from "react";
-import "./AllInstructor.css";
+import { Button, Table, Form } from "antd";
+import Popup from "reactjs-popup";
 import { SlArrowRight } from "react-icons/sl";
-import { Button, Table } from "antd";
 import { RiDeleteBin6Line } from "react-icons/ri";
 import { MdModeEditOutline } from "react-icons/md";
-import qs from "qs";
 import { Link } from "react-router-dom";
+import qs from "qs";
 import { PATH_NAME } from "../../../constant/pathname";
+import "reactjs-popup/dist/index.css";
+import "./AllInstructor.css";
 
 const AllInstructor = () => {
-  const [data, setData] = useState([]); // Khởi tạo mảng dữ liệu
+  const [data, setData] = useState([]);
   const [loading, setLoading] = useState(false);
   const [tableParams, setTableParams] = useState({
     pagination: {
@@ -17,6 +19,7 @@ const AllInstructor = () => {
       pageSize: 10,
     },
   });
+  const [form] = Form.useForm();
 
   const getRandomuserParams = (params) => ({
     results: params.pagination?.pageSize,
@@ -32,7 +35,7 @@ const AllInstructor = () => {
       render: (_, __, index) => index + 1,
     },
     {
-      title: "Name",
+      title: "Full Name",
       dataIndex: "name",
       sorter: true,
       render: (name) => `${name.first} ${name.last}`,
@@ -55,30 +58,109 @@ const AllInstructor = () => {
     {
       title: "Education",
       sorter: true,
-      width: "15%",
+      width: "12%",
     },
     {
       title: "Mobile",
+      dataIndex: "phone",
       sorter: true,
       width: "10%",
     },
     {
       title: "Joining Date",
       sorter: true,
-      width: "10%",
+      width: "12%",
     },
     {
       title: "Action",
-      dataIndex: "action",
       render: (_, record) => (
         <>
-          <Button
-            type="link"
-            onClick={() => handleEdit(record)}
-            className="instructor_button_edit"
+          <Popup
+            trigger={
+              <Button type="link" className="instructor_button_edit">
+                <MdModeEditOutline />
+              </Button>
+            }
+            modal
+            closeOnDocumentClick
+            onOpen={() =>
+              form.setFieldsValue({ name: record.name, email: record.email })
+            }
           >
-            <MdModeEditOutline />
-          </Button>
+            {(close) => (
+              <div className="popup_container">
+                <h2>Edit Instructor</h2>
+                <Form
+                  form={form}
+                  onFinish={(values) => {
+                    handleEdit(values, record.login.uuid);
+                    close(); // Đóng popup sau khi lưu
+                  }}
+                >
+                  <div className="all_instructor_input">
+                    <Form.Item name="name" label="Full Name">
+                      <input
+                        type="text"
+                        className="all_instructor_form"
+                        placeholder="Enter full name"
+                      />
+                    </Form.Item>
+                    <Form.Item name="email" label="Email">
+                      <input
+                        type="email"
+                        className="all_instructor_form"
+                        placeholder="Enter email"
+                      />
+                    </Form.Item>
+                  </div>
+                  <div className="all_instructor_input">
+                    <Form.Item name="phone" label="Mobile Number">
+                      <input
+                        type="number"
+                        className="all_instructor_form"
+                        placeholder="Enter mobile number"
+                      />
+                    </Form.Item>
+                    <Form.Item name="education" label="Education">
+                      <input
+                        type="text"
+                        className="all_instructor_form"
+                        placeholder="Enter education"
+                      />
+                    </Form.Item>
+                  </div>
+                  <div className="all_instructor_input">
+                    <Form.Item name="gender" label="Gender">
+                      <input
+                        type="text"
+                        className="all_instructor_form"
+                        placeholder="Enter gender"
+                      />
+                    </Form.Item>
+                    <Form.Item name="birthdate" label="Date of Birth">
+                      <input type="date" className="all_instructor_form" />
+                    </Form.Item>
+                  </div>
+                  <div className="popup_buttons">
+                    <Button
+                      className="button_save"
+                      type="primary"
+                      htmlType="submit"
+                    >
+                      Save
+                    </Button>
+                    <Button
+                      className="button_cancel"
+                      type="button"
+                      onClick={close}
+                    >
+                      Cancel
+                    </Button>
+                  </div>
+                </Form>
+              </div>
+            )}
+          </Popup>
           <Button
             type="link"
             danger
@@ -93,10 +175,12 @@ const AllInstructor = () => {
     },
   ];
 
-  const handleEdit = (record) => {
-    // Thực hiện hành động chỉnh sửa tại đây
-    console.log("Edit record:", record);
-    // Bạn có thể mở một modal hoặc điều hướng đến trang chỉnh sửa ở đây
+  const handleEdit = (values, uuid) => {
+    const updatedData = data.map((item) =>
+      item.login.uuid === uuid ? { ...item, ...values } : item
+    );
+    setData(updatedData);
+    form.resetFields();
   };
 
   const handleDelete = (uuid) => {
@@ -118,27 +202,21 @@ const AllInstructor = () => {
           ...prevParams,
           pagination: {
             ...prevParams.pagination,
-            total: 200, // Giả lập tổng số bản ghi
+            total: 200,
           },
         }));
       })
-      .catch(() => setLoading(false)); // Đảm bảo set loading false khi có lỗi
+      .catch(() => setLoading(false));
   };
 
   useEffect(() => {
     fetchData();
   }, [tableParams.pagination?.current, tableParams.pagination?.pageSize]);
 
-  const handleTableChange = (pagination, filters, sorter) => {
-    setTableParams({
-      pagination,
-      filters,
-      sortOrder: Array.isArray(sorter) ? undefined : sorter.order,
-      sortField: Array.isArray(sorter) ? undefined : sorter.field,
-    });
-
+  const handleTableChange = (pagination) => {
+    setTableParams({ pagination });
     if (pagination.pageSize !== tableParams.pagination?.pageSize) {
-      setData([]); // Xóa dữ liệu khi thay đổi pageSize
+      setData([]);
     }
   };
 

@@ -52,7 +52,7 @@ const Student = () => {
     {
       title: "Education",
       sorter: true,
-      width: "15%",
+      width: "12%",
     },
     {
       title: "Mobile",
@@ -62,7 +62,7 @@ const Student = () => {
     {
       title: "Joining Date",
       sorter: true,
-      width: "10%",
+      width: "12%",
     },
     {
       title: "Action",

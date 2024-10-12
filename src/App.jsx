@@ -9,6 +9,8 @@ import { Layout } from "antd";
 import { PATH_NAME } from "./constant/pathname";
 import Student from "./pages/Student/Student";
 import AllInstructor from "./pages/Instructor/allIntructors/AllInstructor";
+import Fee from "./pages/Fee/Fee";
+import AddInstructor from "./pages/Instructor/addInstructor/AddInstructor";
 
 const LayOut = ({ children }) => {
   const [collapsed, setCollapsed] = useState(false);
@@ -53,6 +55,23 @@ const App = () => {
             <LayOut>
               <AllInstructor />
             </LayOut>
+          }
+        />
+        <Route
+          path={PATH_NAME.ADD_INSTRUCTOR}
+          element={
+            <LayOut>
+              <AddInstructor />
+            </LayOut>
+          }
+        />
+        <Route
+          path={PATH_NAME.FEE}
+          element={
+            <LayOut>
+              <Fee />
+            </LayOut>
+
           }
         />
       </Routes>

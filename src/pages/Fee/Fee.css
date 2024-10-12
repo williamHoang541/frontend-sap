@@ -7,35 +7,61 @@
   /* height: 100vh; */
 }
 
-.fee_title_container{
-    display: flex;
-    flex-direction: row;
-    justify-content: space-between;
-    align-items: center;
+.fee_title_container {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  align-items: center;
+  background-color: #fff;
+  padding: 15px;
+  border-radius: 3px;
+}
+
+.fee_fee_right {
+  display: flex;
+  flex-direction: row;
+  gap: 10px;
+}
+
+.fee_title {
+  font-size: 18px;
+  font-weight: 550;
+}
+
+.fee_title,
+.fee_collection {
+  color: #023e73;
+}
+
+.fee_fee,
+.fee_collection,
+.fee_icon_right {
+  font-size: 13px;
+}
+
+.fee_fee,
+.fee_icon_right {
+  color: #828690;
+}
+
+.status-paid,
+.status-unpaid {
+  padding: 5px;
+  border-radius: 5px;
+}
+
+.status-paid {
+  color: #fff;
+  background-color: rgba(54, 235, 123, 0.8);
+}
+
+.status-unpaid {
+  color: #fff;
+  background-color: rgba(235, 54, 54, 0.8);
+}
+
+.fee_table_container {
     background-color: #fff;
-    padding: 15px;
+    padding: 10px;
     border-radius: 3px;
-}
-
-.fee_fee_right{
-    display: flex;
-    flex-direction: row;
-    gap: 10px;
-}
-
-.fee_title{
-    font-size: 18px;
-    font-weight: 550;
-}
-
-.fee_title, .fee_collection{
-    color: #023e73;
-}
-
-.fee_fee, .fee_collection, .fee_icon_right{
-    font-size: 13px;
-}
-
-.fee_fee, .fee_icon_right{
-    color: #828690;
 }

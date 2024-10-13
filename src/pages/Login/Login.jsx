@@ -30,7 +30,7 @@ const Login = () => {
               placeholder="Password"
               className="login-input-field"
             />
-            <FaRegEyeSlash className="login-input-icon-1" />
+            
           </div>
           <div className="login-remember-me">
             <input type="checkbox" id="rememberMe" />

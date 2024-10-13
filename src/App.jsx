@@ -5,6 +5,8 @@ import Login from "./pages/Login/Login";
 import Navbar from "./components/Navbar/Navbar";
 import Sidebar from "./components/Sidebar/Sidebar";
 import DashBoard from "./pages/DashBoard/DashBoard";
+import AllCourse from "./pages/AllCourse/AllCourse";
+import AddCourse from "./pages/AddCourse/AddCourse";
 import { Layout } from "antd";
 import { PATH_NAME } from "./constant/pathname";
 import Student from "./pages/Student/Student";
@@ -13,7 +15,7 @@ import Fee from "./pages/Fee/Fee";
 import AddInstructor from "./pages/Instructor/addInstructor/AddInstructor";
 
 const LayOut = ({ children }) => {
-  const [collapsed, setCollapsed] = useState(false);
+    const [collapsed, setCollapsed] = useState(false);
 
   return (
     <Layout style={{ minHeight: "100vh" }}>
@@ -74,6 +76,22 @@ const App = () => {
 
           }
         />
+        <Route
+                    path="/course/all-course"
+                    element={
+                        <LayOut>
+                            <AllCourse />
+                        </LayOut>
+                    }
+                />
+                <Route
+                    path="/course/add-course"
+                    element={
+                        <LayOut>
+                            <AddCourse />
+                        </LayOut>
+                    }
+                />
       </Routes>
     </div>
   );

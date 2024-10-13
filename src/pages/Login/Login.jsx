@@ -1,6 +1,5 @@
-
 import "./Login.css";
-import logo from '../../assets/LogoSAP.png'
+import logo from "../../assets/LogoSAP.png";
 import { FaRegUser, FaRegEyeSlash } from "react-icons/fa";
 import { TfiKey } from "react-icons/tfi";
 
@@ -44,9 +43,10 @@ const Login = () => {
           <span>Or</span>
           <span className="forgot-password">Forgot Password?</span>
         </div>
+
       </div>
     </div>
-  );
+    );
 };
 
 export default Login;

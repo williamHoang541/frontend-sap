@@ -14,6 +14,7 @@ import { LuUsers2 } from "react-icons/lu";
 import { IoAnalytics } from "react-icons/io5";
 import { IoSettingsOutline } from "react-icons/io5";
 import { MdOutlineTopic } from "react-icons/md";
+import { MdViewModule } from "react-icons/md";
 
 const MenuList = () => {
   const items = [
@@ -24,16 +25,31 @@ const MenuList = () => {
     },
     {
       key: "module",
-      icon: <PiCertificate />,
+      icon: <MdViewModule />,
       label: "SAP Module",
       children: [
         {
-          key: "allmodule",
-          label: <Link to="/SAP-module/all-module">- All Module</Link>,
+          key: "all_module",
+          label: <Link to={PATH_NAME.SAP_MODULE}>- All Modules</Link>,
         },
         {
-          key: "addmodule",
+          key: "add_module",
           label: <Link to="/course/add-module">- Add Module</Link>,
+        },
+      ],
+    },
+     {
+      key: "certificate",
+      icon: <PiCertificate />,
+      label: "Certificate",
+      children: [
+        {
+          key: "all_certificates",
+          label: <Link to={PATH_NAME.SAP_MODULE}>- All Certificates</Link>,
+        },
+        {
+          key: "add_certificate",
+          label: <Link to="#">- Add Certificate</Link>,
         },
       ],
     },

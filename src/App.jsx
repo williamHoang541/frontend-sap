@@ -13,6 +13,7 @@ import Student from "./pages/Student/Student";
 import AllInstructor from "./pages/Instructor/allIntructors/AllInstructor";
 import Fee from "./pages/Fee/Fee";
 import AddInstructor from "./pages/Instructor/addInstructor/AddInstructor";
+import SapModule from "./pages/SapModule/SapModule";
 
 const LayOut = ({ children }) => {
     const [collapsed, setCollapsed] = useState(false);
@@ -72,6 +73,15 @@ const App = () => {
           element={
             <LayOut>
               <Fee />
+            </LayOut>
+
+          }
+        />
+        <Route
+          path={PATH_NAME.SAP_MODULE}
+          element={
+            <LayOut>
+              <SapModule />
             </LayOut>
 
           }

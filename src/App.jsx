@@ -13,7 +13,9 @@ import Student from "./pages/Student/Student";
 import AllInstructor from "./pages/Instructor/allIntructors/AllInstructor";
 import Fee from "./pages/Fee/Fee";
 import AddInstructor from "./pages/Instructor/addInstructor/AddInstructor";
-import SapModule from "./pages/SapModule/SapModule";
+import SapModule from "./pages/SapModule/AllSAPModule/SapModule";
+import AddSAPModule from "./pages/SapModule/AddSAPModule/AddSAPModule";
+
 
 const LayOut = ({ children }) => {
     const [collapsed, setCollapsed] = useState(false);
@@ -82,6 +84,15 @@ const App = () => {
           element={
             <LayOut>
               <SapModule />
+            </LayOut>
+
+          }
+        />
+        <Route
+          path={PATH_NAME.ADD_SAP_MODULE}
+          element={
+            <LayOut>
+              <AddSAPModule />
             </LayOut>
 
           }

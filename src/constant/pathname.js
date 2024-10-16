@@ -5,4 +5,5 @@ export const PATH_NAME = {
     ADD_INSTRUCTOR: "/add_instructor",
     FEE: "/fee",
     SAP_MODULE: "/sap_modules",
+    ADD_SAP_MODULE: "/add_sap_module",
 }

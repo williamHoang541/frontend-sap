@@ -34,7 +34,7 @@ const MenuList = () => {
         },
         {
           key: "add_module",
-          label: <Link to="/course/add-module">- Add Module</Link>,
+          label: <Link to={PATH_NAME.ADD_SAP_MODULE}>- Add Module</Link>,
         },
       ],
     },

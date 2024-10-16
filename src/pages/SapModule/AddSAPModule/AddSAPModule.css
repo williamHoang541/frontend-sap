@@ -1,14 +1,14 @@
-.sap_module {
+.add_sap_module {
   display: flex;
   flex-direction: column;
   gap: 30px;
   margin-bottom: 30px;
   margin-top: 10px;
-  /* height: 100vh; */
+  height: 82vh;
 }
 
-.sap_module_table_container {
+.add_sap_module_form_container {
   background-color: #fff;
-  padding: 10px;
   border-radius: 3px;
+  padding-bottom: 20px;
 }

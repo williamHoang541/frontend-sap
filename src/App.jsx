@@ -15,6 +15,8 @@ import Fee from "./pages/Fee/Fee";
 import AddInstructor from "./pages/Instructor/addInstructor/AddInstructor";
 import SapModule from "./pages/SapModule/AllSAPModule/SapModule";
 import AddSAPModule from "./pages/SapModule/AddSAPModule/AddSAPModule";
+import AllCertificate from "./pages/Certificate/AllCertificate/AllCertificate";
+import AddCertificate from "./pages/Certificate/AddCertificate/AddCertificate";
 
 
 const LayOut = ({ children }) => {
@@ -93,6 +95,24 @@ const App = () => {
           element={
             <LayOut>
               <AddSAPModule />
+            </LayOut>
+
+          }
+        />
+        <Route
+          path={PATH_NAME.CERTIFICATE}
+          element={
+            <LayOut>
+              <AllCertificate />
+            </LayOut>
+
+          }
+        />
+        <Route
+          path={PATH_NAME.ADD_CERTIFICATE}
+          element={
+            <LayOut>
+              <AddCertificate />
             </LayOut>
 
           }

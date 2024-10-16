@@ -45,11 +45,11 @@ const MenuList = () => {
       children: [
         {
           key: "all_certificates",
-          label: <Link to={PATH_NAME.SAP_MODULE}>- All Certificates</Link>,
+          label: <Link to={PATH_NAME.CERTIFICATE}>- All Certificates</Link>,
         },
         {
           key: "add_certificate",
-          label: <Link to="#">- Add Certificate</Link>,
+          label: <Link to={PATH_NAME.ADD_CERTIFICATE}>- Add Certificate</Link>,
         },
       ],
     },

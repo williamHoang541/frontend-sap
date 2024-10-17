@@ -1,0 +1,15 @@
+.add_topic_button_submit {
+    background-color: #033e8c;
+    color: #fff;
+    padding: 10px;
+    font-size: 14px;
+    width: 75px;
+    border: none;
+    border-radius: 5px;
+    margin-left: 863px;
+}
+
+.add_topic_button_submit:hover {
+    background-color: #1e78ff;
+    cursor: pointer;
+}

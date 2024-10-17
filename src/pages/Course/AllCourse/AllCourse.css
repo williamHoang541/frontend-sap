@@ -1,6 +1,7 @@
 .all-course {
     margin-bottom: 400px;
 }
+
 .all-course-header {
     background-color: #fff;
     border-radius: 10px;
@@ -97,4 +98,14 @@
 .tableCell svg {
     font-size: 24px;
     color: #fff;
+}
+
+.status-online {
+    color: #fff;
+    background-color: rgba(54, 235, 123, 0.8);
+}
+
+.status-offline {
+    color: #fff;
+    background-color: rgba(54, 163, 235, 0.8);
 }

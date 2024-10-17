@@ -15,6 +15,9 @@ import Fee from "./pages/Fee/Fee";
 import AddInstructor from "./pages/Instructor/addInstructor/AddInstructor";
 import Analytic from "./pages/Analytic/Analytic";
 import AllTopic from "./pages/TopicArea/AllTopic/AllTopic";
+import AddTopic from "./pages/TopicArea/AddTopic/AddTopic";
+import AllSession from "./pages/Session/AllSession/AllSession";
+import AddSession from "./pages/Session/AddSession/AddSession";
 
 const LayOut = ({ children }) => {
     const [collapsed, setCollapsed] = useState(false);
@@ -106,6 +109,30 @@ const App = () => {
                     element={
                         <LayOut>
                             <AllTopic />
+                        </LayOut>
+                    }
+                />
+                <Route
+                    path={PATH_NAME.ADD_TOPIC}
+                    element={
+                        <LayOut>
+                            <AddTopic />
+                        </LayOut>
+                    }
+                />
+                <Route
+                    path={PATH_NAME.SESSION}
+                    element={
+                        <LayOut>
+                            <AllSession />
+                        </LayOut>
+                    }
+                />
+                <Route
+                    path={PATH_NAME.ADD_SESSION}
+                    element={
+                        <LayOut>
+                            <AddSession />
                         </LayOut>
                     }
                 />

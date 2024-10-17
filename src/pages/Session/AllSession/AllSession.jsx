@@ -8,72 +8,8 @@ import { Link } from "react-router-dom";
 import qs from "qs";
 import { PATH_NAME } from "../../../constant/pathname";
 import "reactjs-popup/dist/index.css";
-import "./AllCourse.css";
 
-const AllCourse = () => {
-    const data_1 = [
-        {
-            course_id: 1,
-            course_name: "Introduction to SAP",
-            start_date: "2024-10-15",
-            end_date: "2024-12-15",
-            mode: "Online",
-            price: 150.0,
-            total_student: 30,
-            end_register_date: "2024-10-10",
-            location_url: "https://meet.google.com/xyz-abc-101",
-            status: "Available",
-        },
-        {
-            course_id: 2,
-            course_name: "Advanced ABAP Programming",
-            start_date: "2024-11-01",
-            end_date: "2025-01-01",
-            mode: "Offline",
-            price: 300.0,
-            total_student: 20,
-            end_register_date: "2024-10-28",
-            location_url: "123 SAP Blvd, NY",
-            status: "Expired",
-        },
-        {
-            course_id: 3,
-            course_name: "SAP S/4HANA Overview",
-            start_date: "2024-10-20",
-            end_date: "2024-11-20",
-            mode: "Online",
-            price: 200.0,
-            total_student: 50,
-            end_register_date: "2024-10-18",
-            location_url: "https://meet.google.com/xyz-abc-103",
-            status: "Available",
-        },
-        {
-            course_id: 4,
-            course_name: "SAP Fiori Development",
-            start_date: "2024-12-01",
-            end_date: "2025-02-01",
-            mode: "Offline",
-            price: 350.0,
-            total_student: 25,
-            end_register_date: "2024-11-28",
-            location_url: "456 Tech St, SF",
-            status: "Available",
-        },
-        {
-            course_id: 5,
-            course_name: "SAP CAP Model Workshop",
-            start_date: "2024-09-30",
-            end_date: "2024-10-30",
-            mode: "Online",
-            price: 250.0,
-            total_student: 40,
-            end_register_date: "2024-09-28",
-            location_url: "https://meet.google.com/xyz-abc-105",
-            status: "Expired",
-        },
-    ];
-
+const AllSession = () => {
     const [data, setData] = useState([]);
     const [loading, setLoading] = useState(false);
     const [tableParams, setTableParams] = useState({
@@ -99,50 +35,36 @@ const AllCourse = () => {
         },
         {
             title: "Course Name",
+            dataIndex: "course",
+            width: "10%",
+        },
+        {
+            title: "Instructor Name",
             dataIndex: "name",
             sorter: true,
             render: (name) => `${name.first} ${name.last}`,
             width: "15%",
         },
         {
-            title: "Mode",
-            dataIndex: "mode",
-            filters: [
-                { text: "Online", value: "online" },
-                { text: "Offline", value: "offline" },
-            ],
-            render: (status) => (
-                <span
-                    className={
-                        status === "online" ? "status-online" : "status-offline"
-                    }
-                ></span>
-            ),
-            width: "10%",
-        },
-        {
-            title: "Start Date",
-            sorter: true,
-            width: "10%",
-        },
-        {
-            title: "End Date",
-            sorter: true,
-            width: "10%",
-        },
-        {
-            title: "Total Student",
-            dataIndex: "phone",
-            sorter: true,
-            width: "10%",
-        },
-        {
-            title: "Location",
+            title: "Topic name",
             sorter: true,
             width: "12%",
         },
         {
-            title: "Status",
+            title: "Session Name",
+            dataIndex: "name",
+            sorter: true,
+            render: (name) => `${name.first} ${name.last}`,
+            width: "15%",
+        },
+        {
+            title: "Session Description",
+            dataIndex: "description",
+            sorter: true,
+            width: "10%",
+        },
+        {
+            title: "Session Date",
             sorter: true,
             width: "12%",
         },
@@ -170,7 +92,7 @@ const AllCourse = () => {
                     >
                         {(close) => (
                             <div className="popup_container">
-                                <h2>Edit Course</h2>
+                                <h2>Edit Instructor</h2>
                                 <Form
                                     form={form}
                                     onFinish={(values) => {
@@ -181,55 +103,31 @@ const AllCourse = () => {
                                     <div className="all_instructor_input">
                                         <Form.Item
                                             name="name"
-                                            label="Full Name"
+                                            label="Session Name"
                                         >
                                             <input
                                                 type="text"
                                                 className="all_instructor_form"
-                                                placeholder="Enter full name"
-                                            />
-                                        </Form.Item>
-                                        <Form.Item name="email" label="Email">
-                                            <input
-                                                type="email"
-                                                className="all_instructor_form"
-                                                placeholder="Enter email"
+                                                placeholder="Enter session name"
                                             />
                                         </Form.Item>
                                     </div>
                                     <div className="all_instructor_input">
                                         <Form.Item
                                             name="phone"
-                                            label="Mobile Number"
-                                        >
-                                            <input
-                                                type="number"
-                                                className="all_instructor_form"
-                                                placeholder="Enter mobile number"
-                                            />
-                                        </Form.Item>
-                                        <Form.Item
-                                            name="education"
-                                            label="Education"
+                                            label="Session Description"
                                         >
                                             <input
                                                 type="text"
                                                 className="all_instructor_form"
-                                                placeholder="Enter education"
+                                                placeholder="Enter session description"
                                             />
                                         </Form.Item>
                                     </div>
                                     <div className="all_instructor_input">
-                                        <Form.Item name="gender" label="Gender">
-                                            <input
-                                                type="text"
-                                                className="all_instructor_form"
-                                                placeholder="Enter gender"
-                                            />
-                                        </Form.Item>
                                         <Form.Item
                                             name="birthdate"
-                                            label="Date of Birth"
+                                            label="Session Date"
                                         >
                                             <input
                                                 type="date"
@@ -294,12 +192,7 @@ const AllCourse = () => {
         )
             .then((res) => res.json())
             .then(({ results }) => {
-                // Thêm trường status vào dữ liệu
-                const updatedResults = results.map((item) => ({
-                    ...item,
-                    status: Math.random() > 0.5 ? "online" : "offline", // Giả lập trạng thái
-                }));
-                setData(updatedResults);
+                setData(results);
                 setLoading(false);
                 setTableParams((prevParams) => ({
                     ...prevParams,
@@ -327,19 +220,19 @@ const AllCourse = () => {
         <div className="instructor">
             <div className="instructor_title_container">
                 <div className="instructor_title_left">
-                    <div className="instructor_title">All Courses</div>
+                    <div className="instructor_title">All Instructors</div>
                 </div>
                 <div className="instructor_instructor_right">
-                    <div className="instructor_instructor">Course</div>
+                    <div className="instructor_instructor">Instructors</div>
                     <SlArrowRight className="instructor_icon_right" />
                     <div className="instructor_all_instructors">
-                        All Courses
+                        All Instructors
                     </div>
                 </div>
             </div>
 
             <div className="instructor_table_container">
-                <Link to={PATH_NAME.ADD_COURSE}>
+                <Link to={PATH_NAME.ADD_INSTRUCTOR}>
                     <button className="instructor_add">Add New</button>
                 </Link>
                 <Table
@@ -355,4 +248,4 @@ const AllCourse = () => {
     );
 };
 
-export default AllCourse;
+export default AllSession;

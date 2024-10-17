@@ -10,4 +10,6 @@ export const PATH_NAME = {
     ANALYTIC: "/analytic",
     TOPIC: "/topic/all-topic",
     ADD_TOPIC: "/topic/add-topic",
+    SESSION: "session/all-sessions",
+    ADD_SESSION: "session/add-session",
 };

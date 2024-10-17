@@ -1,9 +1,12 @@
 import React, { useEffect, useState } from "react";
-import "./AllTopic.css";
 import { SlArrowRight } from "react-icons/sl";
-import { Button, Popconfirm, Table } from "antd";
-import qs from "qs";
+import { Button, Popconfirm, Table, Form } from "antd";
 import { RiDeleteBin6Line } from "react-icons/ri";
+import { MdModeEditOutline } from "react-icons/md";
+import qs from "qs";
+import { Link } from "react-router-dom";
+import Popup from "reactjs-popup";
+import "./AllTopic.css";
 
 const AllTopic = () => {
     const [data, setData] = useState([]); // Khởi tạo mảng dữ liệu
@@ -14,6 +17,7 @@ const AllTopic = () => {
             pageSize: 10,
         },
     });
+    const [form] = Form.useForm();
 
     const getRandomuserParams = (params) => ({
         results: params.pagination?.pageSize,
@@ -53,16 +57,101 @@ const AllTopic = () => {
         },
         {
             title: "Action",
-            dataIndex: "action",
             render: (_, record) => (
-                <Button
-                    type="link"
-                    danger
-                    onClick={() => handleDelete(record.login.uuid)}
-                    className="topic_button_delete"
-                >
-                    <RiDeleteBin6Line />
-                </Button>
+                <>
+                    <Popup
+                        trigger={
+                            <Button
+                                type="link"
+                                className="instructor_button_edit"
+                            >
+                                <MdModeEditOutline />
+                            </Button>
+                        }
+                        modal
+                        closeOnDocumentClick
+                        onOpen={() =>
+                            form.setFieldsValue({
+                                name: record.name,
+                                email: record.email,
+                            })
+                        }
+                    >
+                        {(close) => (
+                            <div className="popup_container">
+                                <h2>Edit Instructor</h2>
+                                <Form
+                                    form={form}
+                                    onFinish={(values) => {
+                                        handleEdit(values, record.login.uuid);
+                                        close(); // Đóng popup sau khi lưu
+                                    }}
+                                >
+                                    <div className="all_instructor_input">
+                                        <Form.Item
+                                            name="name"
+                                            label="Certificate Name"
+                                        >
+                                            <input
+                                                type="text"
+                                                className="all_instructor_form"
+                                                placeholder="Enter Certificate Name"
+                                            />
+                                        </Form.Item>
+                                    </div>
+                                    <div className="all_instructor_input">
+                                        <Form.Item
+                                            name="phone"
+                                            label="Topic Name"
+                                        >
+                                            <input
+                                                type="text"
+                                                className="all_instructor_form"
+                                                placeholder="Enter Topic Name"
+                                            />
+                                        </Form.Item>
+                                    </div>
+                                    <div className="all_instructor_input">
+                                        <Form.Item
+                                            name="gender"
+                                            label="Topic Details"
+                                        >
+                                            <input
+                                                type="text"
+                                                className="all_instructor_form"
+                                                placeholder="Enter Topic Details"
+                                            />
+                                        </Form.Item>
+                                    </div>
+                                    <div className="popup_buttons">
+                                        <Button
+                                            className="button_save"
+                                            type="primary"
+                                            htmlType="submit"
+                                        >
+                                            Save
+                                        </Button>
+                                        <Button
+                                            className="button_cancel"
+                                            type="button"
+                                            onClick={close}
+                                        >
+                                            Cancel
+                                        </Button>
+                                    </div>
+                                </Form>
+                            </div>
+                        )}
+                    </Popup>
+                    <Button
+                        type="link"
+                        danger
+                        onClick={() => handleDelete(record.login.uuid)}
+                        className="instructor_button_delete"
+                    >
+                        <RiDeleteBin6Line />
+                    </Button>
+                </>
             ),
             width: "10%",
         },

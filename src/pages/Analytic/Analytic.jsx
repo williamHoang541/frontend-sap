@@ -69,9 +69,11 @@ const Analytic = () => {
             <div className="dashboard-widget-wrapper">
                 <div className="dashboard-widget">
                     <div className="dashboard-widget-card">
-                        <div className="dashboard-widget-card-body">
-                            <h2 class="mb-2">839</h2>
-                            <p>Subscribers</p>
+                        <div className="dashboard-widget-card-body1">
+                            <div className="txt">
+                                <h2 class="mb-2">839</h2>
+                                <p>Subscribers</p>
+                            </div>
                             <ResponsiveContainer width="100%" height="100%">
                                 <BarChart
                                     width={500}
@@ -99,7 +101,7 @@ const Analytic = () => {
                 </div>
                 <div className="dashboard-widget">
                     <div className="dashboard-widget-card">
-                        <div className="dashboard-widget-card-body">
+                        <div className="dashboard-widget-card-body1">
                             <ResponsiveContainer width="100%" height="100%">
                                 <LineChart width={300} height={100} data={data}>
                                     <Line
@@ -122,7 +124,7 @@ const Analytic = () => {
                 </div>
                 <div className="dashboard-widget">
                     <div className="dashboard-widget-card">
-                        <div className="dashboard-widget-card-body">
+                        <div className="dashboard-widget-card-body1">
                             <ResponsiveContainer width="100%" height="100%">
                                 <ComposedChart
                                     width={500}
@@ -163,8 +165,6 @@ const Analytic = () => {
                         <div className="card-body" style={{ height: "450px" }}>
                             <ResponsiveContainer width="100%" height="100%">
                                 <LineChart
-                                    width={500}
-                                    height={300}
                                     data={data}
                                     margin={{
                                         top: 5,
@@ -197,8 +197,6 @@ const Analytic = () => {
                         <div className="card-body" style={{ height: "450px" }}>
                             <ResponsiveContainer width="100%" height="100%">
                                 <LineChart
-                                    width={500}
-                                    height={300}
                                     data={data}
                                     margin={{
                                         top: 5,
@@ -236,8 +234,6 @@ const Analytic = () => {
                         <div className="card-body" style={{ height: "450px" }}>
                             <ResponsiveContainer width="100%" height="100%">
                                 <BarChart
-                                    width={500}
-                                    height={300}
                                     data={data}
                                     margin={{
                                         top: 20,

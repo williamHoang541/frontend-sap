@@ -18,8 +18,11 @@
     /* min-width: 230px; */
 }
 
-.mb-2 {
-    margin-bottom: 25px;
+.txt {
+    display: flex;
+    gap: 10px;
+    flex-direction: column;
+    justify-content: start;
 }
 
 .dashboard-widget-card {
@@ -29,18 +32,17 @@
     display: flex;
     min-width: 0;
     background-color: #fff;
-    height: 150px;
+    height: 400px;
     color: #333;
     word-wrap: break-word;
     background-clip: border-box;
 }
 
-.dashboard-widget-card-body {
+.dashboard-widget-card-body1 {
     padding: 20px;
     flex: 1 1 auto;
     display: flex;
-    align-items: center;
-    justify-content: center;
+    flex-direction: column;
     gap: 15px;
 }
 

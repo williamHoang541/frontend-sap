@@ -14,6 +14,7 @@ import AllInstructor from "./pages/Instructor/allIntructors/AllInstructor";
 import Fee from "./pages/Fee/Fee";
 import AddInstructor from "./pages/Instructor/addInstructor/AddInstructor";
 import Analytic from "./pages/Analytic/Analytic";
+import AllTopic from "./pages/TopicArea/AllTopic/AllTopic";
 
 const LayOut = ({ children }) => {
     const [collapsed, setCollapsed] = useState(false);
@@ -97,6 +98,14 @@ const App = () => {
                     element={
                         <LayOut>
                             <Analytic />
+                        </LayOut>
+                    }
+                />
+                <Route
+                    path={PATH_NAME.TOPIC}
+                    element={
+                        <LayOut>
+                            <AllTopic />
                         </LayOut>
                     }
                 />

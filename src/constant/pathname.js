@@ -8,4 +8,6 @@ export const PATH_NAME = {
     COURSE: "/course/all-course",
     ADD_COURSE: "/course/add-course",
     ANALYTIC: "/analytic",
+    TOPIC: "/topic/all-topic",
+    ADD_TOPIC: "/topic/add-topic",
 };

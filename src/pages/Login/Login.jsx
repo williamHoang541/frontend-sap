@@ -23,7 +23,8 @@ const Login = () => {
             password: password,
         };
 
-        const url = "http://localhost:5250/api/User/login-web";
+        const url =
+            "https://swdsapelearningapi.azurewebsites.net/api/User/login-web";
 
         try {
             const response = await axios.post(url, loginData, {

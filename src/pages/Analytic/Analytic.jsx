@@ -3,8 +3,12 @@ import "./Analytic.css";
 import { PiUsersThree, PiGraduationCap, PiCoinsLight } from "react-icons/pi";
 import { BsPerson } from "react-icons/bs";
 import {
+    Area,
+    ComposedChart,
     BarChart,
     Bar,
+    LineChart,
+    Line,
     XAxis,
     YAxis,
     CartesianGrid,
@@ -12,6 +16,7 @@ import {
     Legend,
     ResponsiveContainer,
 } from "recharts";
+
 const Analytic = () => {
     const data = [
         {
@@ -57,6 +62,7 @@ const Analytic = () => {
             amt: 2100,
         },
     ];
+
     return (
         <div className="analytic">
             {/* Widget */}
@@ -64,6 +70,170 @@ const Analytic = () => {
                 <div className="dashboard-widget">
                     <div className="dashboard-widget-card">
                         <div className="dashboard-widget-card-body">
+                            <h2 class="mb-2">839</h2>
+                            <p>Subscribers</p>
+                            <ResponsiveContainer width="100%" height="100%">
+                                <BarChart
+                                    width={500}
+                                    height={300}
+                                    data={data}
+                                    margin={{
+                                        top: 20,
+                                        right: 30,
+                                        left: 20,
+                                        bottom: 5,
+                                    }}
+                                >
+                                    <CartesianGrid strokeDasharray="3 3" />
+                                    <Tooltip />
+                                    <XAxis dataKey="name" />
+                                    <Bar
+                                        dataKey="uv"
+                                        stackId="a"
+                                        fill="#82ca9d"
+                                    />
+                                </BarChart>
+                            </ResponsiveContainer>
+                        </div>
+                    </div>
+                </div>
+                <div className="dashboard-widget">
+                    <div className="dashboard-widget-card">
+                        <div className="dashboard-widget-card-body">
+                            <ResponsiveContainer width="100%" height="100%">
+                                <LineChart width={300} height={100} data={data}>
+                                    <Line
+                                        type="monotone"
+                                        dataKey="pv"
+                                        stroke="#8884d8"
+                                        strokeWidth={2}
+                                    />
+                                    <Tooltip />
+                                    <Line
+                                        type="monotone"
+                                        dataKey="uv"
+                                        stroke="#82ca9d"
+                                        strokeWidth={2}
+                                    />
+                                </LineChart>
+                            </ResponsiveContainer>
+                        </div>
+                    </div>
+                </div>
+                <div className="dashboard-widget">
+                    <div className="dashboard-widget-card">
+                        <div className="dashboard-widget-card-body">
+                            <ResponsiveContainer width="100%" height="100%">
+                                <ComposedChart
+                                    width={500}
+                                    height={500}
+                                    data={data}
+                                    margin={{
+                                        top: 20,
+                                        right: 20,
+                                        bottom: 20,
+                                        left: 20,
+                                    }}
+                                >
+                                    <Tooltip />
+                                    <Legend />
+                                    <Area
+                                        type="monotone"
+                                        dataKey="amt"
+                                        fill="#8884d8"
+                                        stroke="#8884d8"
+                                    />
+                                    <Line
+                                        type="monotone"
+                                        dataKey="uv"
+                                        stroke="#ff7300"
+                                    />
+                                </ComposedChart>
+                            </ResponsiveContainer>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div className="row">
+                <div className="col-xl-12 col-md-12">
+                    <div className="card card-default analysis_card p-0">
+                        <div className="card-header">
+                            <h2>Sales Of The Year</h2>
+                        </div>
+                        <div className="card-body" style={{ height: "450px" }}>
+                            <ResponsiveContainer width="100%" height="100%">
+                                <LineChart
+                                    width={500}
+                                    height={300}
+                                    data={data}
+                                    margin={{
+                                        top: 5,
+                                        right: 30,
+                                        left: 20,
+                                        bottom: 5,
+                                    }}
+                                >
+                                    <CartesianGrid strokeDasharray="3 3" />
+                                    <XAxis dataKey="name" />
+                                    <YAxis />
+                                    <Tooltip />
+                                    <Legend />
+                                    <Line
+                                        type="monotone"
+                                        dataKey="pv"
+                                        stroke="#F95454"
+                                        activeDot={{ r: 8 }}
+                                    />
+                                </LineChart>
+                            </ResponsiveContainer>
+                        </div>
+                    </div>
+                </div>
+                <div className="col-md-12">
+                    <div className="card card-default analysis_card p-0">
+                        <div className="card-header">
+                            <h2>User Activity</h2>
+                        </div>
+                        <div className="card-body" style={{ height: "450px" }}>
+                            <ResponsiveContainer width="100%" height="100%">
+                                <LineChart
+                                    width={500}
+                                    height={300}
+                                    data={data}
+                                    margin={{
+                                        top: 5,
+                                        right: 30,
+                                        left: 20,
+                                        bottom: 5,
+                                    }}
+                                >
+                                    <CartesianGrid strokeDasharray="3 3" />
+                                    <XAxis dataKey="name" />
+                                    <YAxis />
+                                    <Tooltip />
+                                    <Legend />
+                                    <Line
+                                        type="monotone"
+                                        dataKey="pv"
+                                        stroke="#EC8305"
+                                        activeDot={{ r: 8 }}
+                                    />
+                                    <Line
+                                        type="monotone"
+                                        dataKey="uv"
+                                        stroke="#77CDFF"
+                                    />
+                                </LineChart>
+                            </ResponsiveContainer>
+                        </div>
+                    </div>
+                </div>
+                <div className="col-md-12">
+                    <div className="card card-default analysis_card p-0">
+                        <div className="card-header">
+                            <h2>Online/Offline Users</h2>
+                        </div>
+                        <div className="card-body" style={{ height: "450px" }}>
                             <ResponsiveContainer width="100%" height="100%">
                                 <BarChart
                                     width={500}
@@ -93,45 +263,6 @@ const Analytic = () => {
                                     />
                                 </BarChart>
                             </ResponsiveContainer>
-                        </div>
-                    </div>
-                </div>
-                <div className="dashboard-widget">
-                    <div className="dashboard-widget-card">
-                        <div className="dashboard-widget-card-body">
-                            <span className="dashboard-widget-icon-2">
-                                <BsPerson />
-                            </span>
-                            <div className="dashboard-widget-card-text">
-                                <h4 className="dashboard-number">5</h4>
-                                <p className="dashboard-text">New Students</p>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <div className="dashboard-widget">
-                    <div className="dashboard-widget-card">
-                        <div className="dashboard-widget-card-body">
-                            <span className="dashboard-widget-icon-3">
-                                <PiGraduationCap />
-                            </span>
-                            <div className="dashboard-widget-card-text">
-                                <h4 className="dashboard-number">50</h4>
-                                <p className="dashboard-text">Total Courses</p>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <div className="dashboard-widget">
-                    <div className="dashboard-widget-card">
-                        <div className="dashboard-widget-card-body">
-                            <span className="dashboard-widget-icon-4">
-                                <PiCoinsLight />
-                            </span>
-                            <div className="dashboard-widget-card-text">
-                                <h4 className="dashboard-number">2156</h4>
-                                <p className="dashboard-text">Fee Collection</p>
-                            </div>
                         </div>
                     </div>
                 </div>

@@ -18,6 +18,10 @@
     /* min-width: 230px; */
 }
 
+.mb-2 {
+    margin-bottom: 25px;
+}
+
 .dashboard-widget-card {
     border: 0;
     border-radius: 10px;
@@ -46,44 +50,71 @@
     gap: 7px;
 }
 
-.dashboard-widget-icon-1,
-.dashboard-widget-icon-2,
-.dashboard-widget-icon-3,
-.dashboard-widget-icon-4 {
-    font-size: 24px !important;
-    color: #fff !important;
-    height: 48px !important;
-    width: 48px !important;
-    display: flex !important;
-    justify-content: center;
-    align-items: center;
-    border-radius: 50%;
-    flex-shrink: 0 !important;
+.row {
+    --bs-gutter-x: 30px;
+    --bs-gutter-y: 0;
+    display: flex;
+    flex-wrap: wrap;
+    margin-top: 30px;
+    margin-right: 30px;
+    margin-left: 30px;
 }
 
-.dashboard-widget-icon-1 {
-    background-color: rgba(54, 163, 235, 0.8);
+.row > * {
+    flex-shrink: 0;
+    width: 100%;
+    max-width: 100%;
+    padding-right: calc(var(--bs-gutter-x) * 0.5);
+    padding-left: calc(var(--bs-gutter-x) * 0.5);
+    margin-top: var(--bs-gutter-y);
 }
 
-.dashboard-widget-icon-2 {
-    background-color: rgba(75, 192, 192, 0.8);
+.analysis_card {
+    background: #fff !important;
+    border: 1px solid #efefef !important;
+    border-radius: 3px !important;
+    margin-top: 30px;
+    padding: 10px;
 }
 
-.dashboard-widget-icon-3 {
-    background-color: rgba(153, 102, 255, 0.8);
-}
-
-.dashboard-widget-icon-4 {
-    background-color: rgba(255, 159, 64, 0.8);
-}
-
-.dashboard-number {
-    margin-block-end: 2px;
+.analysis_card h2 {
     font-size: 24px;
-    line-height: 30px;
+    font-weight: 500;
+    font-family: "Roboto", sans-serif;
+    color: #333;
+    text-align: left;
+    line-height: 26px;
+    margin-top: 0;
 }
 
-.dashboard-text {
-    font-size: 14px;
-    color: #0c1018;
+.analysis_card .card-header h2 {
+    font-size: 18px !important;
+    font-weight: 750 !important;
+    font-family: "Roboto", sans-serif !important;
+    color: #333 !important;
+}
+
+.p-0 {
+    padding: 0 !important;
+}
+
+.card-header:first-child {
+    border-radius: calc(0.375rem - 1px) calc(0.375rem - 1px) 0 0;
+}
+
+.analysis_card .card-header {
+    padding: 1.2rem 2rem;
+    margin-bottom: 0;
+    background-color: #fff !important;
+    border-bottom: 1px solid #efefef !important;
+    border-top-right-radius: 10px !important;
+    border-top-left-radius: 10px !important;
+}
+
+.p-5 {
+    padding: 3rem !important;
+}
+
+.card-body {
+    flex: 1 1 auto;
 }

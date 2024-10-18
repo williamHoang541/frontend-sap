@@ -18,6 +18,10 @@ import AllTopic from "./pages/TopicArea/AllTopic/AllTopic";
 import AddTopic from "./pages/TopicArea/AddTopic/AddTopic";
 import AllSession from "./pages/Session/AllSession/AllSession";
 import AddSession from "./pages/Session/AddSession/AddSession";
+import SapModule from "./pages/SapModule/AllSAPModule/SapModule";
+import AddSAPModule from "./pages/SapModule/AddSAPModule/AddSAPModule";
+import AllCertificate from "./pages/Certificate/AllCertificate/AllCertificate";
+import AddCertificate from "./pages/Certificate/AddCertificate/AddCertificate";
 
 const LayOut = ({ children }) => {
     const [collapsed, setCollapsed] = useState(false);
@@ -96,6 +100,42 @@ const App = () => {
                         </LayOut>
                     }
                 />
+                <Route
+          path={PATH_NAME.SAP_MODULE}
+          element={
+            <LayOut>
+              <SapModule />
+            </LayOut>
+
+          }
+        />
+        <Route
+          path={PATH_NAME.ADD_SAP_MODULE}
+          element={
+            <LayOut>
+              <AddSAPModule />
+            </LayOut>
+
+          }
+        />
+        <Route
+          path={PATH_NAME.CERTIFICATE}
+          element={
+            <LayOut>
+              <AllCertificate />
+            </LayOut>
+
+          }
+        />
+        <Route
+          path={PATH_NAME.ADD_CERTIFICATE}
+          element={
+            <LayOut>
+              <AddCertificate />
+            </LayOut>
+
+          }
+        />
                 <Route
                     path={PATH_NAME.ANALYTIC}
                     element={

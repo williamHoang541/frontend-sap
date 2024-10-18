@@ -4,6 +4,7 @@
   gap: 30px;
   margin-bottom: 30px;
   margin-top: 10px;
+  height: 100vh;
 }
 
 .instructor_title_container {
@@ -130,7 +131,7 @@
 .popup-content {
   background: none !important;
   border: none !important;
-  width: 70% !important;
+  width: 50% !important;
 }
 
 .all_instructor_input {
@@ -185,4 +186,19 @@
 
 :where(.css-dev-only-do-not-override-5wsri9).ant-row {
   flex-direction: column;
+}
+
+.instructor_status_indicator {
+  display: inline-block;
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+}
+
+.instructor_status_indicator.active {
+  background-color: #32cd32;
+}
+
+.instructor_status_indicator.inactive {
+  background-color: #ff1616; 
 }

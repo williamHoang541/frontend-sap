@@ -1,9 +1,9 @@
-import React, { useEffect, useState } from "react";
-import "./Student.css";
+import { useEffect, useState } from "react";
+import { Button, Table } from "antd";
 import { SlArrowRight } from "react-icons/sl";
-import { Button, Popconfirm, Table } from "antd";
-import qs from "qs";
+import axios from "axios";
 import { RiDeleteBin6Line } from "react-icons/ri";
+import "./Student.css";
 
 const Student = () => {
   const [data, setData] = useState([]); // Khởi tạo mảng dữ liệu
@@ -12,57 +12,73 @@ const Student = () => {
     pagination: {
       current: 1,
       pageSize: 10,
+      total: 0,
     },
-  });
-
-  const getRandomuserParams = (params) => ({
-    results: params.pagination?.pageSize,
-    page: params.pagination?.current,
-    ...params,
   });
 
   const columns = [
     {
       title: "No.",
-      sorter: true,
       width: "7%",
-      render: (_, __, index) => index + 1,
+      render: (_, __, index) =>
+        (tableParams.pagination.current - 1) * tableParams.pagination.pageSize +
+        index +
+        1,
     },
     {
-      title: "Name",
-      dataIndex: "name",
-      sorter: true,
-      render: (name) => `${name.first} ${name.last}`,
+      title: "Full Name",
+      dataIndex: "fullname",
+      sorter: (a, b) => (a.fullname || "").localeCompare(b.fullname || ""),
       width: "15%",
+      render: (fullname) => fullname || "N/A",
     },
     {
       title: "Gender",
       dataIndex: "gender",
-      filters: [
-        { text: "Male", value: "male" },
-        { text: "Female", value: "female" },
-      ],
+      sorter: (a, b) => (a.gender || "").localeCompare(b.gender || ""),
       width: "10%",
+      render: (gender) => gender || "N/A",
     },
     {
       title: "Email",
       dataIndex: "email",
       width: "15%",
+      render: (email) => email || "N/A",
+      sorter: (a, b) => (a.email || "").localeCompare(b.email || ""),
     },
     {
       title: "Education",
-      sorter: true,
+      dataIndex: "education",
       width: "12%",
+      render: (education) => education || "N/A",
     },
     {
       title: "Mobile",
-      sorter: true,
+      dataIndex: "phonenumber",
       width: "10%",
+      render: (phonenumber) => phonenumber || "N/A",
     },
     {
       title: "Joining Date",
-      sorter: true,
+      dataIndex: "registrationDate",
       width: "12%",
+      sorter: (a, b) =>
+        new Date(a.registrationDate) - new Date(b.registrationDate),
+      render: (date) => {
+        if (!date) return "N/A";
+        const dateObj = new Date(date);
+        return dateObj.toLocaleDateString("vi-VN");
+      },
+    },
+    {
+      title: "Status",
+      dataIndex: "status",
+      width: "10%",
+      render: (status) => (
+        <span
+          className={`student_status_indicator ${status ? "active" : "inactive"}`}
+        />
+      ),
     },
     {
       title: "Action",
@@ -71,7 +87,7 @@ const Student = () => {
         <Button
           type="link"
           danger
-          onClick={() => handleDelete(record.login.uuid)}
+          onClick={() => handleDelete(record.id)}
           className="student_button_delete"
         >
           <RiDeleteBin6Line />
@@ -81,35 +97,48 @@ const Student = () => {
     },
   ];
 
-  const handleDelete = (uuid) => {
-    setData((prevData) => prevData.filter((item) => item.login.uuid !== uuid));
+  const handleDelete = (id) => {
+    setData((prevData) => prevData.filter((item) => item.id !== id));
   };
 
-  const fetchData = () => {
+  const fetchData = async (pagination) => {
     setLoading(true);
-    fetch(
-      `https://randomuser.me/api?${qs.stringify(
-        getRandomuserParams(tableParams)
-      )}`
-    )
-      .then((res) => res.json())
-      .then(({ results }) => {
-        setData(results);
-        setLoading(false);
+    try {
+      const response = await axios.get(
+        `https://swdsapelearningapi.azurewebsites.net/api/User/api/users`
+      );
+      const results = response.data.$values; // Lấy dữ liệu từ response
+
+      // Kiểm tra xem results có phải là mảng không
+      if (Array.isArray(results)) {
+        const startIndex = (pagination.current - 1) * pagination.pageSize;
+        const paginatedData = results.slice(
+          startIndex,
+          startIndex + pagination.pageSize
+        ); // Phân trang dữ liệu
+
+        setData(paginatedData);
         setTableParams((prevParams) => ({
           ...prevParams,
           pagination: {
-            ...prevParams.pagination,
-            total: 200, // Giả lập tổng số bản ghi
+            ...pagination,
+            total: results.length,
           },
         }));
-      })
-      .catch(() => setLoading(false)); // Đảm bảo set loading false khi có lỗi
+      } else {
+        console.error("Fetched data is not an array:", results);
+        setData([]); // Đặt lại dữ liệu nếu không hợp lệ
+      }
+    } catch (error) {
+      console.error("Error fetching data:", error);
+    } finally {
+      setLoading(false);
+    }
   };
 
   useEffect(() => {
-    fetchData();
-  }, [tableParams.pagination?.current, tableParams.pagination?.pageSize]);
+    fetchData(tableParams.pagination);
+  }, [tableParams.pagination.current, tableParams.pagination.pageSize]);
 
   const handleTableChange = (pagination, filters, sorter) => {
     setTableParams({
@@ -118,10 +147,6 @@ const Student = () => {
       sortOrder: Array.isArray(sorter) ? undefined : sorter.order,
       sortField: Array.isArray(sorter) ? undefined : sorter.field,
     });
-
-    if (pagination.pageSize !== tableParams.pagination?.pageSize) {
-      setData([]); // Xóa dữ liệu khi thay đổi pageSize
-    }
   };
 
   return (
@@ -140,9 +165,13 @@ const Student = () => {
       <div className="student_table_container">
         <Table
           columns={columns}
-          rowKey={(record) => record.login.uuid}
-          dataSource={data}
-          pagination={tableParams.pagination}
+          rowKey={(record) => record.id}
+          dataSource={Array.isArray(data) ? data : []}
+          pagination={{
+            ...tableParams.pagination,
+            showSizeChanger: true,
+            pageSizeOptions: ["10", "20", "50"],
+          }}
           loading={loading}
           onChange={handleTableChange}
         />

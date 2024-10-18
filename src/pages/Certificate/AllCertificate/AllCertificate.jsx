@@ -1,16 +1,15 @@
 import { useEffect, useState } from "react";
-import { Button, Table, Form } from "antd";
-import Popup from "reactjs-popup";
+import "./AllCertificate.css";
 import { SlArrowRight } from "react-icons/sl";
-import { RiDeleteBin6Line } from "react-icons/ri";
+import { Button, Form, Table } from "antd";
+import Popup from "reactjs-popup";
 import { MdModeEditOutline } from "react-icons/md";
+import { RiDeleteBin6Line } from "react-icons/ri";
 import { Link } from "react-router-dom";
 import { PATH_NAME } from "../../../constant/pathname";
-import "reactjs-popup/dist/index.css";
-import "./AllInstructor.css";
 import axios from "axios";
 
-const AllInstructor = () => {
+const AllCertificate = () => {
   const [data, setData] = useState([]);
   const [loading, setLoading] = useState(false);
   const [tableParams, setTableParams] = useState({
@@ -21,6 +20,16 @@ const AllInstructor = () => {
     },
   });
   const [form] = Form.useForm();
+  const [sapModules, setSapModules] = useState([]);
+
+  const fetchSapModules = async () => {
+    try {
+      const response = await axios.get("https://swdsapelearningapi.azurewebsites.net/api/SapModule/get-all"); 
+      setSapModules(response.data.$values); 
+    } catch (error) {
+      console.error("Error fetching SAP modules:", error);
+    }
+  };
 
   const columns = [
     {
@@ -32,58 +41,53 @@ const AllInstructor = () => {
         1,
     },
     {
-      title: "Full Name",
-      dataIndex: "fullname",
-      sorter: (a, b) => (a.fullname || "").localeCompare(b.fullname || ""),
-      width: "20%",
-      render: (fullname) => fullname || "N/A",
+      title: "Name Certificate",
+      dataIndex: "certificateName",
+      sorter: (a, b) =>
+        (a.certificateName || "").localeCompare(b.certificateName || ""),
+      width: "16%",
     },
-    // {
-    //   title: "Gender",
-    //   dataIndex: "gender",
-    //   sorter: (a, b) => (a.gender || "").localeCompare(b.gender || ""),
-    //   width: "10%",
-    //   render: (gender) => gender || "N/A",
-    // },
     {
-      title: "Email",
-      dataIndex: "email",
-      width: "20%",
-      render: (email) => email || "N/A",
-      sorter: (a, b) => (a.email || "").localeCompare(b.email || ""),
+      title: "Level",
+      dataIndex: "level",
+      sorter: (a, b) => (a.level || "").localeCompare(b.level || ""),
+      width: "16%",
     },
-    // {
-    //   title: "Education",
-    //   dataIndex: "education",
-    //   width: "12%",
-    //   render: (education) => education || "N/A",
-    // },
     {
-      title: "Mobile",
-      dataIndex: "phonenumber",
-      render: (phonenumber) => phonenumber || "N/A",
-      width: "20%",
+      title: "Environment",
+      dataIndex: "environment",
+      sorter: (a, b) =>
+        (a.environment || "").localeCompare(b.environment || ""),
+      width: "16%",
     },
-    // {
-    //   title: "Date of birth",
-    //   dataIndex: "birthdate",
-    //   width: "12%",
-    //   sorter: (a, b) => new Date(a.birthdate) - new Date(b.birthdate),
-    //   render: (date) => {
-    //     if (!date) return "N/A";
-    //     const dateObj = new Date(date);
-    //     return dateObj.toLocaleDateString("vi-VN");
-    //   },
-    // },
     {
-      title: "Status",
-      dataIndex: "status",
-      width: "10%",
-      render: (status) => (
-        <span
-          className={`instructor_status_indicator ${status ? "active" : "inactive"}`}
-        />
-      ),
+      title: "Name SAP Module",
+      dataIndex: "moduleIds", 
+      render: (moduleIds) => {
+        if (!Array.isArray(moduleIds.$values)) return "Unknown"; 
+        return moduleIds.$values
+          .map(id => {
+            const sapModule = sapModules.find(module => module.id === id); 
+            return sapModule ? sapModule.moduleName : "Unknown"; 
+          })
+          .join(", "); 
+      },
+      sorter: (a, b) => {
+        const moduleNamesA = a.moduleIds.$values
+          .map(id => sapModules.find(module => module.id === id)?.moduleName || "")
+          .join(", ");
+        const moduleNamesB = b.moduleIds.$values
+          .map(id => sapModules.find(module => module.id === id)?.moduleName || "")
+          .join(", ");
+        return moduleNamesA.localeCompare(moduleNamesB);
+      },
+      width: "16%",
+    },
+
+    {
+      title: "Description",
+      dataIndex: "description",
+      width: "16%",
     },
     {
       title: "Action",
@@ -99,18 +103,16 @@ const AllInstructor = () => {
             closeOnDocumentClick
             onOpen={() =>
               form.setFieldsValue({
-                fullname: record.fullname,
-                email: record.email,
-                phone: record.phonenumber,
-                education: record.education,
-                gender: record.gender,
-                birthdate: record.birthdate,
+                name_certificate: record.certificateName,
+                description: record.description,
+                level: record.level,
+                env: record.environment,
               })
             }
           >
             {(close) => (
               <div className="popup_container">
-                <h2>Edit Instructor</h2>
+                <h2>Edit Certificate</h2>
                 <Form
                   form={form}
                   onFinish={(values) => {
@@ -118,50 +120,40 @@ const AllInstructor = () => {
                     close(); // Đóng popup sau khi lưu
                   }}
                 >
-                  <div className="all_instructor_input">
-                    <Form.Item name="fullname" label="Full Name">
+                  <div className="sap_module_inputs">
+                    <Form.Item name="name_certificate" label="Name Certificate">
                       <input
                         type="text"
-                        className="all_instructor_form"
-                        placeholder="Enter full name"
+                        className="sap_module_form"
+                        placeholder="Enter name certificate"
                       />
                     </Form.Item>
-                    <Form.Item name="email" label="Email">
-                      <input
-                        type="email"
-                        className="all_instructor_form"
-                        placeholder="Enter email"
+                    <Form.Item name="description" label="Description">
+                      <textarea
+                        className="sap_module_form"
+                        placeholder="Enter description"
+                        rows={5}
                       />
                     </Form.Item>
                   </div>
-                  <div className="all_instructor_input">
-                    <Form.Item name="phone" label="Mobile Number">
+
+                  <div className="sap_module_input">
+                    <Form.Item name="level" label="Level">
                       <input
                         type="text"
-                        className="all_instructor_form"
-                        placeholder="Enter mobile number"
+                        className="sap_module_form"
+                        placeholder="Enter level"
                       />
                     </Form.Item>
-                    {/* <Form.Item name="education" label="Education">
+                    <Form.Item name="env" label="Environment">
                       <input
                         type="text"
-                        className="all_instructor_form"
-                        placeholder="Enter education"
+                        className="sap_module_form"
+                        placeholder="Enter environment"
                       />
-                    </Form.Item> */}
+                    </Form.Item>
                   </div>
-                  {/* <div className="all_instructor_input">
-                    <Form.Item name="gender" label="Gender">
-                      <input
-                        type="text"
-                        className="all_instructor_form"
-                        placeholder="Enter gender"
-                      />
-                    </Form.Item>
-                    <Form.Item name="birthdate" label="Date of Birth">
-                      <input type="date" className="all_instructor_form" />
-                    </Form.Item>
-                  </div> */}
+
                   <div className="popup_buttons">
                     <Button
                       className="button_save"
@@ -212,7 +204,7 @@ const AllInstructor = () => {
     setLoading(true);
     try {
       const response = await axios.get(
-        `https://swdsapelearningapi.azurewebsites.net/api/Instructor/get-all`
+        `https://swdsapelearningapi.azurewebsites.net/api/Certificate/get-all`
       );
       const results = response.data.$values; // Lấy dữ liệu từ response
 
@@ -244,6 +236,7 @@ const AllInstructor = () => {
   };
 
   useEffect(() => {
+    fetchSapModules(); 
     fetchData(tableParams.pagination);
   }, [tableParams.pagination.current, tableParams.pagination.pageSize]);
 
@@ -255,23 +248,21 @@ const AllInstructor = () => {
       sortField: Array.isArray(sorter) ? undefined : sorter.field,
     });
   };
-
   return (
-    <div className="instructor">
-      <div className="instructor_title_container">
-        <div className="instructor_title_left">
-          <div className="instructor_title">All Instructors</div>
+    <div className="certificate">
+      <div className="student_title_container">
+        <div className="student_title_left">
+          <div className="student_title">All Certificates</div>
         </div>
-        <div className="instructor_instructor_right">
-          <div className="instructor_instructor">Instructors</div>
-          <SlArrowRight className="instructor_icon_right" />
-          <div className="instructor_all_instructors">All Instructors</div>
+        <div className="student_student_right">
+          <div className="student_student">Certificate</div>
+          <SlArrowRight className="student_icon_right" />
+          <div className="student_all_students">All Certificates</div>
         </div>
       </div>
-
-      <div className="instructor_table_container">
-        <Link to={PATH_NAME.ADD_INSTRUCTOR}>
-          <button className="instructor_add">Add New</button>
+      <div className="sap_module_table_container">
+        <Link to={PATH_NAME.ADD_CERTIFICATE}>
+          <button className="sap_module_add">Add New</button>
         </Link>
         <Table
           columns={columns}
@@ -290,4 +281,4 @@ const AllInstructor = () => {
   );
 };
 
-export default AllInstructor;
+export default AllCertificate;

@@ -12,4 +12,8 @@ export const PATH_NAME = {
     ADD_TOPIC: "/topic/add-topic",
     SESSION: "session/all-sessions",
     ADD_SESSION: "session/add-session",
+    SAP_MODULE: "/all_sap_modules",
+    ADD_SAP_MODULE: "/add_sap_module",
+    CERTIFICATE: "/all_certificates",
+    ADD_CERTIFICATE: "/add_certificate",
 };

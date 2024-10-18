@@ -1,16 +1,15 @@
+import { Button, Form, Table } from "antd";
 import { useEffect, useState } from "react";
-import { Button, Table, Form } from "antd";
-import Popup from "reactjs-popup";
+import "./SapModule.css";
 import { SlArrowRight } from "react-icons/sl";
-import { RiDeleteBin6Line } from "react-icons/ri";
-import { MdModeEditOutline } from "react-icons/md";
-import { Link } from "react-router-dom";
 import { PATH_NAME } from "../../../constant/pathname";
-import "reactjs-popup/dist/index.css";
-import "./AllInstructor.css";
+import { Link } from "react-router-dom";
+import { RiDeleteBin6Line } from "react-icons/ri";
+import Popup from "reactjs-popup";
+import { MdModeEditOutline } from "react-icons/md";
 import axios from "axios";
 
-const AllInstructor = () => {
+const SapModule = () => {
   const [data, setData] = useState([]);
   const [loading, setLoading] = useState(false);
   const [tableParams, setTableParams] = useState({
@@ -32,56 +31,28 @@ const AllInstructor = () => {
         1,
     },
     {
-      title: "Full Name",
-      dataIndex: "fullname",
-      sorter: (a, b) => (a.fullname || "").localeCompare(b.fullname || ""),
-      width: "20%",
-      render: (fullname) => fullname || "N/A",
+      title: "Name SAP Module",
+      dataIndex: "moduleName",
+      sorter: (a, b) => (a.moduleName || "").localeCompare(b.moduleName || ""),
+      width: "35%",
     },
-    // {
-    //   title: "Gender",
-    //   dataIndex: "gender",
-    //   sorter: (a, b) => (a.gender || "").localeCompare(b.gender || ""),
-    //   width: "10%",
-    //   render: (gender) => gender || "N/A",
-    // },
+
     {
-      title: "Email",
-      dataIndex: "email",
-      width: "20%",
-      render: (email) => email || "N/A",
-      sorter: (a, b) => (a.email || "").localeCompare(b.email || ""),
+      title: "Description",
+      dataIndex: "moduleDescription",
+      sorter: (a, b) =>
+        (a.moduleDescription || "").localeCompare(b.moduleDescription || ""),
+      width: "35%",
     },
-    // {
-    //   title: "Education",
-    //   dataIndex: "education",
-    //   width: "12%",
-    //   render: (education) => education || "N/A",
-    // },
-    {
-      title: "Mobile",
-      dataIndex: "phonenumber",
-      render: (phonenumber) => phonenumber || "N/A",
-      width: "20%",
-    },
-    // {
-    //   title: "Date of birth",
-    //   dataIndex: "birthdate",
-    //   width: "12%",
-    //   sorter: (a, b) => new Date(a.birthdate) - new Date(b.birthdate),
-    //   render: (date) => {
-    //     if (!date) return "N/A";
-    //     const dateObj = new Date(date);
-    //     return dateObj.toLocaleDateString("vi-VN");
-    //   },
-    // },
     {
       title: "Status",
       dataIndex: "status",
       width: "10%",
       render: (status) => (
         <span
-          className={`instructor_status_indicator ${status ? "active" : "inactive"}`}
+          className={`sap_module_status_indicator ${
+            status ? "active" : "inactive"
+          }`}
         />
       ),
     },
@@ -99,18 +70,14 @@ const AllInstructor = () => {
             closeOnDocumentClick
             onOpen={() =>
               form.setFieldsValue({
-                fullname: record.fullname,
-                email: record.email,
-                phone: record.phonenumber,
-                education: record.education,
-                gender: record.gender,
-                birthdate: record.birthdate,
+                nameSAPModule: record.moduleName,
+                description: record.moduleDescription,
               })
             }
           >
             {(close) => (
               <div className="popup_container">
-                <h2>Edit Instructor</h2>
+                <h2>Edit SAP Module</h2>
                 <Form
                   form={form}
                   onFinish={(values) => {
@@ -118,51 +85,26 @@ const AllInstructor = () => {
                     close(); // Đóng popup sau khi lưu
                   }}
                 >
-                  <div className="all_instructor_input">
-                    <Form.Item name="fullname" label="Full Name">
+                  <div className="sap_module_input">
+                    <Form.Item name="nameSAPModule" label="Name SAP Module">
                       <input
                         type="text"
-                        className="all_instructor_form"
-                        placeholder="Enter full name"
+                        className="sap_module_form"
+                        placeholder="Enter name"
                       />
                     </Form.Item>
-                    <Form.Item name="email" label="Email">
-                      <input
-                        type="email"
-                        className="all_instructor_form"
-                        placeholder="Enter email"
+                    <Form.Item name="description" label="Description">
+                      <textarea
+                        className="sap_module_form"
+                        placeholder="Enter description"
+                        rows={5} 
                       />
                     </Form.Item>
                   </div>
-                  <div className="all_instructor_input">
-                    <Form.Item name="phone" label="Mobile Number">
-                      <input
-                        type="text"
-                        className="all_instructor_form"
-                        placeholder="Enter mobile number"
-                      />
-                    </Form.Item>
-                    {/* <Form.Item name="education" label="Education">
-                      <input
-                        type="text"
-                        className="all_instructor_form"
-                        placeholder="Enter education"
-                      />
-                    </Form.Item> */}
-                  </div>
-                  {/* <div className="all_instructor_input">
-                    <Form.Item name="gender" label="Gender">
-                      <input
-                        type="text"
-                        className="all_instructor_form"
-                        placeholder="Enter gender"
-                      />
-                    </Form.Item>
-                    <Form.Item name="birthdate" label="Date of Birth">
-                      <input type="date" className="all_instructor_form" />
-                    </Form.Item>
-                  </div> */}
-                  <div className="popup_buttons">
+
+                  
+                </Form>
+                <div className="popup_button">
                     <Button
                       className="button_save"
                       type="primary"
@@ -178,14 +120,13 @@ const AllInstructor = () => {
                       Cancel
                     </Button>
                   </div>
-                </Form>
               </div>
             )}
           </Popup>
           <Button
             type="link"
             danger
-            onClick={() => handleDelete(record.id)}
+            onClick={() => handleDelete(record.login.uuid)}
             className="instructor_button_delete"
           >
             <RiDeleteBin6Line />
@@ -212,7 +153,7 @@ const AllInstructor = () => {
     setLoading(true);
     try {
       const response = await axios.get(
-        `https://swdsapelearningapi.azurewebsites.net/api/Instructor/get-all`
+        `https://swdsapelearningapi.azurewebsites.net/api/SapModule/get-all`
       );
       const results = response.data.$values; // Lấy dữ liệu từ response
 
@@ -257,21 +198,21 @@ const AllInstructor = () => {
   };
 
   return (
-    <div className="instructor">
-      <div className="instructor_title_container">
-        <div className="instructor_title_left">
-          <div className="instructor_title">All Instructors</div>
+    <div className="sap_module">
+      <div className="student_title_container">
+        <div className="student_title_left">
+          <div className="student_title">All SAP Modules</div>
         </div>
-        <div className="instructor_instructor_right">
-          <div className="instructor_instructor">Instructors</div>
-          <SlArrowRight className="instructor_icon_right" />
-          <div className="instructor_all_instructors">All Instructors</div>
+        <div className="student_student_right">
+          <div className="student_student">SAP Module</div>
+          <SlArrowRight className="student_icon_right" />
+          <div className="student_all_students">All SAP Modules</div>
         </div>
       </div>
 
-      <div className="instructor_table_container">
-        <Link to={PATH_NAME.ADD_INSTRUCTOR}>
-          <button className="instructor_add">Add New</button>
+      <div className="sap_module_table_container">
+        <Link to={PATH_NAME.ADD_SAP_MODULE}>
+          <button className="sap_module_add">Add New</button>
         </Link>
         <Table
           columns={columns}
@@ -290,4 +231,4 @@ const AllInstructor = () => {
   );
 };
 
-export default AllInstructor;
+export default SapModule;

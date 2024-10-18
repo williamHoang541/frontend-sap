@@ -5,3 +5,9 @@
   margin-bottom: 30px;
   margin-top: 10px;
 }
+.sap_module_inputs {
+    display: flex;
+    flex-direction: row;
+    margin-bottom: 70px;
+    justify-content: space-between;
+}

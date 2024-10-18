@@ -24,9 +24,11 @@ const SapModule = () => {
   const columns = [
     {
       title: "No.",
-      sorter: true,
       width: "7%",
-      render: (_, __, index) => index + 1,
+      render: (_, __, index) =>
+        (tableParams.pagination.current - 1) * tableParams.pagination.pageSize +
+        index +
+        1,
     },
     {
       title: "Name SAP Module",
@@ -92,15 +94,17 @@ const SapModule = () => {
                       />
                     </Form.Item>
                     <Form.Item name="description" label="Description">
-                      <input
-                        type="text"
+                      <textarea
                         className="sap_module_form"
                         placeholder="Enter description"
+                        rows={5} 
                       />
                     </Form.Item>
                   </div>
 
-                  <div className="popup_buttons">
+                  
+                </Form>
+                <div className="popup_button">
                     <Button
                       className="button_save"
                       type="primary"
@@ -116,7 +120,6 @@ const SapModule = () => {
                       Cancel
                     </Button>
                   </div>
-                </Form>
               </div>
             )}
           </Popup>

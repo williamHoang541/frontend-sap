@@ -67,3 +67,9 @@
 .sap_module_status_indicator.inactive {
   background-color: #ff1616; 
 }
+
+.popup_button {
+    margin-top: 100px;
+    display: flex;
+    justify-content: space-between;
+}

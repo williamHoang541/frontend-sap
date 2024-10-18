@@ -3,8 +3,7 @@ import { SlArrowRight } from "react-icons/sl";
 import { Button, Popconfirm, Table, Form } from "antd";
 import { RiDeleteBin6Line } from "react-icons/ri";
 import { MdModeEditOutline } from "react-icons/md";
-import qs from "qs";
-import { Link } from "react-router-dom";
+import axios from "axios";
 import Popup from "reactjs-popup";
 import "./AllTopic.css";
 
@@ -15,45 +14,46 @@ const AllTopic = () => {
         pagination: {
             current: 1,
             pageSize: 10,
+            total: 0,
         },
     });
     const [form] = Form.useForm();
-
-    const getRandomuserParams = (params) => ({
-        results: params.pagination?.pageSize,
-        page: params.pagination?.current,
-        ...params,
-    });
 
     const columns = [
         {
             title: "No.",
             sorter: true,
             width: "7%",
-            render: (_, __, index) => index + 1,
+            render: (_, __, index) =>
+                (tableParams.pagination.current - 1) *
+                    tableParams.pagination.pageSize +
+                index +
+                1,
         },
         {
             title: "Certificate Name",
             dataIndex: "name",
             sorter: true,
-            render: (name) => `${name.last}`,
             width: "15%",
         },
         {
             title: "Topic Name",
-            dataIndex: "name",
-            sorter: true,
-            render: (name) => `${name.first} ${name.last}`,
+            dataIndex: "topicName",
+            sorter: (a, b) =>
+                (a.topicName || "").localeCompare(b.topicName || ""),
             width: "15%",
         },
         {
-            title: "Topic detail",
-            dataIndex: "gender",
-            filters: [
-                { text: "Male", value: "male" },
-                { text: "Female", value: "female" },
-            ],
+            title: "Status",
+            dataIndex: "status",
             width: "10%",
+            render: (status) => (
+                <span
+                    className={`topic_status_indicator ${
+                        status ? "active" : "inactive"
+                    }`}
+                />
+            ),
         },
         {
             title: "Action",
@@ -72,8 +72,7 @@ const AllTopic = () => {
                         closeOnDocumentClick
                         onOpen={() =>
                             form.setFieldsValue({
-                                name: record.name,
-                                email: record.email,
+                                topic_name: record.topicName,
                             })
                         }
                     >
@@ -83,22 +82,10 @@ const AllTopic = () => {
                                 <Form
                                     form={form}
                                     onFinish={(values) => {
-                                        handleEdit(values, record.login.uuid);
+                                        handleEdit(values, record.id);
                                         close(); // Đóng popup sau khi lưu
                                     }}
                                 >
-                                    <div className="all_instructor_input">
-                                        <Form.Item
-                                            name="name"
-                                            label="Certificate Name"
-                                        >
-                                            <input
-                                                type="text"
-                                                className="all_instructor_form"
-                                                placeholder="Enter Certificate Name"
-                                            />
-                                        </Form.Item>
-                                    </div>
                                     <div className="all_instructor_input">
                                         <Form.Item
                                             name="phone"
@@ -111,18 +98,7 @@ const AllTopic = () => {
                                             />
                                         </Form.Item>
                                     </div>
-                                    <div className="all_instructor_input">
-                                        <Form.Item
-                                            name="gender"
-                                            label="Topic Details"
-                                        >
-                                            <input
-                                                type="text"
-                                                className="all_instructor_form"
-                                                placeholder="Enter Topic Details"
-                                            />
-                                        </Form.Item>
-                                    </div>
+
                                     <div className="popup_buttons">
                                         <Button
                                             className="button_save"
@@ -146,7 +122,7 @@ const AllTopic = () => {
                     <Button
                         type="link"
                         danger
-                        onClick={() => handleDelete(record.login.uuid)}
+                        onClick={() => handleDelete(record.id)}
                         className="instructor_button_delete"
                     >
                         <RiDeleteBin6Line />
@@ -157,37 +133,59 @@ const AllTopic = () => {
         },
     ];
 
+    const handleEdit = (values, id) => {
+        const updatedData = data.map(
+            (item) => (item.id === id ? { ...item, ...values, id } : item) // Cập nhật thông tin người dùng
+        );
+        setData(updatedData);
+        form.resetFields();
+    };
+
     const handleDelete = (uuid) => {
         setData((prevData) =>
             prevData.filter((item) => item.login.uuid !== uuid)
         );
     };
 
-    const fetchData = () => {
+    const fetchData = async (pagination) => {
         setLoading(true);
-        fetch(
-            `https://randomuser.me/api?${qs.stringify(
-                getRandomuserParams(tableParams)
-            )}`
-        )
-            .then((res) => res.json())
-            .then(({ results }) => {
-                setData(results);
-                setLoading(false);
+        try {
+            const response = await axios.get(
+                `https://swdsapelearningapi.azurewebsites.net/api/TopicArea/get-all`
+            );
+            const results = response.data.$values; // Lấy dữ liệu từ response
+
+            // Kiểm tra xem results có phải là mảng không
+            if (Array.isArray(results)) {
+                const startIndex =
+                    (pagination.current - 1) * pagination.pageSize;
+                const paginatedData = results.slice(
+                    startIndex,
+                    startIndex + pagination.pageSize
+                ); // Phân trang dữ liệu
+
+                setData(paginatedData);
                 setTableParams((prevParams) => ({
                     ...prevParams,
                     pagination: {
-                        ...prevParams.pagination,
-                        total: 200, // Giả lập tổng số bản ghi
+                        ...pagination,
+                        total: results.length,
                     },
                 }));
-            })
-            .catch(() => setLoading(false)); // Đảm bảo set loading false khi có lỗi
+            } else {
+                console.error("Fetched data is not an array:", results);
+                setData([]); // Đặt lại dữ liệu nếu không hợp lệ
+            }
+        } catch (error) {
+            console.error("Error fetching data:", error);
+        } finally {
+            setLoading(false);
+        }
     };
 
     useEffect(() => {
-        fetchData();
-    }, [tableParams.pagination?.current, tableParams.pagination?.pageSize]);
+        fetchData(tableParams.pagination);
+    }, [tableParams.pagination.current, tableParams.pagination.pageSize]);
 
     const handleTableChange = (pagination, filters, sorter) => {
         setTableParams({
@@ -196,10 +194,6 @@ const AllTopic = () => {
             sortOrder: Array.isArray(sorter) ? undefined : sorter.order,
             sortField: Array.isArray(sorter) ? undefined : sorter.field,
         });
-
-        if (pagination.pageSize !== tableParams.pagination?.pageSize) {
-            setData([]); // Xóa dữ liệu khi thay đổi pageSize
-        }
     };
 
     return (
@@ -218,9 +212,13 @@ const AllTopic = () => {
             <div className="topic_table_container">
                 <Table
                     columns={columns}
-                    rowKey={(record) => record.login.uuid}
-                    dataSource={data}
-                    pagination={tableParams.pagination}
+                    rowKey={(record) => record.id}
+                    dataSource={Array.isArray(data) ? data : []}
+                    pagination={{
+                        ...tableParams.pagination,
+                        showSizeChanger: true,
+                        pageSizeOptions: ["10", "20", "50"],
+                    }}
                     loading={loading}
                     onChange={handleTableChange}
                 />

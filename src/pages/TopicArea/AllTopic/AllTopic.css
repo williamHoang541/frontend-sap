@@ -66,3 +66,11 @@
     > th {
     background-color: #fff !important;
 }
+
+.topic_status_indicator.active {
+    background-color: #32cd32;
+}
+
+.topic_status_indicator.inactive {
+    background-color: #ff1616;
+}

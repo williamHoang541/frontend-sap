@@ -35,46 +35,46 @@ const AllInstructor = () => {
       title: "Full Name",
       dataIndex: "fullname",
       sorter: (a, b) => (a.fullname || "").localeCompare(b.fullname || ""),
-      width: "15%",
+      width: "20%",
       render: (fullname) => fullname || "N/A",
     },
-    {
-      title: "Gender",
-      dataIndex: "gender",
-      sorter: (a, b) => (a.gender || "").localeCompare(b.gender || ""),
-      width: "10%",
-      render: (gender) => gender || "N/A",
-    },
+    // {
+    //   title: "Gender",
+    //   dataIndex: "gender",
+    //   sorter: (a, b) => (a.gender || "").localeCompare(b.gender || ""),
+    //   width: "10%",
+    //   render: (gender) => gender || "N/A",
+    // },
     {
       title: "Email",
       dataIndex: "email",
-      width: "15%",
+      width: "20%",
       render: (email) => email || "N/A",
       sorter: (a, b) => (a.email || "").localeCompare(b.email || ""),
     },
-    {
-      title: "Education",
-      dataIndex: "education",
-      width: "12%",
-      render: (education) => education || "N/A",
-    },
+    // {
+    //   title: "Education",
+    //   dataIndex: "education",
+    //   width: "12%",
+    //   render: (education) => education || "N/A",
+    // },
     {
       title: "Mobile",
       dataIndex: "phonenumber",
       render: (phonenumber) => phonenumber || "N/A",
-      width: "10%",
+      width: "20%",
     },
-    {
-      title: "Date of birth",
-      dataIndex: "birthdate",
-      width: "12%",
-      sorter: (a, b) => new Date(a.birthdate) - new Date(b.birthdate),
-      render: (date) => {
-        if (!date) return "N/A";
-        const dateObj = new Date(date);
-        return dateObj.toLocaleDateString("vi-VN");
-      },
-    },
+    // {
+    //   title: "Date of birth",
+    //   dataIndex: "birthdate",
+    //   width: "12%",
+    //   sorter: (a, b) => new Date(a.birthdate) - new Date(b.birthdate),
+    //   render: (date) => {
+    //     if (!date) return "N/A";
+    //     const dateObj = new Date(date);
+    //     return dateObj.toLocaleDateString("vi-VN");
+    //   },
+    // },
     {
       title: "Status",
       dataIndex: "status",
@@ -137,20 +137,20 @@ const AllInstructor = () => {
                   <div className="all_instructor_input">
                     <Form.Item name="phone" label="Mobile Number">
                       <input
-                        type="number"
+                        type="text"
                         className="all_instructor_form"
                         placeholder="Enter mobile number"
                       />
                     </Form.Item>
-                    <Form.Item name="education" label="Education">
+                    {/* <Form.Item name="education" label="Education">
                       <input
                         type="text"
                         className="all_instructor_form"
                         placeholder="Enter education"
                       />
-                    </Form.Item>
+                    </Form.Item> */}
                   </div>
-                  <div className="all_instructor_input">
+                  {/* <div className="all_instructor_input">
                     <Form.Item name="gender" label="Gender">
                       <input
                         type="text"
@@ -161,7 +161,7 @@ const AllInstructor = () => {
                     <Form.Item name="birthdate" label="Date of Birth">
                       <input type="date" className="all_instructor_form" />
                     </Form.Item>
-                  </div>
+                  </div> */}
                   <div className="popup_buttons">
                     <Button
                       className="button_save"

@@ -25,14 +25,14 @@
     justify-content: start;
 }
 
-.dashboard-widget-card {
+.analytic-widget-card {
     border: 0;
     border-radius: 10px;
     position: relative;
     display: flex;
     min-width: 0;
     background-color: #fff;
-    height: 400px;
+    height: 700px;
     color: #333;
     word-wrap: break-word;
     background-clip: border-box;

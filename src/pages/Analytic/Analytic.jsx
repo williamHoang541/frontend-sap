@@ -123,7 +123,7 @@ const Analytic = () => {
                     </div>
                 </div>
                 <div className="dashboard-widget">
-                    <div className="dashboard-widget-card">
+                    <div className="analytic-widget-card">
                         <div className="dashboard-widget-card-body1">
                             <ResponsiveContainer width="100%" height="100%">
                                 <ComposedChart

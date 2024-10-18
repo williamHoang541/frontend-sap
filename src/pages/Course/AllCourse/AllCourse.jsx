@@ -181,7 +181,7 @@ const AllCourse = () => {
                                     <div className="all_instructor_input">
                                         <Form.Item
                                             name="name"
-                                            label="Full Name"
+                                            label="Course Name"
                                         >
                                             <input
                                                 type="text"
@@ -189,51 +189,76 @@ const AllCourse = () => {
                                                 placeholder="Enter full name"
                                             />
                                         </Form.Item>
-                                        <Form.Item name="email" label="Email">
+                                        <Form.Item name="mode" label="Mode">
                                             <input
-                                                type="email"
+                                                type="text"
                                                 className="all_instructor_form"
-                                                placeholder="Enter email"
+                                                placeholder="Enter Mode"
                                             />
                                         </Form.Item>
                                     </div>
                                     <div className="all_instructor_input">
                                         <Form.Item
-                                            name="phone"
-                                            label="Mobile Number"
-                                        >
-                                            <input
-                                                type="number"
-                                                className="all_instructor_form"
-                                                placeholder="Enter mobile number"
-                                            />
-                                        </Form.Item>
-                                        <Form.Item
-                                            name="education"
-                                            label="Education"
-                                        >
-                                            <input
-                                                type="text"
-                                                className="all_instructor_form"
-                                                placeholder="Enter education"
-                                            />
-                                        </Form.Item>
-                                    </div>
-                                    <div className="all_instructor_input">
-                                        <Form.Item name="gender" label="Gender">
-                                            <input
-                                                type="text"
-                                                className="all_instructor_form"
-                                                placeholder="Enter gender"
-                                            />
-                                        </Form.Item>
-                                        <Form.Item
-                                            name="birthdate"
-                                            label="Date of Birth"
+                                            name="start_date"
+                                            label="Start Date"
                                         >
                                             <input
                                                 type="date"
                                                 className="all_instructor_form"
+                                                placeholder="Select start date"
+                                            />
+                                        </Form.Item>
+                                        <Form.Item
+                                            name="t_student"
+                                            label="Total Student"
+                                        >
+                                            <input
+                                                type="text"
+                                                className="all_instructor_form"
+                                                placeholder="Enter maximum student"
+                                            />
+                                        </Form.Item>
+                                    </div>
+                                    <div className="all_instructor_input">
+                                        <Form.Item
+                                            name="end_date"
+                                            label="End Date"
+                                        >
+                                            <input
+                                                type="date"
+                                                className="all_instructor_form"
+                                                placeholder="Select end date"
+                                            />
+                                        </Form.Item>
+                                        <Form.Item
+                                            name="end_register_date"
+                                            label="End register date"
+                                        >
+                                            <input
+                                                type="date"
+                                                className="all_instructor_form"
+                                            />
+                                        </Form.Item>
+                                    </div>
+                                    <div className="all_instructor_input">
+                                        <Form.Item
+                                            name="location"
+                                            label="Location"
+                                        >
+                                            <input
+                                                type="text"
+                                                className="all_instructor_form"
+                                                placeholder="Select location"
+                                            />
+                                        </Form.Item>
+                                        <Form.Item
+                                            name="status"
+                                            label="End status"
+                                        >
+                                            <input
+                                                type="text"
+                                                className="all_instructor_form"
+                                                placeholder="Select status"
                                             />
                                         </Form.Item>
                                     </div>

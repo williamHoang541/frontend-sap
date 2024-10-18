@@ -60,3 +60,18 @@
 :where(.css-dev-only-do-not-override-5wsri9).ant-table-wrapper .ant-table-thead >tr>th{
     background-color: #fff !important
 }
+
+.student_status_indicator {
+  display: inline-block;
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+}
+
+.student_status_indicator.active {
+  background-color: #32cd32;
+}
+
+.student_status_indicator.inactive {
+  background-color: #ff1616; 
+}

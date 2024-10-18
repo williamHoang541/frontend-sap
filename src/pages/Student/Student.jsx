@@ -71,6 +71,16 @@ const Student = () => {
       },
     },
     {
+      title: "Status",
+      dataIndex: "status",
+      width: "10%",
+      render: (status) => (
+        <span
+          className={`student_status_indicator ${status ? "active" : "inactive"}`}
+        />
+      ),
+    },
+    {
       title: "Action",
       dataIndex: "action",
       render: (_, record) => (

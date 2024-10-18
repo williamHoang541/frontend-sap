@@ -5,10 +5,10 @@ import { SlArrowRight } from "react-icons/sl";
 import { RiDeleteBin6Line } from "react-icons/ri";
 import { MdModeEditOutline } from "react-icons/md";
 import { Link } from "react-router-dom";
-import qs from "qs";
 import { PATH_NAME } from "../../../constant/pathname";
 import "reactjs-popup/dist/index.css";
 import "./AllInstructor.css";
+import axios from "axios";
 
 const AllInstructor = () => {
   const [data, setData] = useState([]);
@@ -17,59 +17,73 @@ const AllInstructor = () => {
     pagination: {
       current: 1,
       pageSize: 10,
+      total: 0,
     },
   });
   const [form] = Form.useForm();
 
-  const getRandomuserParams = (params) => ({
-    results: params.pagination?.pageSize,
-    page: params.pagination?.current,
-    ...params,
-  });
-
   const columns = [
     {
       title: "No.",
-      sorter: true,
       width: "7%",
-      render: (_, __, index) => index + 1,
+      render: (_, __, index) =>
+        (tableParams.pagination.current - 1) * tableParams.pagination.pageSize +
+        index +
+        1,
     },
     {
       title: "Full Name",
-      dataIndex: "name",
-      sorter: true,
-      render: (name) => `${name.first} ${name.last}`,
+      dataIndex: "fullname",
+      sorter: (a, b) => (a.fullname || "").localeCompare(b.fullname || ""),
       width: "15%",
+      render: (fullname) => fullname || "N/A",
     },
     {
       title: "Gender",
       dataIndex: "gender",
-      filters: [
-        { text: "Male", value: "male" },
-        { text: "Female", value: "female" },
-      ],
+      sorter: (a, b) => (a.gender || "").localeCompare(b.gender || ""),
       width: "10%",
+      render: (gender) => gender || "N/A",
     },
     {
       title: "Email",
       dataIndex: "email",
       width: "15%",
+      render: (email) => email || "N/A",
+      sorter: (a, b) => (a.email || "").localeCompare(b.email || ""),
     },
     {
       title: "Education",
-      sorter: true,
+      dataIndex: "education",
       width: "12%",
+      render: (education) => education || "N/A",
     },
     {
       title: "Mobile",
-      dataIndex: "phone",
-      sorter: true,
+      dataIndex: "phonenumber",
+      render: (phonenumber) => phonenumber || "N/A",
       width: "10%",
     },
     {
-      title: "Joining Date",
-      sorter: true,
+      title: "Date of birth",
+      dataIndex: "birthdate",
       width: "12%",
+      sorter: (a, b) => new Date(a.birthdate) - new Date(b.birthdate),
+      render: (date) => {
+        if (!date) return "N/A";
+        const dateObj = new Date(date);
+        return dateObj.toLocaleDateString("vi-VN");
+      },
+    },
+    {
+      title: "Status",
+      dataIndex: "status",
+      width: "10%",
+      render: (status) => (
+        <span
+          className={`instructor_status_indicator ${status ? "active" : "inactive"}`}
+        />
+      ),
     },
     {
       title: "Action",
@@ -84,7 +98,14 @@ const AllInstructor = () => {
             modal
             closeOnDocumentClick
             onOpen={() =>
-              form.setFieldsValue({ name: record.name, email: record.email })
+              form.setFieldsValue({
+                fullname: record.fullname,
+                email: record.email,
+                phone: record.phonenumber,
+                education: record.education,
+                gender: record.gender,
+                birthdate: record.birthdate,
+              })
             }
           >
             {(close) => (
@@ -93,12 +114,12 @@ const AllInstructor = () => {
                 <Form
                   form={form}
                   onFinish={(values) => {
-                    handleEdit(values, record.login.uuid);
+                    handleEdit(values, record.id);
                     close(); // Đóng popup sau khi lưu
                   }}
                 >
                   <div className="all_instructor_input">
-                    <Form.Item name="name" label="Full Name">
+                    <Form.Item name="fullname" label="Full Name">
                       <input
                         type="text"
                         className="all_instructor_form"
@@ -164,7 +185,7 @@ const AllInstructor = () => {
           <Button
             type="link"
             danger
-            onClick={() => handleDelete(record.login.uuid)}
+            onClick={() => handleDelete(record.id)}
             className="instructor_button_delete"
           >
             <RiDeleteBin6Line />
@@ -175,49 +196,64 @@ const AllInstructor = () => {
     },
   ];
 
-  const handleEdit = (values, uuid) => {
-    const updatedData = data.map((item) =>
-      item.login.uuid === uuid ? { ...item, ...values } : item
+  const handleEdit = (values, id) => {
+    const updatedData = data.map(
+      (item) => (item.id === id ? { ...item, ...values, id } : item) // Cập nhật thông tin người dùng
     );
     setData(updatedData);
     form.resetFields();
   };
 
-  const handleDelete = (uuid) => {
-    setData((prevData) => prevData.filter((item) => item.login.uuid !== uuid));
+  const handleDelete = (id) => {
+    setData((prevData) => prevData.filter((item) => item.id !== id));
   };
 
-  const fetchData = () => {
+  const fetchData = async (pagination) => {
     setLoading(true);
-    fetch(
-      `https://randomuser.me/api?${qs.stringify(
-        getRandomuserParams(tableParams)
-      )}`
-    )
-      .then((res) => res.json())
-      .then(({ results }) => {
-        setData(results);
-        setLoading(false);
+    try {
+      const response = await axios.get(
+        `https://swdsapelearningapi.azurewebsites.net/api/Instructor/get-all`
+      );
+      const results = response.data.$values; // Lấy dữ liệu từ response
+
+      // Kiểm tra xem results có phải là mảng không
+      if (Array.isArray(results)) {
+        const startIndex = (pagination.current - 1) * pagination.pageSize;
+        const paginatedData = results.slice(
+          startIndex,
+          startIndex + pagination.pageSize
+        ); // Phân trang dữ liệu
+
+        setData(paginatedData);
         setTableParams((prevParams) => ({
           ...prevParams,
           pagination: {
-            ...prevParams.pagination,
-            total: 200,
+            ...pagination,
+            total: results.length,
           },
         }));
-      })
-      .catch(() => setLoading(false));
+      } else {
+        console.error("Fetched data is not an array:", results);
+        setData([]); // Đặt lại dữ liệu nếu không hợp lệ
+      }
+    } catch (error) {
+      console.error("Error fetching data:", error);
+    } finally {
+      setLoading(false);
+    }
   };
 
   useEffect(() => {
-    fetchData();
-  }, [tableParams.pagination?.current, tableParams.pagination?.pageSize]);
+    fetchData(tableParams.pagination);
+  }, [tableParams.pagination.current, tableParams.pagination.pageSize]);
 
-  const handleTableChange = (pagination) => {
-    setTableParams({ pagination });
-    if (pagination.pageSize !== tableParams.pagination?.pageSize) {
-      setData([]);
-    }
+  const handleTableChange = (pagination, filters, sorter) => {
+    setTableParams({
+      pagination,
+      filters,
+      sortOrder: Array.isArray(sorter) ? undefined : sorter.order,
+      sortField: Array.isArray(sorter) ? undefined : sorter.field,
+    });
   };
 
   return (
@@ -239,9 +275,13 @@ const AllInstructor = () => {
         </Link>
         <Table
           columns={columns}
-          rowKey={(record) => record.login.uuid}
-          dataSource={data}
-          pagination={tableParams.pagination}
+          rowKey={(record) => record.id}
+          dataSource={Array.isArray(data) ? data : []}
+          pagination={{
+            ...tableParams.pagination,
+            showSizeChanger: true,
+            pageSizeOptions: ["10", "20", "50"],
+          }}
           loading={loading}
           onChange={handleTableChange}
         />

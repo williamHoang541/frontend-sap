@@ -38,16 +38,19 @@ const SapModule = () => {
     {
       title: "Description",
       dataIndex: "moduleDescription",
-      sorter: (a, b) => (a.moduleDescription || "").localeCompare(b.moduleDescription || ""),
+      sorter: (a, b) =>
+        (a.moduleDescription || "").localeCompare(b.moduleDescription || ""),
       width: "35%",
     },
-     {
+    {
       title: "Status",
       dataIndex: "status",
       width: "10%",
       render: (status) => (
         <span
-          className={`sap_module_status_indicator ${status ? "active" : "inactive"}`}
+          className={`sap_module_status_indicator ${
+            status ? "active" : "inactive"
+          }`}
         />
       ),
     },
@@ -64,7 +67,10 @@ const SapModule = () => {
             modal
             closeOnDocumentClick
             onOpen={() =>
-              form.setFieldsValue({ nameSAPModule: record.moduleName, description: record.moduleDescription })
+              form.setFieldsValue({
+                nameSAPModule: record.moduleName,
+                description: record.moduleDescription,
+              })
             }
           >
             {(close) => (
@@ -140,7 +146,6 @@ const SapModule = () => {
     setData((prevData) => prevData.filter((item) => item.id !== id));
   };
 
-
   const fetchData = async (pagination) => {
     setLoading(true);
     try {
@@ -176,7 +181,7 @@ const SapModule = () => {
     }
   };
 
- useEffect(() => {
+  useEffect(() => {
     fetchData(tableParams.pagination);
   }, [tableParams.pagination.current, tableParams.pagination.pageSize]);
 

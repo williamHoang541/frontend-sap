@@ -52,3 +52,18 @@
 .sap_module_form:focus{
     border-color: #033e8c;
 }
+
+.sap_module_status_indicator {
+  display: inline-block;
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+}
+
+.sap_module_status_indicator.active {
+  background-color: #32cd32;
+}
+
+.sap_module_status_indicator.inactive {
+  background-color: #ff1616; 
+}

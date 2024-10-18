@@ -7,7 +7,7 @@ import { Link } from "react-router-dom";
 import { RiDeleteBin6Line } from "react-icons/ri";
 import Popup from "reactjs-popup";
 import { MdModeEditOutline } from "react-icons/md";
-import qs from "qs";
+import axios from "axios";
 
 const SapModule = () => {
   const [data, setData] = useState([]);
@@ -16,15 +16,10 @@ const SapModule = () => {
     pagination: {
       current: 1,
       pageSize: 10,
+      total: 0,
     },
   });
   const [form] = Form.useForm();
-
-  const getRandomuserParams = (params) => ({
-    results: params.pagination?.pageSize,
-    page: params.pagination?.current,
-    ...params,
-  });
 
   const columns = [
     {
@@ -35,16 +30,26 @@ const SapModule = () => {
     },
     {
       title: "Name SAP Module",
-      dataIndex: "name",
-      sorter: true,
-      render: (name) => `${name.first} ${name.last}`,
-      width: "40%",
+      dataIndex: "moduleName",
+      sorter: (a, b) => (a.moduleName || "").localeCompare(b.moduleName || ""),
+      width: "35%",
     },
 
     {
       title: "Description",
-      dataIndex: "description",
-      width: "40%",
+      dataIndex: "moduleDescription",
+      sorter: (a, b) => (a.moduleDescription || "").localeCompare(b.moduleDescription || ""),
+      width: "35%",
+    },
+     {
+      title: "Status",
+      dataIndex: "status",
+      width: "10%",
+      render: (status) => (
+        <span
+          className={`sap_module_status_indicator ${status ? "active" : "inactive"}`}
+        />
+      ),
     },
     {
       title: "Action",
@@ -59,7 +64,7 @@ const SapModule = () => {
             modal
             closeOnDocumentClick
             onOpen={() =>
-              form.setFieldsValue({ name: record.name, email: record.email })
+              form.setFieldsValue({ nameSAPModule: record.moduleName, description: record.moduleDescription })
             }
           >
             {(close) => (
@@ -68,12 +73,12 @@ const SapModule = () => {
                 <Form
                   form={form}
                   onFinish={(values) => {
-                    handleEdit(values, record.login.uuid);
+                    handleEdit(values, record.id);
                     close(); // Đóng popup sau khi lưu
                   }}
                 >
                   <div className="sap_module_input">
-                    <Form.Item name="name" label="Name SAP Module">
+                    <Form.Item name="nameSAPModule" label="Name SAP Module">
                       <input
                         type="text"
                         className="sap_module_form"
@@ -123,50 +128,67 @@ const SapModule = () => {
     },
   ];
 
-  const handleEdit = (values, uuid) => {
-    const updatedData = data.map((item) =>
-      item.login.uuid === uuid ? { ...item, ...values } : item
+  const handleEdit = (values, id) => {
+    const updatedData = data.map(
+      (item) => (item.id === id ? { ...item, ...values, id } : item) // Cập nhật thông tin người dùng
     );
     setData(updatedData);
     form.resetFields();
   };
 
-  const handleDelete = (uuid) => {
-    setData((prevData) => prevData.filter((item) => item.login.uuid !== uuid));
+  const handleDelete = (id) => {
+    setData((prevData) => prevData.filter((item) => item.id !== id));
   };
 
-  const fetchData = () => {
+
+  const fetchData = async (pagination) => {
     setLoading(true);
-    fetch(
-      `https://randomuser.me/api?${qs.stringify(
-        getRandomuserParams(tableParams)
-      )}`
-    )
-      .then((res) => res.json())
-      .then(({ results }) => {
-        setData(results);
-        setLoading(false);
+    try {
+      const response = await axios.get(
+        `https://swdsapelearningapi.azurewebsites.net/api/SapModule/get-all`
+      );
+      const results = response.data.$values; // Lấy dữ liệu từ response
+
+      // Kiểm tra xem results có phải là mảng không
+      if (Array.isArray(results)) {
+        const startIndex = (pagination.current - 1) * pagination.pageSize;
+        const paginatedData = results.slice(
+          startIndex,
+          startIndex + pagination.pageSize
+        ); // Phân trang dữ liệu
+
+        setData(paginatedData);
         setTableParams((prevParams) => ({
           ...prevParams,
           pagination: {
-            ...prevParams.pagination,
-            total: 200,
+            ...pagination,
+            total: results.length,
           },
         }));
-      })
-      .catch(() => setLoading(false));
-  };
-
-  useEffect(() => {
-    fetchData();
-  }, [tableParams.pagination?.current, tableParams.pagination?.pageSize]);
-
-  const handleTableChange = (pagination) => {
-    setTableParams({ pagination });
-    if (pagination.pageSize !== tableParams.pagination?.pageSize) {
-      setData([]);
+      } else {
+        console.error("Fetched data is not an array:", results);
+        setData([]); // Đặt lại dữ liệu nếu không hợp lệ
+      }
+    } catch (error) {
+      console.error("Error fetching data:", error);
+    } finally {
+      setLoading(false);
     }
   };
+
+ useEffect(() => {
+    fetchData(tableParams.pagination);
+  }, [tableParams.pagination.current, tableParams.pagination.pageSize]);
+
+  const handleTableChange = (pagination, filters, sorter) => {
+    setTableParams({
+      pagination,
+      filters,
+      sortOrder: Array.isArray(sorter) ? undefined : sorter.order,
+      sortField: Array.isArray(sorter) ? undefined : sorter.field,
+    });
+  };
+
   return (
     <div className="sap_module">
       <div className="student_title_container">
@@ -186,9 +208,13 @@ const SapModule = () => {
         </Link>
         <Table
           columns={columns}
-          rowKey={(record) => record.login.uuid}
-          dataSource={data}
-          pagination={tableParams.pagination}
+          rowKey={(record) => record.id}
+          dataSource={Array.isArray(data) ? data : []}
+          pagination={{
+            ...tableParams.pagination,
+            showSizeChanger: true,
+            pageSizeOptions: ["10", "20", "50"],
+          }}
           loading={loading}
           onChange={handleTableChange}
         />

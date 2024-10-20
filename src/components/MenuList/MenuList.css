@@ -63,9 +63,6 @@
 }
 
 .menu-bar {
-  display: flex;
-  flex-direction: column;
   position: relative;
-  height: auto;
-  margin-top: 25px;
+  margin-top: 15px;
 }

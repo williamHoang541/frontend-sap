@@ -79,9 +79,9 @@ const MenuList = () => {
       label: <Link to={PATH_NAME.INSTRUCTOR}> Instructor</Link>,
     },
     {
-      key: "fee",
+      key: "payment",
       icon: <PiCoinsLight />,
-      label: <Link to={PATH_NAME.FEE}>Fee</Link>,
+      label: <Link to={PATH_NAME.PAYMENT}>Payment</Link>,
     },
     
     {

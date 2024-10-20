@@ -4,7 +4,7 @@ export const PATH_NAME = {
     STUDENT: "/student/all_students",
     INSTRUCTOR: "/instructor/all_instructors",
     ADD_INSTRUCTOR: "/instructor/add_instructor",
-    FEE: "/fee",
+    PAYMENT: "/payment",
     COURSE: "/course/all-course",
     ADD_COURSE: "/course/add-course",
     ANALYTIC: "/analytic",

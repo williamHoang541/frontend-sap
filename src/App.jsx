@@ -77,7 +77,7 @@ const App = () => {
                     }
                 />
                 <Route
-                    path={PATH_NAME.FEE}
+                    path={PATH_NAME.PAYMENT}
                     element={
                         <LayOut>
                             <Fee />

@@ -1,12 +1,53 @@
-import React, { useState } from "react";
+import { useState } from "react";
 import "./AddInstructor.css";
 import { SlArrowRight } from "react-icons/sl";
+import { useNavigate } from "react-router-dom";
+import axios from "axios";
+import { PATH_NAME } from "../../../constant/pathname";
 
 const AddInstructor = () => {
   const [selectedGender, setSelectedGender] = useState("");
+  const [fullName, setFullName] = useState("");
+  const [email, setEmail] = useState("");
+  const [username, setUsername] = useState("");
+  const [password, setPassword] = useState("");
+  const [phoneNumber, setPhoneNumber] = useState("");
+  const [education, setEducation] = useState("");
+
+  const navigate = useNavigate();
 
   const handleChange = (event) => {
     setSelectedGender(event.target.value);
+  };
+
+  const handleSubmit = async (event) => {
+    event.preventDefault(); // Ngăn chặn reload trang
+
+    const instructorData = {
+      username: username,
+      password: password,
+      email: email,
+      fullname: fullName,
+      education: education,
+      phoneNumber: phoneNumber,
+      gender: selectedGender,
+    };
+
+    try {
+      const response = await axios.post(
+        `https://swdsapelearningapi.azurewebsites.net/api/User/create-instructor`,
+        instructorData
+      );
+
+      if (response.status === 200) {
+        // Chuyển hướng hoặc thông báo thành công
+        alert('Instructor added successfully');
+        navigate(PATH_NAME.INSTRUCTOR); // Chuyển hướng về danh sách instructors
+      }
+    } catch (error) {
+      console.error('Error adding instructor:', error);
+      alert('Failed to add instructor');
+    }
   };
 
   return (
@@ -24,7 +65,7 @@ const AddInstructor = () => {
 
       <div className="add_instructor_form_container">
         <div className="add_instructor_label">Basic Info</div>
-        <form className="add_instructor_form">
+        <form className="add_instructor_form" onSubmit={handleSubmit}>
           <div className="add_instructor_input_row">
             <div className="add_instructor_input_colum">
               <label htmlFor="name">Full Name</label>
@@ -33,6 +74,9 @@ const AddInstructor = () => {
                 id="name"
                 className="add_instructor_input"
                 placeholder="Enter the full name"
+                value={fullName}
+                onChange={(e) => setFullName(e.target.value)}
+                required
               />
             </div>
             <div className="add_instructor_input_colum">
@@ -42,18 +86,24 @@ const AddInstructor = () => {
                 id="email"
                 className="add_instructor_input"
                 placeholder="Enter the email"
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
+                required
               />
             </div>
           </div>
 
           <div className="add_instructor_input_row">
             <div className="add_instructor_input_colum">
-              <label htmlFor="joining_date">Joining Date</label>
+              <label htmlFor="username">User Name</label>
               <input
-                type="date"
-                id="joining_date"
+                type="text"
+                id="username"
                 className="add_instructor_input"
-                placeholder="Select the date"
+                placeholder="Enter the user name"
+                value={username}
+                onChange={(e) => setUsername(e.target.value)}
+                required
               />
             </div>
             <div className="add_instructor_input_colum">
@@ -63,6 +113,9 @@ const AddInstructor = () => {
                 id="password"
                 className="add_instructor_input"
                 placeholder="Enter the password"
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
+                required
               />
             </div>
           </div>
@@ -71,15 +124,18 @@ const AddInstructor = () => {
             <div className="add_instructor_input_colum">
               <label htmlFor="phone">Mobile Number</label>
               <input
-                type="number"
+                type="tel"
                 id="phone"
                 className="add_instructor_input"
                 placeholder="Enter the phone"
+                value={phoneNumber}
+                onChange={(e) => setPhoneNumber(e.target.value)}
+                required
               />
             </div>
             <div className="add_instructor_input_colum">
               <label>Gender</label>
-              <select value={selectedGender} onChange={handleChange}>
+              <select value={selectedGender} onChange={handleChange} required>
                 <option value="" disabled>
                   Select gender
                 </option>
@@ -88,16 +144,8 @@ const AddInstructor = () => {
               </select>
             </div>
           </div>
+
           <div className="add_instructor_input_row">
-            <div className="add_instructor_input_colum">
-              <label htmlFor="date_of_birth">Date of Birth</label>
-              <input
-                type="date"
-                id="date_of_birth"
-                className="add_instructor_input"
-                placeholder="Select the date"
-              />
-            </div>
             <div className="add_instructor_input_colum">
               <label htmlFor="education">Education</label>
               <input
@@ -105,14 +153,16 @@ const AddInstructor = () => {
                 id="education"
                 className="add_instructor_input"
                 placeholder="Enter the education"
+                value={education}
+                onChange={(e) => setEducation(e.target.value)}
+                required
               />
             </div>
           </div>
+          <button className="add_instructor_button_submit" type="submit">
+            Submit
+          </button>
         </form>
-
-        <button className="add_instructor_button_submit" type="submit">
-          Submit
-        </button>
       </div>
     </div>
   );

@@ -38,13 +38,6 @@ const AllInstructor = () => {
       width: "20%",
       render: (fullname) => fullname || "N/A",
     },
-    // {
-    //   title: "Gender",
-    //   dataIndex: "gender",
-    //   sorter: (a, b) => (a.gender || "").localeCompare(b.gender || ""),
-    //   width: "10%",
-    //   render: (gender) => gender || "N/A",
-    // },
     {
       title: "Email",
       dataIndex: "email",
@@ -52,36 +45,21 @@ const AllInstructor = () => {
       render: (email) => email || "N/A",
       sorter: (a, b) => (a.email || "").localeCompare(b.email || ""),
     },
-    // {
-    //   title: "Education",
-    //   dataIndex: "education",
-    //   width: "12%",
-    //   render: (education) => education || "N/A",
-    // },
     {
       title: "Mobile",
       dataIndex: "phonenumber",
       render: (phonenumber) => phonenumber || "N/A",
       width: "20%",
     },
-    // {
-    //   title: "Date of birth",
-    //   dataIndex: "birthdate",
-    //   width: "12%",
-    //   sorter: (a, b) => new Date(a.birthdate) - new Date(b.birthdate),
-    //   render: (date) => {
-    //     if (!date) return "N/A";
-    //     const dateObj = new Date(date);
-    //     return dateObj.toLocaleDateString("vi-VN");
-    //   },
-    // },
     {
       title: "Status",
       dataIndex: "status",
       width: "10%",
       render: (status) => (
         <span
-          className={`instructor_status_indicator ${status ? "active" : "inactive"}`}
+          className={`instructor_status_indicator ${
+            status ? "active" : "inactive"
+          }`}
         />
       ),
     },
@@ -99,12 +77,9 @@ const AllInstructor = () => {
             closeOnDocumentClick
             onOpen={() =>
               form.setFieldsValue({
-                fullname: record.fullname,
-                email: record.email,
-                phone: record.phonenumber,
-                education: record.education,
-                gender: record.gender,
-                birthdate: record.birthdate,
+                fullname: record.fullname || "",
+                email: record.email || "",
+                phone: record.phonenumber || "",
               })
             }
           >
@@ -113,9 +88,9 @@ const AllInstructor = () => {
                 <h2>Edit Instructor</h2>
                 <Form
                   form={form}
-                  onFinish={(values) => {
-                    handleEdit(values, record.id);
-                    close(); // Đóng popup sau khi lưu
+                  onFinish={async (values) => {
+                    await handleEdit(values, record.userId);
+                    close();
                   }}
                 >
                   <div className="all_instructor_input">
@@ -142,26 +117,7 @@ const AllInstructor = () => {
                         placeholder="Enter mobile number"
                       />
                     </Form.Item>
-                    {/* <Form.Item name="education" label="Education">
-                      <input
-                        type="text"
-                        className="all_instructor_form"
-                        placeholder="Enter education"
-                      />
-                    </Form.Item> */}
                   </div>
-                  {/* <div className="all_instructor_input">
-                    <Form.Item name="gender" label="Gender">
-                      <input
-                        type="text"
-                        className="all_instructor_form"
-                        placeholder="Enter gender"
-                      />
-                    </Form.Item>
-                    <Form.Item name="birthdate" label="Date of Birth">
-                      <input type="date" className="all_instructor_form" />
-                    </Form.Item>
-                  </div> */}
                   <div className="popup_buttons">
                     <Button
                       className="button_save"
@@ -185,7 +141,7 @@ const AllInstructor = () => {
           <Button
             type="link"
             danger
-            onClick={() => handleDelete(record.id)}
+            onClick={() => handleDelete(record.userId)}
             className="instructor_button_delete"
           >
             <RiDeleteBin6Line />
@@ -196,16 +152,38 @@ const AllInstructor = () => {
     },
   ];
 
-  const handleEdit = (values, id) => {
-    const updatedData = data.map(
-      (item) => (item.id === id ? { ...item, ...values, id } : item) // Cập nhật thông tin người dùng
-    );
-    setData(updatedData);
-    form.resetFields();
+  const handleEdit = async (values, userId) => {
+    try {
+      const updateData = {
+        fullname: values.fullname,
+        email: values.email,
+        phonenumber: values.phone,
+      };
+
+      const response = await axios.put(
+        `https://swdsapelearningapi.azurewebsites.net/api/Instructor/update-Instructor?userId=${userId}`,
+        updateData
+      );
+
+      if (response.status === 200) {
+        const updatedData = data.map((item) =>
+          item.userId === userId ? { ...item, ...updateData } : item
+        );
+        setData(updatedData);
+        form.resetFields();
+      } else {
+        console.error("Error updating data:", response.data);
+      }
+    } catch (error) {
+      console.error(
+        "Error updating data:",
+        error.response ? error.response.data : error.message
+      );
+    }
   };
 
-  const handleDelete = (id) => {
-    setData((prevData) => prevData.filter((item) => item.id !== id));
+  const handleDelete = (userId) => {
+    setData((prevData) => prevData.filter((item) => item.userId !== userId));
   };
 
   const fetchData = async (pagination) => {
@@ -214,15 +192,14 @@ const AllInstructor = () => {
       const response = await axios.get(
         `https://swdsapelearningapi.azurewebsites.net/api/Instructor/get-all`
       );
-      const results = response.data.$values; // Lấy dữ liệu từ response
+      const results = response.data.$values;
 
-      // Kiểm tra xem results có phải là mảng không
       if (Array.isArray(results)) {
         const startIndex = (pagination.current - 1) * pagination.pageSize;
         const paginatedData = results.slice(
           startIndex,
           startIndex + pagination.pageSize
-        ); // Phân trang dữ liệu
+        );
 
         setData(paginatedData);
         setTableParams((prevParams) => ({
@@ -234,7 +211,7 @@ const AllInstructor = () => {
         }));
       } else {
         console.error("Fetched data is not an array:", results);
-        setData([]); // Đặt lại dữ liệu nếu không hợp lệ
+        setData([]);
       }
     } catch (error) {
       console.error("Error fetching data:", error);
@@ -275,7 +252,7 @@ const AllInstructor = () => {
         </Link>
         <Table
           columns={columns}
-          rowKey={(record) => record.id}
+          rowKey={(record) => record.userId}
           dataSource={Array.isArray(data) ? data : []}
           pagination={{
             ...tableParams.pagination,

@@ -1,3 +1,4 @@
+
 .add_instructor {
   display: flex;
   flex-direction: column;
@@ -102,7 +103,23 @@
   margin-left: 0 !important;
 }
 
+.add_instructor_button_submit_1 {
+  background-color: #033e8c;
+  color: #fff !important;
+  padding: 10px !important;
+  font-size: 14px !important;
+  width: 75px;
+  border: none;
+  border-radius: 5px;
+  margin-left: 70px !important;
+}
+
+.add_instructor_button_submit_1:hover {
+  background-color: #1e78ff;
+  cursor: pointer;
+}
+
 .add_instructor_button_submit:hover {
-  background-color: #1e78ff ;
+  background-color: #1e78ff;
   cursor: pointer;
 }

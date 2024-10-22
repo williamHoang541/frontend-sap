@@ -8,6 +8,7 @@ import { Link } from "react-router-dom";
 import qs from "qs";
 import { PATH_NAME } from "../../../constant/pathname";
 import "reactjs-popup/dist/index.css";
+import axios from "axios";
 import "./AllCourse.css";
 
 const AllCourse = () => {
@@ -84,24 +85,29 @@ const AllCourse = () => {
     });
     const [form] = Form.useForm();
 
-    const getRandomuserParams = (params) => ({
-        results: params.pagination?.pageSize,
-        page: params.pagination?.current,
-        ...params,
-    });
-
     const columns = [
         {
             title: "No.",
             sorter: true,
             width: "7%",
-            render: (_, __, index) => index + 1,
+            render: (_, __, index) =>
+                (tableParams.pagination.current - 1) *
+                    tableParams.pagination.pageSize +
+                index +
+                1,
         },
         {
             title: "Course Name",
-            dataIndex: "name",
-            sorter: true,
-            render: (name) => `${name.first} ${name.last}`,
+            dataIndex: "courseName",
+            sorter: (a, b) =>
+                (a.courseName || "").localeCompare(b.courseName || ""),
+            width: "15%",
+        },
+        {
+            title: "Instructor Name",
+            dataIndex: "instructorName",
+            sorter: (a, b) =>
+                (a.instructorName || "").localeCompare(b.instructorName || ""),
             width: "15%",
         },
         {
@@ -111,51 +117,68 @@ const AllCourse = () => {
                 { text: "Online", value: "online" },
                 { text: "Offline", value: "offline" },
             ],
-            render: (status) => (
+            render: (mode) => (
                 <span
                     className={
-                        status === "online" ? "status-online" : "status-offline"
+                        mode.toLowerCase() === "online"
+                            ? "status-online"
+                            : "status-offline"
                     }
-                ></span>
+                >
+                    {mode.toLowerCase()}
+                </span>
             ),
             width: "10%",
         },
         {
             title: "Start Date",
+            dataIndex: "startTime",
             sorter: true,
             width: "10%",
         },
         {
             title: "End Date",
+            dataIndex: "endTime",
+            sorter: true,
+            width: "10%",
+        },
+        {
+            title: "Price",
+            dataIndex: "price",
             sorter: true,
             width: "10%",
         },
         {
             title: "Total Student",
-            dataIndex: "phone",
+            dataIndex: "totalStudent",
             sorter: true,
             width: "10%",
         },
         {
             title: "Location",
+            dataIndex: "location",
             sorter: true,
             width: "12%",
         },
         {
             title: "Status",
-            sorter: true,
-            width: "12%",
+            dataIndex: "status",
+            width: "10%",
+            render: (status) => (
+                <span
+                    className={`course_status_indicator ${
+                        status ? "active" : "inactive"
+                    }`}
+                />
+            ),
         },
         {
             title: "Action",
             render: (_, record) => (
-                <>
+                <div className="course_buttons">
                     <Popup
                         trigger={
-                            <Button
-                                type="link"
-                                className="instructor_button_edit"
-                            >
+                            <Button type="link" className="course_button_edit">
                                 <MdModeEditOutline />
                             </Button>
                         }
@@ -163,8 +186,13 @@ const AllCourse = () => {
                         closeOnDocumentClick
                         onOpen={() =>
                             form.setFieldsValue({
-                                name: record.name,
-                                email: record.email,
+                                courseName: record.courseName,
+                                instructorName: record.instructorName,
+                                mode: record.mode,
+                                startTime: record.startTime,
+                                endTime: record.endTime,
+                                totalStudent: record.totalStudent,
+                                location: record.location,
                             })
                         }
                     >
@@ -174,80 +202,80 @@ const AllCourse = () => {
                                 <Form
                                     form={form}
                                     onFinish={(values) => {
-                                        handleEdit(values, record.login.uuid);
+                                        handleEdit(values, record.id);
                                         close(); // Đóng popup sau khi lưu
                                     }}
                                 >
-                                    <div className="all_instructor_input">
+                                    <div className="all_course_input">
                                         <Form.Item
-                                            name="name"
+                                            name="courseName"
                                             label="Course Name"
                                         >
                                             <input
                                                 type="text"
-                                                className="all_instructor_form"
+                                                className="all_course_form"
                                                 placeholder="Enter full name"
                                             />
                                         </Form.Item>
                                         <Form.Item name="mode" label="Mode">
                                             <input
                                                 type="text"
-                                                className="all_instructor_form"
+                                                className="all_course_form"
                                                 placeholder="Enter Mode"
                                             />
                                         </Form.Item>
                                     </div>
-                                    <div className="all_instructor_input">
+                                    <div className="all_course_input">
                                         <Form.Item
-                                            name="start_date"
+                                            name="startTime"
                                             label="Start Date"
                                         >
                                             <input
                                                 type="date"
-                                                className="all_instructor_form"
+                                                className="all_course_form"
                                                 placeholder="Select start date"
                                             />
                                         </Form.Item>
                                         <Form.Item
-                                            name="t_student"
+                                            name="totalStudent"
                                             label="Total Student"
                                         >
                                             <input
                                                 type="text"
-                                                className="all_instructor_form"
+                                                className="all_course_form"
                                                 placeholder="Enter maximum student"
                                             />
                                         </Form.Item>
                                     </div>
-                                    <div className="all_instructor_input">
+                                    <div className="all_course_input">
                                         <Form.Item
-                                            name="end_date"
+                                            name="endTime"
                                             label="End Date"
                                         >
                                             <input
                                                 type="date"
-                                                className="all_instructor_form"
+                                                className="all_course_form"
                                                 placeholder="Select end date"
                                             />
                                         </Form.Item>
                                         <Form.Item
-                                            name="end_register_date"
+                                            name="endTime"
                                             label="End register date"
                                         >
                                             <input
                                                 type="date"
-                                                className="all_instructor_form"
+                                                className="all_course_form"
                                             />
                                         </Form.Item>
                                     </div>
-                                    <div className="all_instructor_input">
+                                    <div className="all_course_input">
                                         <Form.Item
                                             name="location"
                                             label="Location"
                                         >
                                             <input
                                                 type="text"
-                                                className="all_instructor_form"
+                                                className="all_course_form"
                                                 placeholder="Select location"
                                             />
                                         </Form.Item>
@@ -257,7 +285,7 @@ const AllCourse = () => {
                                         >
                                             <input
                                                 type="text"
-                                                className="all_instructor_form"
+                                                className="all_course_form"
                                                 placeholder="Select status"
                                             />
                                         </Form.Item>
@@ -285,93 +313,104 @@ const AllCourse = () => {
                     <Button
                         type="link"
                         danger
-                        onClick={() => handleDelete(record.login.uuid)}
-                        className="instructor_button_delete"
+                        onClick={() => handleDelete(record.id)}
+                        className="course_button_delete"
                     >
                         <RiDeleteBin6Line />
                     </Button>
-                </>
+                </div>
             ),
             width: "10%",
         },
     ];
 
-    const handleEdit = (values, uuid) => {
-        const updatedData = data.map((item) =>
-            item.login.uuid === uuid ? { ...item, ...values } : item
+    const handleEdit = (values, id) => {
+        const updatedData = data.map(
+            (item) => (item.id === id ? { ...item, ...values, id } : item) // Cập nhật thông tin người dùng
         );
         setData(updatedData);
         form.resetFields();
     };
 
-    const handleDelete = (uuid) => {
-        setData((prevData) =>
-            prevData.filter((item) => item.login.uuid !== uuid)
-        );
+    const handleDelete = (id) => {
+        setData((prevData) => prevData.filter((item) => item.id !== id));
     };
 
-    const fetchData = () => {
+    const fetchData = async (pagination) => {
         setLoading(true);
-        fetch(
-            `https://randomuser.me/api?${qs.stringify(
-                getRandomuserParams(tableParams)
-            )}`
-        )
-            .then((res) => res.json())
-            .then(({ results }) => {
-                // Thêm trường status vào dữ liệu
-                const updatedResults = results.map((item) => ({
-                    ...item,
-                    status: Math.random() > 0.5 ? "online" : "offline", // Giả lập trạng thái
-                }));
-                setData(updatedResults);
-                setLoading(false);
+        try {
+            const response = await axios.get(
+                `https://swdsapelearningapi.azurewebsites.net/api/Course/get-all`
+            );
+            const results = response.data.$values; // Lấy dữ liệu từ response
+
+            // Kiểm tra xem results có phải là mảng không
+            if (Array.isArray(results)) {
+                const startIndex =
+                    (pagination.current - 1) * pagination.pageSize;
+                const paginatedData = results.slice(
+                    startIndex,
+                    startIndex + pagination.pageSize
+                ); // Phân trang dữ liệu
+
+                setData(paginatedData);
                 setTableParams((prevParams) => ({
                     ...prevParams,
                     pagination: {
-                        ...prevParams.pagination,
-                        total: 200,
+                        ...pagination,
+                        total: results.length,
                     },
                 }));
-            })
-            .catch(() => setLoading(false));
-    };
-
-    useEffect(() => {
-        fetchData();
-    }, [tableParams.pagination?.current, tableParams.pagination?.pageSize]);
-
-    const handleTableChange = (pagination) => {
-        setTableParams({ pagination });
-        if (pagination.pageSize !== tableParams.pagination?.pageSize) {
-            setData([]);
+            } else {
+                console.error("Fetched data is not an array:", results);
+                setData([]); // Đặt lại dữ liệu nếu không hợp lệ
+            }
+        } catch (error) {
+            console.error("Error fetching data:", error);
+        } finally {
+            setLoading(false);
         }
     };
 
+    useEffect(() => {
+        fetchData(tableParams.pagination);
+    }, [tableParams.pagination.current, tableParams.pagination.pageSize]);
+
+    const handleTableChange = (pagination, filters, sorter) => {
+        setTableParams({
+            pagination,
+            filters,
+            sortOrder: Array.isArray(sorter) ? undefined : sorter.order,
+            sortField: Array.isArray(sorter) ? undefined : sorter.field,
+        });
+    };
+
     return (
-        <div className="instructor">
-            <div className="instructor_title_container">
-                <div className="instructor_title_left">
-                    <div className="instructor_title">All Courses</div>
+        <div className="course">
+            <div className="course_title_container">
+                <div className="course_title_left">
+                    <div className="course_title">All Courses</div>
                 </div>
-                <div className="instructor_instructor_right">
-                    <div className="instructor_instructor">Course</div>
-                    <SlArrowRight className="instructor_icon_right" />
-                    <div className="instructor_all_instructors">
-                        All Courses
-                    </div>
+                <div className="course_course_right">
+                    <div className="course_course">Course</div>
+                    <SlArrowRight className="course_icon_right" />
+                    <div className="course_all_courses">All Courses</div>
                 </div>
             </div>
 
-            <div className="instructor_table_container">
+            <div className="course_table_container">
                 <Link to={PATH_NAME.ADD_COURSE}>
-                    <button className="instructor_add">Add New</button>
+                    <button className="course_add">Add New</button>
                 </Link>
                 <Table
                     columns={columns}
-                    rowKey={(record) => record.login.uuid}
-                    dataSource={data}
-                    pagination={tableParams.pagination}
+                    rowKey={(record) => record.id}
+                    dataSource={Array.isArray(data) ? data : []}
+                    pagination={{
+                        ...tableParams.pagination,
+                        showSizeChanger: true,
+                        pageSizeOptions: ["10", "20", "50"],
+                    }}
                     loading={loading}
                     onChange={handleTableChange}
                 />

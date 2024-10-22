@@ -4,6 +4,7 @@ import { useNavigate } from "react-router-dom";
 import { SlArrowRight } from "react-icons/sl";
 import { useState } from "react";
 import axios from "axios";
+import { PATH_NAME } from "../../../constant/pathname";
 
 // const AddSAPModule = () => {
 //   return (
@@ -89,7 +90,7 @@ const AddSAPModule = () => {
 
       if (response.status === 201) {
         // Redirect hoặc thông báo thành công
-        navigate("/sap_module/all_sap_modules"); // Hoặc bất kỳ route nào bạn muốn chuyển hướng
+        navigate(PATH_NAME.SAP_MODULE); // Hoặc bất kỳ route nào bạn muốn chuyển hướng
       } else {
         console.error("Error adding SAP Module:", response.data);
       }

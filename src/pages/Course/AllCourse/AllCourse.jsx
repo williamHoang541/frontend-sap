@@ -12,69 +12,6 @@ import axios from "axios";
 import "./AllCourse.css";
 
 const AllCourse = () => {
-    const data_1 = [
-        {
-            course_id: 1,
-            course_name: "Introduction to SAP",
-            start_date: "2024-10-15",
-            end_date: "2024-12-15",
-            mode: "Online",
-            price: 150.0,
-            total_student: 30,
-            end_register_date: "2024-10-10",
-            location_url: "https://meet.google.com/xyz-abc-101",
-            status: "Available",
-        },
-        {
-            course_id: 2,
-            course_name: "Advanced ABAP Programming",
-            start_date: "2024-11-01",
-            end_date: "2025-01-01",
-            mode: "Offline",
-            price: 300.0,
-            total_student: 20,
-            end_register_date: "2024-10-28",
-            location_url: "123 SAP Blvd, NY",
-            status: "Expired",
-        },
-        {
-            course_id: 3,
-            course_name: "SAP S/4HANA Overview",
-            start_date: "2024-10-20",
-            end_date: "2024-11-20",
-            mode: "Online",
-            price: 200.0,
-            total_student: 50,
-            end_register_date: "2024-10-18",
-            location_url: "https://meet.google.com/xyz-abc-103",
-            status: "Available",
-        },
-        {
-            course_id: 4,
-            course_name: "SAP Fiori Development",
-            start_date: "2024-12-01",
-            end_date: "2025-02-01",
-            mode: "Offline",
-            price: 350.0,
-            total_student: 25,
-            end_register_date: "2024-11-28",
-            location_url: "456 Tech St, SF",
-            status: "Available",
-        },
-        {
-            course_id: 5,
-            course_name: "SAP CAP Model Workshop",
-            start_date: "2024-09-30",
-            end_date: "2024-10-30",
-            mode: "Online",
-            price: 250.0,
-            total_student: 40,
-            end_register_date: "2024-09-28",
-            location_url: "https://meet.google.com/xyz-abc-105",
-            status: "Expired",
-        },
-    ];
-
     const [data, setData] = useState([]);
     const [loading, setLoading] = useState(false);
     const [tableParams, setTableParams] = useState({
@@ -135,12 +72,20 @@ const AllCourse = () => {
             dataIndex: "startTime",
             sorter: true,
             width: "10%",
+            render: (startTime) => {
+                const date = new Date(startTime);
+                return date.toLocaleDateString(); // Chỉ lấy ngày/tháng/năm
+            },
         },
         {
             title: "End Date",
             dataIndex: "endTime",
             sorter: true,
             width: "10%",
+            render: (endTime) => {
+                const date = new Date(endTime);
+                return date.toLocaleDateString(); // Chỉ lấy ngày/tháng/năm
+            },
         },
         {
             title: "Price",

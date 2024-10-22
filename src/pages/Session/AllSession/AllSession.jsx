@@ -8,6 +8,7 @@ import { Link } from "react-router-dom";
 import qs from "qs";
 import { PATH_NAME } from "../../../constant/pathname";
 import "reactjs-popup/dist/index.css";
+import axios from "axios";
 import "./AllSession.css";
 
 const AllSession = () => {
@@ -32,42 +33,59 @@ const AllSession = () => {
             title: "No.",
             sorter: true,
             width: "7%",
-            render: (_, __, index) => index + 1,
+            render: (_, __, index) =>
+                (tableParams.pagination.current - 1) *
+                    tableParams.pagination.pageSize +
+                index +
+                1,
         },
         {
             title: "Course Name",
-            dataIndex: "course",
-            width: "10%",
-        },
-        {
-            title: "Instructor Name",
-            dataIndex: "name",
-            sorter: true,
-            render: (name) => `${name.first} ${name.last}`,
+            dataIndex: "courseName",
+            sorter: (a, b) =>
+                (a.courseName || "").localeCompare(b.courseName || ""),
             width: "15%",
         },
         {
+            title: "Instructor Name",
+            dataIndex: "instructorName",
+            sorter: (a, b) =>
+                (a.instructorName || "").localeCompare(b.instructorName || ""),
+            width: "10%",
+        },
+        {
             title: "Topic name",
-            sorter: true,
+            dataIndex: "topicName",
+            sorter: (a, b) =>
+                (a.topicName || "").localeCompare(b.topicName || ""),
             width: "12%",
         },
         {
             title: "Session Name",
-            dataIndex: "name",
-            sorter: true,
-            render: (name) => `${name.first} ${name.last}`,
+            dataIndex: "sessionName",
+            sorter: (a, b) =>
+                (a.sessionName || "").localeCompare(b.sessionName || ""),
             width: "15%",
         },
         {
             title: "Session Description",
-            dataIndex: "description",
-            sorter: true,
-            width: "10%",
+            dataIndex: "sessionDescription",
+            sorter: (a, b) =>
+                (a.sessionDescription || "").localeCompare(
+                    b.sessionDescription || ""
+                ),
+            width: "15%",
         },
         {
             title: "Session Date",
-            sorter: true,
+            dataIndex: "sessionDate",
+            sorter: (a, b) =>
+                (a.sessionDate || "").localeCompare(b.sessionDate || ""),
             width: "12%",
+            render: (sessionDate) => {
+                const date = new Date(sessionDate);
+                return date.toLocaleDateString(); // Chỉ lấy ngày/tháng/năm
+            },
         },
         {
             title: "Action",
@@ -83,8 +101,12 @@ const AllSession = () => {
                         closeOnDocumentClick
                         onOpen={() =>
                             form.setFieldsValue({
-                                name: record.name,
-                                email: record.email,
+                                courseName: record.courseName,
+                                instructorName: record.instructorName,
+                                topicName: record.topicName,
+                                sessionName: record.sessionName,
+                                sessionDescription: record.sessionDescription,
+                                sessionDate: record.sessionDate,
                             })
                         }
                     >
@@ -94,13 +116,13 @@ const AllSession = () => {
                                 <Form
                                     form={form}
                                     onFinish={(values) => {
-                                        handleEdit(values, record.login.uuid);
+                                        handleEdit(values, record.id);
                                         close(); // Đóng popup sau khi lưu
                                     }}
                                 >
                                     <div className="all_session_input">
                                         <Form.Item
-                                            name="name"
+                                            name="sessionName"
                                             label="Session Name"
                                         >
                                             <input
@@ -112,7 +134,7 @@ const AllSession = () => {
                                     </div>
                                     <div className="all_session_input">
                                         <Form.Item
-                                            name="phone"
+                                            name="sessionDescription"
                                             label="Session Description"
                                         >
                                             <input
@@ -124,7 +146,7 @@ const AllSession = () => {
                                     </div>
                                     <div className="all_session_input">
                                         <Form.Item
-                                            name="birthdate"
+                                            name="sessionDate"
                                             label="Session Date"
                                         >
                                             <input
@@ -156,7 +178,7 @@ const AllSession = () => {
                     <Button
                         type="link"
                         danger
-                        onClick={() => handleDelete(record.login.uuid)}
+                        onClick={() => handleDelete(record.id)}
                         className="session_button_delete"
                     >
                         <RiDeleteBin6Line />
@@ -167,51 +189,65 @@ const AllSession = () => {
         },
     ];
 
-    const handleEdit = (values, uuid) => {
-        const updatedData = data.map((item) =>
-            item.login.uuid === uuid ? { ...item, ...values } : item
+    const handleEdit = (values, id) => {
+        const updatedData = data.map(
+            (item) => (item.id === id ? { ...item, ...values, id } : item) // Cập nhật thông tin người dùng
         );
         setData(updatedData);
         form.resetFields();
     };
 
-    const handleDelete = (uuid) => {
-        setData((prevData) =>
-            prevData.filter((item) => item.login.uuid !== uuid)
-        );
+    const handleDelete = (id) => {
+        setData((prevData) => prevData.filter((item) => item.id !== id));
     };
 
-    const fetchData = () => {
+    const fetchData = async (pagination) => {
         setLoading(true);
-        fetch(
-            `https://randomuser.me/api?${qs.stringify(
-                getRandomuserParams(tableParams)
-            )}`
-        )
-            .then((res) => res.json())
-            .then(({ results }) => {
-                setData(results);
-                setLoading(false);
+        try {
+            const response = await axios.get(
+                `https://swdsapelearningapi.azurewebsites.net/api/CourseSession/get-all`
+            );
+            const results = response.data.$values; // Lấy dữ liệu từ response
+
+            // Kiểm tra xem results có phải là mảng không
+            if (Array.isArray(results)) {
+                const startIndex =
+                    (pagination.current - 1) * pagination.pageSize;
+                const paginatedData = results.slice(
+                    startIndex,
+                    startIndex + pagination.pageSize
+                ); // Phân trang dữ liệu
+
+                setData(paginatedData);
                 setTableParams((prevParams) => ({
                     ...prevParams,
                     pagination: {
-                        ...prevParams.pagination,
-                        total: 200,
+                        ...pagination,
+                        total: results.length,
                     },
                 }));
-            })
-            .catch(() => setLoading(false));
+            } else {
+                console.error("Fetched data is not an array:", results);
+                setData([]); // Đặt lại dữ liệu nếu không hợp lệ
+            }
+        } catch (error) {
+            console.error("Error fetching data:", error);
+        } finally {
+            setLoading(false);
+        }
     };
 
     useEffect(() => {
-        fetchData();
-    }, [tableParams.pagination?.current, tableParams.pagination?.pageSize]);
+        fetchData(tableParams.pagination);
+    }, [tableParams.pagination.current, tableParams.pagination.pageSize]);
 
-    const handleTableChange = (pagination) => {
-        setTableParams({ pagination });
-        if (pagination.pageSize !== tableParams.pagination?.pageSize) {
-            setData([]);
-        }
+    const handleTableChange = (pagination, filters, sorter) => {
+        setTableParams({
+            pagination,
+            filters,
+            sortOrder: Array.isArray(sorter) ? undefined : sorter.order,
+            sortField: Array.isArray(sorter) ? undefined : sorter.field,
+        });
     };
 
     return (
@@ -228,14 +264,18 @@ const AllSession = () => {
             </div>
 
             <div className="session_table_container">
-                <Link to={PATH_NAME.ADD_INSTRUCTOR}>
+                <Link to={PATH_NAME.ADD_SESSION}>
                     <button className="session_add">Add New</button>
                 </Link>
                 <Table
                     columns={columns}
-                    rowKey={(record) => record.login.uuid}
-                    dataSource={data}
-                    pagination={tableParams.pagination}
+                    rowKey={(record) => record.id}
+                    dataSource={Array.isArray(data) ? data : []}
+                    pagination={{
+                        ...tableParams.pagination,
+                        showSizeChanger: true,
+                        pageSizeOptions: ["10", "20", "50"],
+                    }}
                     loading={loading}
                     onChange={handleTableChange}
                 />

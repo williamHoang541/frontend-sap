@@ -8,6 +8,7 @@ import { Link } from "react-router-dom";
 import qs from "qs";
 import { PATH_NAME } from "../../../constant/pathname";
 import "reactjs-popup/dist/index.css";
+import "./AllSession.css";
 
 const AllSession = () => {
     const [data, setData] = useState([]);
@@ -74,10 +75,7 @@ const AllSession = () => {
                 <>
                     <Popup
                         trigger={
-                            <Button
-                                type="link"
-                                className="instructor_button_edit"
-                            >
+                            <Button type="link" className="session_button_edit">
                                 <MdModeEditOutline />
                             </Button>
                         }
@@ -100,38 +98,38 @@ const AllSession = () => {
                                         close(); // Đóng popup sau khi lưu
                                     }}
                                 >
-                                    <div className="all_instructor_input">
+                                    <div className="all_session_input">
                                         <Form.Item
                                             name="name"
                                             label="Session Name"
                                         >
                                             <input
                                                 type="text"
-                                                className="all_instructor_form"
+                                                className="all_session_form"
                                                 placeholder="Enter session name"
                                             />
                                         </Form.Item>
                                     </div>
-                                    <div className="all_instructor_input">
+                                    <div className="all_session_input">
                                         <Form.Item
                                             name="phone"
                                             label="Session Description"
                                         >
                                             <input
                                                 type="text"
-                                                className="all_instructor_form"
+                                                className="all_session_form"
                                                 placeholder="Enter session description"
                                             />
                                         </Form.Item>
                                     </div>
-                                    <div className="all_instructor_input">
+                                    <div className="all_session_input">
                                         <Form.Item
                                             name="birthdate"
                                             label="Session Date"
                                         >
                                             <input
                                                 type="date"
-                                                className="all_instructor_form"
+                                                className="all_session_form"
                                             />
                                         </Form.Item>
                                     </div>
@@ -159,7 +157,7 @@ const AllSession = () => {
                         type="link"
                         danger
                         onClick={() => handleDelete(record.login.uuid)}
-                        className="instructor_button_delete"
+                        className="session_button_delete"
                     >
                         <RiDeleteBin6Line />
                     </Button>
@@ -217,23 +215,21 @@ const AllSession = () => {
     };
 
     return (
-        <div className="instructor">
-            <div className="instructor_title_container">
-                <div className="instructor_title_left">
-                    <div className="instructor_title">All Instructors</div>
+        <div className="session">
+            <div className="session_title_container">
+                <div className="session_title_left">
+                    <div className="session_title">All Instructors</div>
                 </div>
-                <div className="instructor_instructor_right">
-                    <div className="instructor_instructor">Instructors</div>
-                    <SlArrowRight className="instructor_icon_right" />
-                    <div className="instructor_all_instructors">
-                        All Instructors
-                    </div>
+                <div className="session_session_right">
+                    <div className="session_session">Instructors</div>
+                    <SlArrowRight className="session_icon_right" />
+                    <div className="session_all_sessions">All Instructors</div>
                 </div>
             </div>
 
-            <div className="instructor_table_container">
+            <div className="session_table_container">
                 <Link to={PATH_NAME.ADD_INSTRUCTOR}>
-                    <button className="instructor_add">Add New</button>
+                    <button className="session_add">Add New</button>
                 </Link>
                 <Table
                     columns={columns}

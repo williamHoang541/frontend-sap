@@ -1,4 +1,4 @@
-.dashboard {
+.analytic {
     display: flex;
     flex-direction: column;
     gap: 30px;
@@ -6,13 +6,13 @@
     margin-top: 10px;
 }
 
-.dashboard-widget-wrapper {
+.analytic-widget-wrapper {
     display: flex;
     justify-content: space-between;
     gap: 20px;
 }
 
-.dashboard-widget {
+.analytic-widget {
     width: 100%;
     max-width: 100%;
     /* min-width: 230px; */
@@ -32,13 +32,13 @@
     display: flex;
     min-width: 0;
     background-color: #fff;
-    height: 700px;
+    height: 300px;
     color: #333;
     word-wrap: break-word;
     background-clip: border-box;
 }
 
-.dashboard-widget-card-body1 {
+.analytic-widget-card-body {
     padding: 20px;
     flex: 1 1 auto;
     display: flex;

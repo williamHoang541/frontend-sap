@@ -61,10 +61,7 @@ const AllTopic = () => {
                 <>
                     <Popup
                         trigger={
-                            <Button
-                                type="link"
-                                className="instructor_button_edit"
-                            >
+                            <Button type="link" className="topic_button_edit">
                                 <MdModeEditOutline />
                             </Button>
                         }
@@ -86,7 +83,7 @@ const AllTopic = () => {
                                         close(); // Đóng popup sau khi lưu
                                     }}
                                 >
-                                    <div className="all_instructor_input">
+                                    <div className="all_topic_input">
                                         <Form.Item
                                             name="phone"
                                             label="Topic Name"
@@ -123,7 +120,7 @@ const AllTopic = () => {
                         type="link"
                         danger
                         onClick={() => handleDelete(record.id)}
-                        className="instructor_button_delete"
+                        className="topic_button_delete"
                     >
                         <RiDeleteBin6Line />
                     </Button>

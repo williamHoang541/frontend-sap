@@ -10,25 +10,23 @@ const AddTopic = () => {
     };
 
     return (
-        <div className="add_instructor">
-            <div className="add_instructor_title_container">
-                <div className="add_instructor_title_left">
-                    <div className="add_instructor_title">Add Topic</div>
+        <div className="add_topic">
+            <div className="add_topic_title_container">
+                <div className="add_topic_title_left">
+                    <div className="add_topic_title">Add Topic</div>
                 </div>
-                <div className="add_instructor_instructor_right">
-                    <div className="add_instructor_instructor">Topic Area</div>
-                    <SlArrowRight className="add_instructor_icon_right" />
-                    <div className="add_instructor_add_instructors">
-                        Add Topic
-                    </div>
+                <div className="add_topic_topic_right">
+                    <div className="add_topic_topic">Topic Area</div>
+                    <SlArrowRight className="add_topic_icon_right" />
+                    <div className="add_topic_add_topics">Add Topic</div>
                 </div>
             </div>
 
-            <div className="add_instructor_form_container">
-                <div className="add_instructor_label">Basic Info</div>
-                <form className="add_instructor_form">
-                    <div className="add_instructor_input_row">
-                        <div className="add_instructor_input_colum">
+            <div className="add_topic_form_container">
+                <div className="add_topic_label">Basic Info</div>
+                <form className="add_topic_form">
+                    <div className="add_topic_input_row">
+                        <div className="add_topic_input_colum">
                             <label>Certificate Name</label>
                             <select
                                 value={selectedGender}
@@ -44,25 +42,25 @@ const AddTopic = () => {
                             </select>
                         </div>
                     </div>
-                    <div className="add_instructor_input_row">
-                        <div className="add_instructor_input_colum">
+                    <div className="add_topic_input_row">
+                        <div className="add_topic_input_colum">
                             <label htmlFor="name">Topic Name</label>
                             <input
                                 type="text"
                                 id="name"
-                                className="add_instructor_input"
+                                className="add_topic_input"
                                 placeholder="Enter the full name"
                             />
                         </div>
                     </div>
 
-                    <div className="add_instructor_input_row">
-                        <div className="add_instructor_input_colum">
+                    <div className="add_topic_input_row">
+                        <div className="add_topic_input_colum">
                             <label htmlFor="joining_date">Topic Details</label>
                             <input
                                 type="text"
                                 id="joining_date"
-                                className="add_instructor_input"
+                                className="add_topic_input"
                                 placeholder="Topic Details"
                             />
                         </div>

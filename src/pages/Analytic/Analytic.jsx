@@ -66,10 +66,10 @@ const Analytic = () => {
     return (
         <div className="analytic">
             {/* Widget */}
-            <div className="dashboard-widget-wrapper">
-                <div className="dashboard-widget">
-                    <div className="dashboard-widget-card">
-                        <div className="dashboard-widget-card-body1">
+            <div className="analytic-widget-wrapper">
+                <div className="analytic-widget">
+                    <div className="analytic-widget-card">
+                        <div className="analytic-widget-card-body">
                             <div className="txt">
                                 <h2 class="mb-2">839</h2>
                                 <p>Subscribers</p>
@@ -99,9 +99,13 @@ const Analytic = () => {
                         </div>
                     </div>
                 </div>
-                <div className="dashboard-widget">
-                    <div className="dashboard-widget-card">
-                        <div className="dashboard-widget-card-body1">
+                <div className="analytic-widget">
+                    <div className="analytic-widget-card">
+                        <div className="analytic-widget-card-body">
+                            <div className="txt">
+                                <h2 class="mb-2">950</h2>
+                                <p>Weekly Visitors</p>
+                            </div>
                             <ResponsiveContainer width="100%" height="100%">
                                 <LineChart width={300} height={100} data={data}>
                                     <Line
@@ -122,9 +126,13 @@ const Analytic = () => {
                         </div>
                     </div>
                 </div>
-                <div className="dashboard-widget">
+                <div className="analytic-widget">
                     <div className="analytic-widget-card">
-                        <div className="dashboard-widget-card-body1">
+                        <div className="analytic-widget-card-body">
+                            <div className="txt">
+                                <h2 class="mb-2">20</h2>
+                                <p>Weekly Sales</p>
+                            </div>
                             <ResponsiveContainer width="100%" height="100%">
                                 <ComposedChart
                                     width={500}

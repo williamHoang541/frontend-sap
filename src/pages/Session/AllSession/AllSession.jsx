@@ -218,12 +218,12 @@ const AllSession = () => {
         <div className="session">
             <div className="session_title_container">
                 <div className="session_title_left">
-                    <div className="session_title">All Instructors</div>
+                    <div className="session_title">All Sessions</div>
                 </div>
                 <div className="session_session_right">
-                    <div className="session_session">Instructors</div>
+                    <div className="session_session">Sessions</div>
                     <SlArrowRight className="session_icon_right" />
-                    <div className="session_all_sessions">All Instructors</div>
+                    <div className="session_all_sessions">All Sessions</div>
                 </div>
             </div>
 

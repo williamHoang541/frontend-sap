@@ -9,6 +9,7 @@ import "./AllTopic.css";
 
 const AllTopic = () => {
     const [data, setData] = useState([]); // Khởi tạo mảng dữ liệu
+    const [certificates, setCertificates] = useState([]); // Khởi tạo mảng chứng chỉ
     const [loading, setLoading] = useState(false);
     const [tableParams, setTableParams] = useState({
         pagination: {
@@ -32,9 +33,16 @@ const AllTopic = () => {
         },
         {
             title: "Certificate Name",
-            dataIndex: "name",
+            dataIndex: "certificateId",
             sorter: true,
             width: "15%",
+            render: (certificateId) => {
+                // Tìm certificate name dựa vào certificateId
+                const certificate = certificates.find(
+                    (cert) => cert.id === certificateId
+                );
+                return certificate ? certificate.certificateName : "N/A";
+            },
         },
         {
             title: "Topic Name",
@@ -147,16 +155,22 @@ const AllTopic = () => {
     const fetchData = async (pagination) => {
         setLoading(true);
         try {
-            const response = await axios.get(
-                `https://swdsapelearningapi.azurewebsites.net/api/TopicArea/get-all`
-            );
-            const results = response.data.$values; // Lấy dữ liệu từ response
+            const [topicResponse, certificateResponse] = await Promise.all([
+                axios.get(
+                    `https://swdsapelearningapi.azurewebsites.net/api/TopicArea/get-all`
+                ),
+                axios.get(
+                    `https://swdsapelearningapi.azurewebsites.net/api/Certificate/get-all`
+                ),
+            ]);
 
-            // Kiểm tra xem results có phải là mảng không
-            if (Array.isArray(results)) {
+            const topicResults = topicResponse.data.$values;
+            const certificateResults = certificateResponse.data.$values;
+
+            if (Array.isArray(topicResults)) {
                 const startIndex =
                     (pagination.current - 1) * pagination.pageSize;
-                const paginatedData = results.slice(
+                const paginatedData = topicResults.slice(
                     startIndex,
                     startIndex + pagination.pageSize
                 ); // Phân trang dữ liệu
@@ -166,12 +180,13 @@ const AllTopic = () => {
                     ...prevParams,
                     pagination: {
                         ...pagination,
-                        total: results.length,
+                        total: topicResults.length,
                     },
                 }));
-            } else {
-                console.error("Fetched data is not an array:", results);
-                setData([]); // Đặt lại dữ liệu nếu không hợp lệ
+            }
+
+            if (Array.isArray(certificateResults)) {
+                setCertificates(certificateResults); // Lưu danh sách chứng chỉ
             }
         } catch (error) {
             console.error("Error fetching data:", error);

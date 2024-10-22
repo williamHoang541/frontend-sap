@@ -21,6 +21,8 @@ const AllCertificate = () => {
   });
   const [form] = Form.useForm();
   const [sapModules, setSapModules] = useState([]);
+  const [descriptionPopupOpen, setDescriptionPopupOpen] = useState(false);
+  const [selectedDescription, setSelectedDescription] = useState("");
 
   const fetchSapModules = async () => {
     try {
@@ -87,6 +89,15 @@ const AllCertificate = () => {
     {
       title: "Description",
       dataIndex: "description",
+      render: (text) => (
+        <Button
+          type="link"
+          onClick={() => handleViewDetail(text)}
+          className="button_view"
+        >
+          View
+        </Button>
+      ),
       width: "16%",
     },
     {
@@ -188,6 +199,11 @@ const AllCertificate = () => {
     },
   ];
 
+    const handleViewDetail = (description) => {
+    setSelectedDescription(description);
+    setDescriptionPopupOpen(true);
+  };
+
   const handleEdit = (values, id) => {
     const updatedData = data.map(
       (item) => (item.id === id ? { ...item, ...values, id } : item) // Cập nhật thông tin người dùng
@@ -277,6 +293,26 @@ const AllCertificate = () => {
           onChange={handleTableChange}
         />
       </div>
+
+        {/* Popup hiển thị mô tả */}
+      <Popup
+        open={descriptionPopupOpen}
+        onClose={() => setDescriptionPopupOpen(false)}
+      >
+        <div className="popup_container">
+          <h2>Description Detail</h2>
+          <p>{selectedDescription}</p>
+          <div className="popup_button_1">
+            <Button
+              type="button"
+              onClick={() => setDescriptionPopupOpen(false)}
+              className="button_close"
+            >
+              Close
+            </Button>
+          </div>
+        </div>
+      </Popup>
     </div>
   );
 };

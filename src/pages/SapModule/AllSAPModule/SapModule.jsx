@@ -1,4 +1,4 @@
-import { Button, Form, Table } from "antd";
+import { Button, Form, Radio, Table } from "antd";
 import { useEffect, useState } from "react";
 import "./SapModule.css";
 import { SlArrowRight } from "react-icons/sl";
@@ -9,26 +9,494 @@ import Popup from "reactjs-popup";
 import { MdModeEditOutline } from "react-icons/md";
 import axios from "axios";
 
+// const SapModule = () => {
+//   const [data, setData] = useState([]);
+//   const [loading, setLoading] = useState(false);
+//   const [tableParams, setTableParams] = useState({
+//     pagination: {
+//       current: 1,
+//       pageSize: 10,
+//       total: 0,
+//     },
+//   });
+//   const [form] = Form.useForm();
+
+//   const columns = [
+//     {
+//       title: "No.",
+//       width: "7%",
+//       render: (_, __, index) =>
+//         (tableParams.pagination.current - 1) * tableParams.pagination.pageSize +
+//         index +
+//         1,
+//     },
+//     {
+//       title: "Name SAP Module",
+//       dataIndex: "moduleName",
+//       sorter: (a, b) => (a.moduleName || "").localeCompare(b.moduleName || ""),
+//       width: "35%",
+//     },
+
+//     {
+//       title: "Description",
+//       dataIndex: "moduleDescription",
+//       sorter: (a, b) =>
+//         (a.moduleDescription || "").localeCompare(b.moduleDescription || ""),
+//       width: "35%",
+//     },
+//     {
+//       title: "Status",
+//       dataIndex: "status",
+//       width: "10%",
+//       render: (status) => (
+//         <span
+//           className={`sap_module_status_indicator ${
+//             status ? "active" : "inactive"
+//           }`}
+//         />
+//       ),
+//     },
+//     {
+//       title: "Action",
+//       render: (_, record) => (
+//         <>
+//           <Popup
+//             trigger={
+//               <Button type="link" className="instructor_button_edit">
+//                 <MdModeEditOutline />
+//               </Button>
+//             }
+//             modal
+//             closeOnDocumentClick
+//             onOpen={() =>
+//               form.setFieldsValue({
+//                 nameSAPModule: record.moduleName,
+//                 description: record.moduleDescription,
+//               })
+//             }
+//           >
+//             {(close) => (
+//               <div className="popup_container">
+//                 <h2>Edit SAP Module</h2>
+//                 <Form
+//                   form={form}
+//                   onFinish={(values) => {
+//                     handleEdit(values, record.id);
+//                     close(); // Đóng popup sau khi lưu
+//                   }}
+//                 >
+//                   <div className="sap_module_input">
+//                     <Form.Item name="nameSAPModule" label="Name SAP Module">
+//                       <input
+//                         type="text"
+//                         className="sap_module_form"
+//                         placeholder="Enter name"
+//                       />
+//                     </Form.Item>
+//                     <Form.Item name="description" label="Description">
+//                       <textarea
+//                         className="sap_module_form"
+//                         placeholder="Enter description"
+//                         rows={5}
+//                       />
+//                     </Form.Item>
+//                   </div>
+
+//                 </Form>
+//                 <div className="popup_button">
+//                     <Button
+//                       className="button_save"
+//                       type="primary"
+//                       htmlType="submit"
+//                     >
+//                       Save
+//                     </Button>
+//                     <Button
+//                       className="button_cancel"
+//                       type="button"
+//                       onClick={close}
+//                     >
+//                       Cancel
+//                     </Button>
+//                   </div>
+//               </div>
+//             )}
+//           </Popup>
+//           <Button
+//             type="link"
+//             danger
+//             onClick={() => handleDelete(record.login.uuid)}
+//             className="instructor_button_delete"
+//           >
+//             <RiDeleteBin6Line />
+//           </Button>
+//         </>
+//       ),
+//       width: "10%",
+//     },
+//   ];
+
+//   const handleEdit = (values, id) => {
+//     const updatedData = data.map(
+//       (item) => (item.id === id ? { ...item, ...values, id } : item) // Cập nhật thông tin người dùng
+//     );
+//     setData(updatedData);
+//     form.resetFields();
+//   };
+
+//   const handleDelete = (id) => {
+//     setData((prevData) => prevData.filter((item) => item.id !== id));
+//   };
+
+//   const fetchData = async (pagination) => {
+//     setLoading(true);
+//     try {
+//       const response = await axios.get(
+//         `https://swdsapelearningapi.azurewebsites.net/api/SapModule/get-all`
+//       );
+//       const results = response.data.$values; // Lấy dữ liệu từ response
+
+//       // Kiểm tra xem results có phải là mảng không
+//       if (Array.isArray(results)) {
+//         const startIndex = (pagination.current - 1) * pagination.pageSize;
+//         const paginatedData = results.slice(
+//           startIndex,
+//           startIndex + pagination.pageSize
+//         ); // Phân trang dữ liệu
+
+//         setData(paginatedData);
+//         setTableParams((prevParams) => ({
+//           ...prevParams,
+//           pagination: {
+//             ...pagination,
+//             total: results.length,
+//           },
+//         }));
+//       } else {
+//         console.error("Fetched data is not an array:", results);
+//         setData([]); // Đặt lại dữ liệu nếu không hợp lệ
+//       }
+//     } catch (error) {
+//       console.error("Error fetching data:", error);
+//     } finally {
+//       setLoading(false);
+//     }
+//   };
+
+//   useEffect(() => {
+//     fetchData(tableParams.pagination);
+//   }, [tableParams.pagination.current, tableParams.pagination.pageSize]);
+
+//   const handleTableChange = (pagination, filters, sorter) => {
+//     setTableParams({
+//       pagination,
+//       filters,
+//       sortOrder: Array.isArray(sorter) ? undefined : sorter.order,
+//       sortField: Array.isArray(sorter) ? undefined : sorter.field,
+//     });
+//   };
+
+//   return (
+//     <div className="sap_module">
+//       <div className="student_title_container">
+//         <div className="student_title_left">
+//           <div className="student_title">All SAP Modules</div>
+//         </div>
+//         <div className="student_student_right">
+//           <div className="student_student">SAP Module</div>
+//           <SlArrowRight className="student_icon_right" />
+//           <div className="student_all_students">All SAP Modules</div>
+//         </div>
+//       </div>
+
+//       <div className="sap_module_table_container">
+//         <Link to={PATH_NAME.ADD_SAP_MODULE}>
+//           <button className="sap_module_add">Add New</button>
+//         </Link>
+//         <Table
+//           columns={columns}
+//           rowKey={(record) => record.id}
+//           dataSource={Array.isArray(data) ? data : []}
+//           pagination={{
+//             ...tableParams.pagination,
+//             showSizeChanger: true,
+//             pageSizeOptions: ["10", "20", "50"],
+//           }}
+//           loading={loading}
+//           onChange={handleTableChange}
+//         />
+//       </div>
+//     </div>
+//   );
+// };
+
+// export default SapModule;
+
+// const SapModule = () => {
+//   const [data, setData] = useState([]);
+//   const [loading, setLoading] = useState(false);
+//   const [tableParams, setTableParams] = useState({
+//     pagination: { current: 1, pageSize: 10, total: 0 },
+//   });
+//   const [form] = Form.useForm();
+//   const [descriptionPopupOpen, setDescriptionPopupOpen] = useState(false);
+//   const [selectedDescription, setSelectedDescription] = useState("");
+
+//   const columns = [
+//     {
+//       title: "No.",
+//       width: "7%",
+//       render: (_, __, index) =>
+//         (tableParams.pagination.current - 1) * tableParams.pagination.pageSize +
+//         index +
+//         1,
+//     },
+//     {
+//       title: "Name SAP Module",
+//       dataIndex: "moduleName",
+//       sorter: (a, b) => (a.moduleName || "").localeCompare(b.moduleName || ""),
+//       width: "35%",
+//     },
+//     {
+//       title: "Description",
+//       dataIndex: "moduleDescription",
+//       render: (text) => (
+//         <Button
+//           type="link"
+//           onClick={() => handleViewDetail(text)}
+//           className="button_view"
+//         >
+//           View
+//         </Button>
+//       ),
+//       width: "20%",
+//     },
+//     {
+//       title: "Status",
+//       dataIndex: "status",
+//       width: "10%",
+//       render: (status) => (
+//         <span
+//           className={`sap_module_status_indicator ${
+//             status ? "active" : "inactive"
+//           }`}
+//         />
+//       ),
+//     },
+//     {
+//       title: "Action",
+//       render: (_, record) => (
+//         <>
+//           <Popup
+//             trigger={
+//               <Button type="link" className="instructor_button_edit">
+//                 <MdModeEditOutline />
+//               </Button>
+//             }
+//             modal
+//             closeOnDocumentClick
+//             onOpen={() =>
+//               form.setFieldsValue({
+//                 nameSAPModule: record.moduleName,
+//                 description: record.moduleDescription,
+//               })
+//             }
+//           >
+//             {(close) => (
+//               <div className="popup_container">
+//                 <h2>Edit SAP Module</h2>
+//                 <Form
+//                   form={form}
+//                   onFinish={(values) => {
+//                     handleEdit(values, record.id);
+//                     close(); // Đóng popup sau khi lưu
+//                   }}
+//                 >
+//                   <div className="sap_module_input">
+//                     <Form.Item name="nameSAPModule" label="Name SAP Module">
+//                       <input
+//                         type="text"
+//                         className="sap_module_form"
+//                         placeholder="Enter name"
+//                       />
+//                     </Form.Item>
+//                     <Form.Item name="description" label="Description">
+//                       <textarea
+//                         className="sap_module_form"
+//                         placeholder="Enter description"
+//                         rows={5}
+//                       />
+//                     </Form.Item>
+//                   </div>
+//                   <div className="popup_button">
+//                     <Button
+//                       className="button_save"
+//                       type="primary"
+//                       htmlType="submit"
+//                     >
+//                       Save
+//                     </Button>
+//                     <Button
+//                       className="button_cancel"
+//                       type="button"
+//                       onClick={close}
+//                     >
+//                       Cancel
+//                     </Button>
+//                   </div>
+//                 </Form>
+//               </div>
+//             )}
+//           </Popup>
+//           <Button
+//             type="link"
+//             danger
+//             onClick={() => handleDelete(record.id)}
+//             className="instructor_button_delete"
+//           >
+//             <RiDeleteBin6Line />
+//           </Button>
+//         </>
+//       ),
+//       width: "10%",
+//     },
+//   ];
+
+//   const handleViewDetail = (description) => {
+//     setSelectedDescription(description);
+//     setDescriptionPopupOpen(true);
+//   };
+
+//   const handleEdit = (values, id) => {
+//     const updatedData = data.map(
+//       (item) =>
+//       (item.id === id ? { ...item, ...values, id } : item)
+//     );
+//     setData(updatedData);
+//     form.resetFields();
+//   };
+
+//   const handleDelete = (id) => {
+//     setData((prevData) => prevData.filter((item) => item.id !== id));
+//   };
+
+//   const fetchData = async (pagination) => {
+//     setLoading(true);
+//     try {
+//       const response = await axios.get(
+//         `https://swdsapelearningapi.azurewebsites.net/api/SapModule/get-all`
+//       );
+//       const results = response.data.$values;
+
+//       if (Array.isArray(results)) {
+//         const startIndex = (pagination.current - 1) * pagination.pageSize;
+//         const paginatedData = results.slice(
+//           startIndex,
+//           startIndex + pagination.pageSize
+//         );
+//         setData(paginatedData);
+//         setTableParams((prevParams) => ({
+//           ...prevParams,
+//           pagination: {
+//             ...pagination,
+//             total: results.length,
+//           },
+//         }));
+//       } else {
+//         console.error("Fetched data is not an array:", results);
+//         setData([]);
+//       }
+//     } catch (error) {
+//       console.error("Error fetching data:", error);
+//     } finally {
+//       setLoading(false);
+//     }
+//   };
+
+//   useEffect(() => {
+//     fetchData(tableParams.pagination);
+//   }, [tableParams.pagination.current, tableParams.pagination.pageSize]);
+
+//   const handleTableChange = (pagination, filters, sorter) => {
+//     setTableParams({
+//       pagination,
+//       filters,
+//       sortOrder: Array.isArray(sorter) ? undefined : sorter.order,
+//       sortField: Array.isArray(sorter) ? undefined : sorter.field,
+//     });
+//   };
+
+//   return (
+//     <div className="sap_module">
+//       <div className="student_title_container">
+//         <div className="student_title_left">
+//           <div className="student_title">All SAP Modules</div>
+//         </div>
+//         <div className="student_student_right">
+//           <div className="student_student">SAP Module</div>
+//           <SlArrowRight className="student_icon_right" />
+//           <div className="student_all_students">All SAP Modules</div>
+//         </div>
+//       </div>
+
+//       <div className="sap_module_table_container">
+//         <Link to={PATH_NAME.ADD_SAP_MODULE}>
+//           <button className="sap_module_add">Add New</button>
+//         </Link>
+//         <Table
+//           columns={columns}
+//           rowKey={(record) => record.id}
+//           dataSource={Array.isArray(data) ? data : []}
+//           pagination={{
+//             ...tableParams.pagination,
+//             showSizeChanger: true,
+//             pageSizeOptions: ["10", "20", "50"],
+//           }}
+//           loading={loading}
+//           onChange={handleTableChange}
+//         />
+//       </div>
+
+//       {/* Popup hiển thị mô tả */}
+//       <Popup
+//         open={descriptionPopupOpen}
+//         onClose={() => setDescriptionPopupOpen(false)}
+//       >
+//         <div className="popup_container">
+//           <h2>Description Detail</h2>
+//           <p>{selectedDescription}</p>
+//           <div className="popup_button_1">
+//             <Button
+//               type="button"
+//               onClick={() => setDescriptionPopupOpen(false)}
+//               className="button_close"
+//             >
+//               Close
+//             </Button>
+//           </div>
+//         </div>
+//       </Popup>
+//     </div>
+//   );
+// };
+
+// export default SapModule;
 const SapModule = () => {
   const [data, setData] = useState([]);
   const [loading, setLoading] = useState(false);
   const [tableParams, setTableParams] = useState({
-    pagination: {
-      current: 1,
-      pageSize: 10,
-      total: 0,
-    },
+    pagination: { current: 1, pageSize: 10, total: 0 },
   });
   const [form] = Form.useForm();
+  const [descriptionPopupOpen, setDescriptionPopupOpen] = useState(false);
+  const [selectedDescription, setSelectedDescription] = useState("");
 
   const columns = [
     {
       title: "No.",
       width: "7%",
       render: (_, __, index) =>
-        (tableParams.pagination.current - 1) * tableParams.pagination.pageSize +
-        index +
-        1,
+        (tableParams.pagination.current - 1) * tableParams.pagination.pageSize + index + 1,
     },
     {
       title: "Name SAP Module",
@@ -36,13 +504,19 @@ const SapModule = () => {
       sorter: (a, b) => (a.moduleName || "").localeCompare(b.moduleName || ""),
       width: "35%",
     },
-
     {
       title: "Description",
       dataIndex: "moduleDescription",
-      sorter: (a, b) =>
-        (a.moduleDescription || "").localeCompare(b.moduleDescription || ""),
-      width: "35%",
+      render: (text) => (
+        <Button
+          type="link"
+          onClick={() => handleViewDetail(text)}
+          className="button_view"
+        >
+          View
+        </Button>
+      ),
+      width: "20%",
     },
     {
       title: "Status",
@@ -50,9 +524,7 @@ const SapModule = () => {
       width: "10%",
       render: (status) => (
         <span
-          className={`sap_module_status_indicator ${
-            status ? "active" : "inactive"
-          }`}
+          className={`sap_module_status_indicator ${status ? "active" : "inactive"}`}
         />
       ),
     },
@@ -68,20 +540,21 @@ const SapModule = () => {
             }
             modal
             closeOnDocumentClick
-            onOpen={() =>
+            onOpen={() => {
               form.setFieldsValue({
-                nameSAPModule: record.moduleName,
-                description: record.moduleDescription,
-              })
-            }
+                nameSAPModule: record.moduleName || '',
+                description: record.moduleDescription || '',
+                status: record.status,
+              });
+            }}
           >
             {(close) => (
               <div className="popup_container">
                 <h2>Edit SAP Module</h2>
                 <Form
                   form={form}
-                  onFinish={(values) => {
-                    handleEdit(values, record.id);
+                  onFinish={async (values) => {
+                    await handleEdit(values, record.id);
                     close(); // Đóng popup sau khi lưu
                   }}
                 >
@@ -97,14 +570,17 @@ const SapModule = () => {
                       <textarea
                         className="sap_module_form"
                         placeholder="Enter description"
-                        rows={5} 
+                        rows={5}
                       />
                     </Form.Item>
                   </div>
-
-                  
-                </Form>
-                <div className="popup_button">
+                  <Form.Item name="status" label="Status">
+                      <Radio.Group>
+                        <Radio value={true}>Active</Radio>
+                        <Radio value={false}>Inactive</Radio>
+                      </Radio.Group>
+                    </Form.Item>
+                  <div className="popup_button">
                     <Button
                       className="button_save"
                       type="primary"
@@ -120,13 +596,14 @@ const SapModule = () => {
                       Cancel
                     </Button>
                   </div>
+                </Form>
               </div>
             )}
           </Popup>
           <Button
             type="link"
             danger
-            onClick={() => handleDelete(record.login.uuid)}
+            onClick={() => handleDelete(record.id)}
             className="instructor_button_delete"
           >
             <RiDeleteBin6Line />
@@ -137,12 +614,36 @@ const SapModule = () => {
     },
   ];
 
-  const handleEdit = (values, id) => {
-    const updatedData = data.map(
-      (item) => (item.id === id ? { ...item, ...values, id } : item) // Cập nhật thông tin người dùng
-    );
-    setData(updatedData);
-    form.resetFields();
+  const handleViewDetail = (description) => {
+    setSelectedDescription(description);
+    setDescriptionPopupOpen(true);
+  };
+
+  const handleEdit = async (values, id) => {
+    try {
+      const updateData = {
+        moduleName: values.nameSAPModule,
+        moduleDescription: values.description,
+        status: values.status,
+      };
+
+      const response = await axios.put(
+        `https://swdsapelearningapi.azurewebsites.net/api/SapModule/update/${id}`,
+        updateData
+      );
+
+      if (response.status === 200) {
+        const updatedData = data.map(item => 
+          item.id === id ? { ...item, ...updateData } : item
+        );
+        setData(updatedData); // Cập nhật state với dữ liệu mới
+        form.resetFields(); // Reset form sau khi lưu
+      } else {
+        console.error("Error updating data:", response.data);
+      }
+    } catch (error) {
+      console.error("Error updating data:", error.response ? error.response.data : error.message);
+    }
   };
 
   const handleDelete = (id) => {
@@ -152,19 +653,15 @@ const SapModule = () => {
   const fetchData = async (pagination) => {
     setLoading(true);
     try {
-      const response = await axios.get(
-        `https://swdsapelearningapi.azurewebsites.net/api/SapModule/get-all`
-      );
-      const results = response.data.$values; // Lấy dữ liệu từ response
+      const response = await axios.get(`https://swdsapelearningapi.azurewebsites.net/api/SapModule/get-all`);
+      const results = response.data.$values;
 
-      // Kiểm tra xem results có phải là mảng không
       if (Array.isArray(results)) {
         const startIndex = (pagination.current - 1) * pagination.pageSize;
         const paginatedData = results.slice(
           startIndex,
           startIndex + pagination.pageSize
-        ); // Phân trang dữ liệu
-
+        );
         setData(paginatedData);
         setTableParams((prevParams) => ({
           ...prevParams,
@@ -175,7 +672,7 @@ const SapModule = () => {
         }));
       } else {
         console.error("Fetched data is not an array:", results);
-        setData([]); // Đặt lại dữ liệu nếu không hợp lệ
+        setData([]);
       }
     } catch (error) {
       console.error("Error fetching data:", error);
@@ -227,6 +724,26 @@ const SapModule = () => {
           onChange={handleTableChange}
         />
       </div>
+
+      {/* Popup hiển thị mô tả */}
+      <Popup
+        open={descriptionPopupOpen}
+        onClose={() => setDescriptionPopupOpen(false)}
+      >
+        <div className="popup_container">
+          <h2>Description Detail</h2>
+          <p>{selectedDescription}</p>
+          <div className="popup_button_1">
+            <Button
+              type="button"
+              onClick={() => setDescriptionPopupOpen(false)}
+              className="button_close"
+            >
+              Close
+            </Button>
+          </div>
+        </div>
+      </Popup>
     </div>
   );
 };

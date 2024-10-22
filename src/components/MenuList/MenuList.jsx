@@ -24,6 +24,16 @@ const MenuList = () => {
       label: <Link to={PATH_NAME.DASHBOARD}>Dashboard</Link>,
     },
     {
+      key: "students",
+      icon: <PiUsersThree />,
+      label: <Link to={PATH_NAME.STUDENT}>Student</Link>,
+    },
+    {
+      key: "instructors",
+      icon: <LuUsers2 />,
+      label: <Link to={PATH_NAME.INSTRUCTOR}> Instructor</Link>,
+    },
+    {
       key: "module",
       icon: <MdViewModule />,
       label: <Link to={PATH_NAME.SAP_MODULE}> SAP Module</Link>,
@@ -68,16 +78,7 @@ const MenuList = () => {
       label: <Link to={PATH_NAME.QUESTION_BANK}>Question Bank</Link>,
       
     },
-    {
-      key: "students",
-      icon: <PiUsersThree />,
-      label: <Link to={PATH_NAME.STUDENT}>Student</Link>,
-    },
-    {
-      key: "instructors",
-      icon: <LuUsers2 />,
-      label: <Link to={PATH_NAME.INSTRUCTOR}> Instructor</Link>,
-    },
+    
     {
       key: "payment",
       icon: <PiCoinsLight />,

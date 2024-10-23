@@ -154,6 +154,7 @@ const AllTopic = () => {
                 `https://swdsapelearningapi.azurewebsites.net/api/TopicArea/${id}`,
                 {
                     topicName: values.topicName, // Dữ liệu cần chỉnh sửa, ở đây là topicName
+                    status: values.status,
                 }
             );
 

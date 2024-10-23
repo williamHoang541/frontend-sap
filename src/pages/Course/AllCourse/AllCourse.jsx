@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { Button, Table, Form } from "antd";
+import { Button, Table, Form, Radio } from "antd";
 import Popup from "reactjs-popup";
 import { SlArrowRight } from "react-icons/sl";
 import { RiDeleteBin6Line } from "react-icons/ri";
@@ -45,7 +45,7 @@ const AllCourse = () => {
             dataIndex: "instructorName",
             sorter: (a, b) =>
                 (a.instructorName || "").localeCompare(b.instructorName || ""),
-            width: "15%",
+            width: "12%",
         },
         {
             title: "Mode",
@@ -65,13 +65,13 @@ const AllCourse = () => {
                     {mode.toLowerCase()}
                 </span>
             ),
-            width: "10%",
+            width: "8%",
         },
         {
             title: "Start Date",
             dataIndex: "startTime",
             sorter: true,
-            width: "10%",
+            width: "8%",
             render: (startTime) => {
                 const date = new Date(startTime);
                 return date.toLocaleDateString(); // Chỉ lấy ngày/tháng/năm
@@ -81,9 +81,19 @@ const AllCourse = () => {
             title: "End Date",
             dataIndex: "endTime",
             sorter: true,
-            width: "10%",
+            width: "8%",
             render: (endTime) => {
                 const date = new Date(endTime);
+                return date.toLocaleDateString(); // Chỉ lấy ngày/tháng/năm
+            },
+        },
+        {
+            title: "Enrollment Date",
+            dataIndex: "enrollmentDate",
+            sorter: true,
+            width: "8%",
+            render: (enrollmentDate) => {
+                const date = new Date(enrollmentDate);
                 return date.toLocaleDateString(); // Chỉ lấy ngày/tháng/năm
             },
         },
@@ -97,13 +107,13 @@ const AllCourse = () => {
             title: "Total Student",
             dataIndex: "totalStudent",
             sorter: true,
-            width: "10%",
+            width: "8%",
         },
         {
             title: "Location",
             dataIndex: "location",
             sorter: true,
-            width: "12%",
+            width: "15%",
         },
         {
             title: "Status",
@@ -132,12 +142,13 @@ const AllCourse = () => {
                         onOpen={() =>
                             form.setFieldsValue({
                                 courseName: record.courseName,
-                                instructorName: record.instructorName,
                                 mode: record.mode,
                                 startTime: record.startTime,
                                 endTime: record.endTime,
-                                totalStudent: record.totalStudent,
                                 location: record.location,
+                                enrollmentDate: record.enrollmentDate,
+                                price: record.price,
+                                status: record.status,
                             })
                         }
                     >
@@ -181,18 +192,16 @@ const AllCourse = () => {
                                                 placeholder="Select start date"
                                             />
                                         </Form.Item>
-                                        <Form.Item
+                                        {/* <Form.Item
                                             name="totalStudent"
                                             label="Total Student"
                                         >
                                             <input
-                                                type="text"
+                                                type="number"
                                                 className="all_course_form"
                                                 placeholder="Enter maximum student"
                                             />
-                                        </Form.Item>
-                                    </div>
-                                    <div className="all_course_input">
+                                        </Form.Item> */}
                                         <Form.Item
                                             name="endTime"
                                             label="End Date"
@@ -201,15 +210,6 @@ const AllCourse = () => {
                                                 type="date"
                                                 className="all_course_form"
                                                 placeholder="Select end date"
-                                            />
-                                        </Form.Item>
-                                        <Form.Item
-                                            name="endTime"
-                                            label="End register date"
-                                        >
-                                            <input
-                                                type="date"
-                                                className="all_course_form"
                                             />
                                         </Form.Item>
                                     </div>
@@ -225,16 +225,33 @@ const AllCourse = () => {
                                             />
                                         </Form.Item>
                                         <Form.Item
-                                            name="status"
-                                            label="End status"
+                                            name="enrollmentDate"
+                                            label="End register date"
                                         >
                                             <input
-                                                type="text"
+                                                type="date"
                                                 className="all_course_form"
-                                                placeholder="Select status"
                                             />
                                         </Form.Item>
                                     </div>
+                                    <div className="all_course_input">
+                                        <Form.Item name="status" label="Status">
+                                            <Radio.Group className="status-radio-group">
+                                                <Radio value={true}>True</Radio>
+                                                <Radio value={false}>
+                                                    False
+                                                </Radio>
+                                            </Radio.Group>
+                                        </Form.Item>
+                                        <Form.Item name="price" label="Price">
+                                            <input
+                                                type="number"
+                                                className="all_course_form"
+                                                placeholder="Enter price"
+                                            />
+                                        </Form.Item>
+                                    </div>
+                                    <div className="all_course_input"></div>
                                     <div className="popup_buttons">
                                         <Button
                                             className="button_save"
@@ -269,14 +286,37 @@ const AllCourse = () => {
         },
     ];
 
-    const handleEdit = (values, id) => {
-        const updatedData = data.map(
-            (item) => (item.id === id ? { ...item, ...values, id } : item) // Cập nhật thông tin người dùng
-        );
-        setData(updatedData);
-        form.resetFields();
-    };
+    const handleEdit = async (values, id) => {
+        try {
+            // Lấy thông tin cũ của record (có chứa Instructor name)
+            const existingRecord = data.find((item) => item.id === id);
 
+            // Chỉ ghi đè các trường đã thay đổi trong form, các trường không có trong form sẽ giữ nguyên
+            const updatedRecord = {
+                ...existingRecord, // giữ nguyên dữ liệu cũ (bao gồm Instructor name)
+                ...values, // chỉ cập nhật các trường có trong form
+            };
+
+            // Gửi yêu cầu update với record đã cập nhật
+            const response = await axios.put(
+                `https://swdsapelearningapi.azurewebsites.net/api/Course/${id}`,
+                updatedRecord // gửi toàn bộ bản ghi đã được cập nhật
+            );
+
+            if (response.status === 200) {
+                // Cập nhật lại dữ liệu trên frontend
+                const updatedData = data.map((item) =>
+                    item.id === id ? { ...item, ...updatedRecord } : item
+                );
+                setData(updatedData);
+                form.resetFields(); // reset form sau khi hoàn thành
+            } else {
+                console.error("Update failed:", response);
+            }
+        } catch (error) {
+            console.error("Error updating course:", error);
+        }
+    };
     const handleDelete = (id) => {
         setData((prevData) => prevData.filter((item) => item.id !== id));
     };

@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { SlArrowRight } from "react-icons/sl";
-import { Button, Popconfirm, Table, Form } from "antd";
+import { Button, Popconfirm, Table, Form, Radio } from "antd";
 import { RiDeleteBin6Line } from "react-icons/ri";
 import { MdModeEditOutline } from "react-icons/md";
 import axios from "axios";
@@ -77,13 +77,14 @@ const AllTopic = () => {
                         closeOnDocumentClick
                         onOpen={() =>
                             form.setFieldsValue({
-                                topic_name: record.topicName,
+                                topicName: record.topicName,
+                                status: record.status,
                             })
                         }
                     >
                         {(close) => (
                             <div className="popup_container">
-                                <h2>Edit Instructor</h2>
+                                <h2>Edit Topic</h2>
                                 <Form
                                     form={form}
                                     onFinish={(values) => {
@@ -93,14 +94,22 @@ const AllTopic = () => {
                                 >
                                     <div className="all_topic_input">
                                         <Form.Item
-                                            name="phone"
+                                            name="topicName"
                                             label="Topic Name"
                                         >
                                             <input
                                                 type="text"
-                                                className="all_instructor_form"
+                                                className="all_topic_form"
                                                 placeholder="Enter Topic Name"
                                             />
+                                        </Form.Item>
+                                        <Form.Item name="status" label="Status">
+                                            <Radio.Group className="status-radio-group">
+                                                <Radio value={true}>True</Radio>
+                                                <Radio value={false}>
+                                                    False
+                                                </Radio>
+                                            </Radio.Group>
                                         </Form.Item>
                                     </div>
 
@@ -138,12 +147,29 @@ const AllTopic = () => {
         },
     ];
 
-    const handleEdit = (values, id) => {
-        const updatedData = data.map(
-            (item) => (item.id === id ? { ...item, ...values, id } : item) // Cập nhật thông tin người dùng
-        );
-        setData(updatedData);
-        form.resetFields();
+    const handleEdit = async (values, id) => {
+        try {
+            // Gửi yêu cầu PUT đến API với dữ liệu cập nhật
+            const response = await axios.put(
+                `https://swdsapelearningapi.azurewebsites.net/api/TopicArea/${id}`,
+                {
+                    topicName: values.topicName, // Dữ liệu cần chỉnh sửa, ở đây là topicName
+                }
+            );
+
+            // Nếu API thành công, cập nhật lại dữ liệu trên giao diện
+            if (response.status === 200) {
+                const updatedData = data.map((item) =>
+                    item.id === id ? { ...item, ...values } : item
+                );
+                setData(updatedData);
+                form.resetFields();
+            } else {
+                console.error("Error updating topic:", response);
+            }
+        } catch (error) {
+            console.error("Error during API PUT request:", error);
+        }
     };
 
     const handleDelete = (uuid) => {

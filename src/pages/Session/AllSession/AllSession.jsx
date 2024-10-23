@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { Button, Table, Form } from "antd";
+import { Button, Table, Form, Radio } from "antd";
 import Popup from "reactjs-popup";
 import { SlArrowRight } from "react-icons/sl";
 import { RiDeleteBin6Line } from "react-icons/ri";
@@ -14,6 +14,7 @@ import "./AllSession.css";
 const AllSession = () => {
     const [data, setData] = useState([]);
     const [loading, setLoading] = useState(false);
+    const [instructors, setInstructors] = useState([]);
     const [tableParams, setTableParams] = useState({
         pagination: {
             current: 1,
@@ -21,12 +22,6 @@ const AllSession = () => {
         },
     });
     const [form] = Form.useForm();
-
-    const getRandomuserParams = (params) => ({
-        results: params.pagination?.pageSize,
-        page: params.pagination?.current,
-        ...params,
-    });
 
     const columns = [
         {
@@ -88,6 +83,18 @@ const AllSession = () => {
             },
         },
         {
+            title: "Status",
+            dataIndex: "status",
+            width: "5%",
+            render: (status) => (
+                <span
+                    className={`course_status_indicator ${
+                        status ? "active" : "inactive"
+                    }`}
+                />
+            ),
+        },
+        {
             title: "Action",
             render: (_, record) => (
                 <>
@@ -99,24 +106,23 @@ const AllSession = () => {
                         }
                         modal
                         closeOnDocumentClick
-                        onOpen={() =>
+                        onOpen={() => {
+                            console.log("ID:", record.$id); // Kiểm tra giá trị ID
                             form.setFieldsValue({
-                                courseName: record.courseName,
-                                instructorName: record.instructorName,
-                                topicName: record.topicName,
+                                instructorId: record.instructorId,
                                 sessionName: record.sessionName,
                                 sessionDescription: record.sessionDescription,
                                 sessionDate: record.sessionDate,
-                            })
-                        }
+                            });
+                        }}
                     >
                         {(close) => (
                             <div className="popup_container">
-                                <h2>Edit Instructor</h2>
+                                <h2>Edit Session</h2>
                                 <Form
                                     form={form}
                                     onFinish={(values) => {
-                                        handleEdit(values, record.id);
+                                        handleEdit(values, record.$id);
                                         close(); // Đóng popup sau khi lưu
                                     }}
                                 >
@@ -131,6 +137,20 @@ const AllSession = () => {
                                                 placeholder="Enter session name"
                                             />
                                         </Form.Item>
+                                        {/* <Form.Item
+                                            name="instructorId"
+                                            label="Instructor"
+                                        >
+                                            <Select
+                                                placeholder="Select instructor"
+                                                options={instructors.map(
+                                                    (inst) => ({
+                                                        label: inst.instructorIdName,
+                                                        value: inst.instructorName,
+                                                    })
+                                                )}
+                                            />
+                                        </Form.Item> */}
                                     </div>
                                     <div className="all_session_input">
                                         <Form.Item
@@ -153,6 +173,14 @@ const AllSession = () => {
                                                 type="date"
                                                 className="all_session_form"
                                             />
+                                        </Form.Item>
+                                        <Form.Item name="status" label="Status">
+                                            <Radio.Group className="status-group">
+                                                <Radio value={true}>True</Radio>
+                                                <Radio value={false}>
+                                                    False
+                                                </Radio>
+                                            </Radio.Group>
                                         </Form.Item>
                                     </div>
                                     <div className="popup_buttons">
@@ -189,12 +217,33 @@ const AllSession = () => {
         },
     ];
 
-    const handleEdit = (values, id) => {
-        const updatedData = data.map(
-            (item) => (item.id === id ? { ...item, ...values, id } : item) // Cập nhật thông tin người dùng
-        );
-        setData(updatedData);
-        form.resetFields();
+    const handleEdit = async (values, id) => {
+        if (!id) {
+            console.error("ID is undefined. Cannot update record.");
+            return; // Dừng lại nếu ID không hợp lệ
+        }
+
+        try {
+            const existingRecord = data.find((item) => item.$id === id);
+            const updatedRecord = { ...existingRecord, ...values };
+
+            const response = await axios.put(
+                `https://swdsapelearningapi.azurewebsites.net/api/CourseSession/${id}`,
+                updatedRecord
+            );
+
+            if (response.status === 200) {
+                const updatedData = data.map((item) =>
+                    item.$id === id ? { ...item, ...updatedRecord } : item
+                );
+                setData(updatedData);
+                form.resetFields();
+            } else {
+                console.error("Update failed:", response);
+            }
+        } catch (error) {
+            console.error("Error updating course:", error);
+        }
     };
 
     const handleDelete = (id) => {
@@ -204,16 +253,48 @@ const AllSession = () => {
     const fetchData = async (pagination) => {
         setLoading(true);
         try {
-            const response = await axios.get(
-                `https://swdsapelearningapi.azurewebsites.net/api/CourseSession/get-all`
-            );
-            const results = response.data.$values; // Lấy dữ liệu từ response
+            // const response = await axios.get(
+            //     `https://swdsapelearningapi.azurewebsites.net/api/CourseSession/get-all`
+            // );
+            // const results = response.data.$values;
 
-            // Kiểm tra xem results có phải là mảng không
-            if (Array.isArray(results)) {
+            // if (Array.isArray(results)) {
+            //     console.log("Fetched data:", results); // Kiểm tra dữ liệu
+            //     const startIndex =
+            //         (pagination.current - 1) * pagination.pageSize;
+            //     const paginatedData = results.slice(
+            //         startIndex,
+            //         startIndex + pagination.pageSize
+            //     );
+            //     setData(paginatedData);
+            //     setTableParams((prevParams) => ({
+            //         ...prevParams,
+            //         pagination: {
+            //             ...pagination,
+            //             total: results.length,
+            //         },
+            //     }));
+            // } else {
+            //     console.error("Fetched data is not an array:", results);
+            //     setData([]);
+            // }
+
+            const [courseResponse, instructorResponse] = await Promise.all([
+                axios.get(
+                    `https://swdsapelearningapi.azurewebsites.net/api/CourseSession/get-all`
+                ),
+                axios.get(
+                    `https://swdsapelearningapi.azurewebsites.net/api/Instructor/get-all`
+                ),
+            ]);
+
+            const courseResults = courseResponse.data.$values;
+            const instructorResults = instructorResponse.data.$values;
+
+            if (Array.isArray(courseResults)) {
                 const startIndex =
                     (pagination.current - 1) * pagination.pageSize;
-                const paginatedData = results.slice(
+                const paginatedData = courseResults.slice(
                     startIndex,
                     startIndex + pagination.pageSize
                 ); // Phân trang dữ liệu
@@ -223,12 +304,13 @@ const AllSession = () => {
                     ...prevParams,
                     pagination: {
                         ...pagination,
-                        total: results.length,
+                        total: courseResults.length,
                     },
                 }));
-            } else {
-                console.error("Fetched data is not an array:", results);
-                setData([]); // Đặt lại dữ liệu nếu không hợp lệ
+            }
+
+            if (Array.isArray(instructorResults)) {
+                setInstructors(instructorResults); // Lưu danh sách chứng chỉ
             }
         } catch (error) {
             console.error("Error fetching data:", error);

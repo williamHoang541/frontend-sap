@@ -72,11 +72,11 @@ const Student = () => {
     },
     {
       title: "Status",
-      dataIndex: "status",
+      dataIndex: "isOnline",
       width: "10%",
-      render: (status) => (
+      render: (isOnline) => (
         <span
-          className={`student_status_indicator ${status ? "active" : "inactive"}`}
+          className={`student_status_indicator ${isOnline ? "active" : "inactive"}`}
         />
       ),
     },
@@ -105,7 +105,7 @@ const Student = () => {
     setLoading(true);
     try {
       const response = await axios.get(
-        `https://swdsapelearningapi.azurewebsites.net/api/User/api/users`
+        `https://swdsapelearningapi.azurewebsites.net/api/User/get-all-student`
       );
       const results = response.data.$values; // Lấy dữ liệu từ response
 

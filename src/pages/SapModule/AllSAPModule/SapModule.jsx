@@ -24,7 +24,9 @@ const SapModule = () => {
       title: "No.",
       width: "7%",
       render: (_, __, index) =>
-        (tableParams.pagination.current - 1) * tableParams.pagination.pageSize + index + 1,
+        (tableParams.pagination.current - 1) * tableParams.pagination.pageSize +
+        index +
+        1,
     },
     {
       title: "Name SAP Module",
@@ -52,7 +54,9 @@ const SapModule = () => {
       width: "10%",
       render: (status) => (
         <span
-          className={`sap_module_status_indicator ${status ? "active" : "inactive"}`}
+          className={`sap_module_status_indicator ${
+            status ? "active" : "inactive"
+          }`}
         />
       ),
     },
@@ -70,8 +74,8 @@ const SapModule = () => {
             closeOnDocumentClick
             onOpen={() => {
               form.setFieldsValue({
-                nameSAPModule: record.moduleName || '',
-                description: record.moduleDescription || '',
+                nameSAPModule: record.moduleName || "",
+                description: record.moduleDescription || "",
                 status: record.status,
               });
             }}
@@ -103,11 +107,11 @@ const SapModule = () => {
                     </Form.Item>
                   </div>
                   <Form.Item name="status" label="Status">
-                      <Radio.Group>
-                        <Radio value={true}>Active</Radio>
-                        <Radio value={false}>Inactive</Radio>
-                      </Radio.Group>
-                    </Form.Item>
+                    <Radio.Group>
+                      <Radio value={true}>Active</Radio>
+                      <Radio value={false}>Inactive</Radio>
+                    </Radio.Group>
+                  </Form.Item>
                   <div className="popup_button">
                     <Button
                       className="button_save"
@@ -161,7 +165,7 @@ const SapModule = () => {
       );
 
       if (response.status === 200) {
-        const updatedData = data.map(item => 
+        const updatedData = data.map((item) =>
           item.id === id ? { ...item, ...updateData } : item
         );
         setData(updatedData); // Cập nhật state với dữ liệu mới
@@ -170,18 +174,19 @@ const SapModule = () => {
         console.error("Error updating data:", response.data);
       }
     } catch (error) {
-      console.error("Error updating data:", error.response ? error.response.data : error.message);
+      console.error(
+        "Error updating data:",
+        error.response ? error.response.data : error.message
+      );
     }
   };
-
-  // const handleDelete = (id) => {
-  //   setData((prevData) => prevData.filter((item) => item.id !== id));
-  // };
 
   const handleDelete = async (id) => {
     try {
       // Gửi yêu cầu xóa đến API
-      const response = await axios.delete(`https://swdsapelearningapi.azurewebsites.net/api/SapModule/${id}`);
+      const response = await axios.delete(
+        `https://swdsapelearningapi.azurewebsites.net/api/SapModule/${id}`
+      );
 
       if (response.status === 204) {
         // Nếu xóa thành công, cập nhật state để loại bỏ mục đã xóa
@@ -190,14 +195,19 @@ const SapModule = () => {
         console.error("Error deleting data:", response.data);
       }
     } catch (error) {
-      console.error("Error deleting data:", error.response ? error.response.data : error.message);
+      console.error(
+        "Error deleting data:",
+        error.response ? error.response.data : error.message
+      );
     }
   };
 
   const fetchData = async (pagination) => {
     setLoading(true);
     try {
-      const response = await axios.get(`https://swdsapelearningapi.azurewebsites.net/api/SapModule/get-all`);
+      const response = await axios.get(
+        `https://swdsapelearningapi.azurewebsites.net/api/SapModule/get-all`
+      );
       const results = response.data.$values;
 
       if (Array.isArray(results)) {

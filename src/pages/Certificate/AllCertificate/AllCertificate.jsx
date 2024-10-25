@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import "./AllCertificate.css";
 import { SlArrowRight } from "react-icons/sl";
-import { Button, Form, Table } from "antd";
+import { Button, Checkbox, Form, Radio, Table } from "antd";
 import Popup from "reactjs-popup";
 import { MdModeEditOutline } from "react-icons/md";
 import { RiDeleteBin6Line } from "react-icons/ri";
@@ -26,8 +26,10 @@ const AllCertificate = () => {
 
   const fetchSapModules = async () => {
     try {
-      const response = await axios.get("https://swdsapelearningapi.azurewebsites.net/api/SapModule/get-all"); 
-      setSapModules(response.data.$values); 
+      const response = await axios.get(
+        "https://swdsapelearningapi.azurewebsites.net/api/SapModule/get-all"
+      );
+      setSapModules(response.data.$values);
     } catch (error) {
       console.error("Error fetching SAP modules:", error);
     }
@@ -64,28 +66,41 @@ const AllCertificate = () => {
     },
     {
       title: "Name SAP Module",
-      dataIndex: "moduleIds", 
+      dataIndex: "moduleIds",
       render: (moduleIds) => {
-        if (!Array.isArray(moduleIds.$values)) return "Unknown"; 
+        if (
+          !Array.isArray(moduleIds.$values) ||
+          moduleIds.$values.length === 0
+        ) {
+          return "Deleted"; // Hiển thị "Deleted" nếu moduleIds trống
+        }
+
         return moduleIds.$values
-          .map(id => {
-            const sapModule = sapModules.find(module => module.id === id); 
-            return sapModule ? sapModule.moduleName : "Unknown"; 
+          .map((id) => {
+            const sapModule = sapModules.find((module) => module.id === id);
+            return sapModule ? sapModule.moduleName : "Deleted"; // Hiển thị "Deleted" nếu không tìm thấy module
           })
-          .join(", "); 
+          .join(", ");
       },
       sorter: (a, b) => {
-        const moduleNamesA = a.moduleIds.$values
-          .map(id => sapModules.find(module => module.id === id)?.moduleName || "")
+        const moduleNamesA = (a.moduleIds.$values || [])
+          .map(
+            (id) =>
+              sapModules.find((module) => module.id === id)?.moduleName ||
+              "Deleted"
+          )
           .join(", ");
-        const moduleNamesB = b.moduleIds.$values
-          .map(id => sapModules.find(module => module.id === id)?.moduleName || "")
+        const moduleNamesB = (b.moduleIds.$values || [])
+          .map(
+            (id) =>
+              sapModules.find((module) => module.id === id)?.moduleName ||
+              "Deleted"
+          )
           .join(", ");
         return moduleNamesA.localeCompare(moduleNamesB);
       },
       width: "16%",
     },
-
     {
       title: "Description",
       dataIndex: "description",
@@ -114,10 +129,12 @@ const AllCertificate = () => {
             closeOnDocumentClick
             onOpen={() =>
               form.setFieldsValue({
-                name_certificate: record.certificateName,
-                description: record.description,
-                level: record.level,
-                env: record.environment,
+                certificateName: record.certificateName || "",
+                description: record.description || "",
+                level: record.level || "",
+                environment: record.environment || "",
+                status: record.status,
+                moduleIds: record.moduleIds.$values || [],
               })
             }
           >
@@ -132,7 +149,7 @@ const AllCertificate = () => {
                   }}
                 >
                   <div className="sap_module_inputs">
-                    <Form.Item name="name_certificate" label="Name Certificate">
+                    <Form.Item name="certificateName" label="Name Certificate">
                       <input
                         type="text"
                         className="sap_module_form"
@@ -156,7 +173,7 @@ const AllCertificate = () => {
                         placeholder="Enter level"
                       />
                     </Form.Item>
-                    <Form.Item name="env" label="Environment">
+                    <Form.Item name="environment" label="Environment">
                       <input
                         type="text"
                         className="sap_module_form"
@@ -165,6 +182,24 @@ const AllCertificate = () => {
                     </Form.Item>
                   </div>
 
+                  <div className="sap_module_input">
+                    <Form.Item name="moduleIds" label="SAP Modules">
+                      <Checkbox.Group>
+                        {sapModules.map((module) => (
+                          <Checkbox key={module.id} value={module.id}>
+                            {module.moduleName}
+                          </Checkbox>
+                        ))}
+                      </Checkbox.Group>
+                    </Form.Item>
+
+                    <Form.Item name="status" label="Status">
+                      <Radio.Group>
+                        <Radio value={true}>Active</Radio>
+                        <Radio value={false}>Inactive</Radio>
+                      </Radio.Group>
+                    </Form.Item>
+                  </div>
                   <div className="popup_buttons">
                     <Button
                       className="button_save"
@@ -199,17 +234,67 @@ const AllCertificate = () => {
     },
   ];
 
-    const handleViewDetail = (description) => {
+  const handleViewDetail = (description) => {
     setSelectedDescription(description);
     setDescriptionPopupOpen(true);
   };
 
-  const handleEdit = (values, id) => {
-    const updatedData = data.map(
-      (item) => (item.id === id ? { ...item, ...values, id } : item) // Cập nhật thông tin người dùng
-    );
-    setData(updatedData);
-    form.resetFields();
+  // const handleEdit = async (values, id) => {
+  //   try {
+  //     // Lấy thông tin cũ của record
+  //     const existingRecord = data.find((item) => item.id === id);
+
+  //     // Chỉ ghi đè các trường đã thay đổi trong form, các trường không có trong form sẽ giữ nguyên
+  //     const updatedRecord = {
+  //       ...existingRecord, // giữ nguyên dữ liệu cũ (bao gồm Instructor name)
+  //       ...values, // chỉ cập nhật các trường có trong form
+  //     };
+
+  //     console.log("Update Data:", updatedRecord);
+
+  //     // Gửi yêu cầu update với record đã cập nhật
+  //     const response = await axios.put(
+  //       `https://swdsapelearningapi.azurewebsites.net/api/Certificate/update/${id}`,
+  //       updatedRecord // gửi toàn bộ bản ghi đã được cập nhật
+  //     );
+
+  //     if (response.status === 200) {
+  //       // Cập nhật lại dữ liệu trên frontend
+  //       const updatedData = data.map((item) =>
+  //         item.id === id ? { ...item, ...updatedRecord } : item
+  //       );
+  //       setData(updatedData);
+  //       form.resetFields(); // reset form sau khi hoàn thành
+  //     } else {
+  //       console.error("Update failed:", response);
+  //     }
+  //   } catch (error) {
+  //     console.error("Error updating course:", error);
+  //   }
+  // };
+
+  const handleEdit = async (values, id) => {
+    try {
+      // Cập nhật chứng chỉ qua API
+      await axios.put(
+        `https://swdsapelearningapi.azurewebsites.net/api/Certificate/update/${id}`,
+        values
+      );
+
+      // Cập nhật lại dữ liệu trong state
+      setData((prevData) =>
+        prevData.map((item) =>
+          item.id === id
+            ? { ...item, ...values, moduleIds: { $values: values.moduleIds } } // Đảm bảo moduleIds được cập nhật
+            : item
+        )
+      );
+
+      alert("Update successfully!");
+    } catch (error) {
+      console.error("Error updating certificate:", error);
+      alert("Update failed!");
+    }
   };
 
   const handleDelete = (id) => {
@@ -222,15 +307,14 @@ const AllCertificate = () => {
       const response = await axios.get(
         `https://swdsapelearningapi.azurewebsites.net/api/Certificate/get-all`
       );
-      const results = response.data.$values; // Lấy dữ liệu từ response
+      const results = response.data.$values;
 
-      // Kiểm tra xem results có phải là mảng không
       if (Array.isArray(results)) {
         const startIndex = (pagination.current - 1) * pagination.pageSize;
         const paginatedData = results.slice(
           startIndex,
           startIndex + pagination.pageSize
-        ); // Phân trang dữ liệu
+        );
 
         setData(paginatedData);
         setTableParams((prevParams) => ({
@@ -242,7 +326,7 @@ const AllCertificate = () => {
         }));
       } else {
         console.error("Fetched data is not an array:", results);
-        setData([]); // Đặt lại dữ liệu nếu không hợp lệ
+        setData([]);
       }
     } catch (error) {
       console.error("Error fetching data:", error);
@@ -252,7 +336,7 @@ const AllCertificate = () => {
   };
 
   useEffect(() => {
-    fetchSapModules(); 
+    fetchSapModules();
     fetchData(tableParams.pagination);
   }, [tableParams.pagination.current, tableParams.pagination.pageSize]);
 
@@ -264,6 +348,7 @@ const AllCertificate = () => {
       sortField: Array.isArray(sorter) ? undefined : sorter.field,
     });
   };
+
   return (
     <div className="certificate">
       <div className="student_title_container">
@@ -294,7 +379,7 @@ const AllCertificate = () => {
         />
       </div>
 
-        {/* Popup hiển thị mô tả */}
+      {/* Popup hiển thị mô tả */}
       <Popup
         open={descriptionPopupOpen}
         onClose={() => setDescriptionPopupOpen(false)}

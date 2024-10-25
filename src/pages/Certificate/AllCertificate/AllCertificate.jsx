@@ -292,8 +292,8 @@ const AllCertificate = () => {
 
       alert("Update successfully!");
     } catch (error) {
-      console.error("Error updating certificate:", error);
       alert("Update failed!");
+      console.error("Error updating certificate:", error);
     }
   };
 

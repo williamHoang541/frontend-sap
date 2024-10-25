@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { Button, Table, Form } from "antd";
+import { Button, Table, Form, Radio } from "antd";
 import Popup from "reactjs-popup";
 import { SlArrowRight } from "react-icons/sl";
 import { RiDeleteBin6Line } from "react-icons/ri";
@@ -8,72 +8,10 @@ import { Link } from "react-router-dom";
 import qs from "qs";
 import { PATH_NAME } from "../../../constant/pathname";
 import "reactjs-popup/dist/index.css";
+import axios from "axios";
 import "./AllCourse.css";
 
 const AllCourse = () => {
-    const data_1 = [
-        {
-            course_id: 1,
-            course_name: "Introduction to SAP",
-            start_date: "2024-10-15",
-            end_date: "2024-12-15",
-            mode: "Online",
-            price: 150.0,
-            total_student: 30,
-            end_register_date: "2024-10-10",
-            location_url: "https://meet.google.com/xyz-abc-101",
-            status: "Available",
-        },
-        {
-            course_id: 2,
-            course_name: "Advanced ABAP Programming",
-            start_date: "2024-11-01",
-            end_date: "2025-01-01",
-            mode: "Offline",
-            price: 300.0,
-            total_student: 20,
-            end_register_date: "2024-10-28",
-            location_url: "123 SAP Blvd, NY",
-            status: "Expired",
-        },
-        {
-            course_id: 3,
-            course_name: "SAP S/4HANA Overview",
-            start_date: "2024-10-20",
-            end_date: "2024-11-20",
-            mode: "Online",
-            price: 200.0,
-            total_student: 50,
-            end_register_date: "2024-10-18",
-            location_url: "https://meet.google.com/xyz-abc-103",
-            status: "Available",
-        },
-        {
-            course_id: 4,
-            course_name: "SAP Fiori Development",
-            start_date: "2024-12-01",
-            end_date: "2025-02-01",
-            mode: "Offline",
-            price: 350.0,
-            total_student: 25,
-            end_register_date: "2024-11-28",
-            location_url: "456 Tech St, SF",
-            status: "Available",
-        },
-        {
-            course_id: 5,
-            course_name: "SAP CAP Model Workshop",
-            start_date: "2024-09-30",
-            end_date: "2024-10-30",
-            mode: "Online",
-            price: 250.0,
-            total_student: 40,
-            end_register_date: "2024-09-28",
-            location_url: "https://meet.google.com/xyz-abc-105",
-            status: "Expired",
-        },
-    ];
-
     const [data, setData] = useState([]);
     const [loading, setLoading] = useState(false);
     const [tableParams, setTableParams] = useState({
@@ -84,25 +22,30 @@ const AllCourse = () => {
     });
     const [form] = Form.useForm();
 
-    const getRandomuserParams = (params) => ({
-        results: params.pagination?.pageSize,
-        page: params.pagination?.current,
-        ...params,
-    });
-
     const columns = [
         {
             title: "No.",
             sorter: true,
             width: "7%",
-            render: (_, __, index) => index + 1,
+            render: (_, __, index) =>
+                (tableParams.pagination.current - 1) *
+                    tableParams.pagination.pageSize +
+                index +
+                1,
         },
         {
             title: "Course Name",
-            dataIndex: "name",
-            sorter: true,
-            render: (name) => `${name.first} ${name.last}`,
+            dataIndex: "courseName",
+            sorter: (a, b) =>
+                (a.courseName || "").localeCompare(b.courseName || ""),
             width: "15%",
+        },
+        {
+            title: "Instructor Name",
+            dataIndex: "instructorName",
+            sorter: (a, b) =>
+                (a.instructorName || "").localeCompare(b.instructorName || ""),
+            width: "12%",
         },
         {
             title: "Mode",
@@ -111,51 +54,86 @@ const AllCourse = () => {
                 { text: "Online", value: "online" },
                 { text: "Offline", value: "offline" },
             ],
-            render: (status) => (
+            render: (mode) => (
                 <span
                     className={
-                        status === "online" ? "status-online" : "status-offline"
+                        mode.toLowerCase() === "online"
+                            ? "status-online"
+                            : "status-offline"
                     }
-                ></span>
+                >
+                    {mode.toLowerCase()}
+                </span>
             ),
-            width: "10%",
+            width: "8%",
         },
         {
             title: "Start Date",
+            dataIndex: "startTime",
             sorter: true,
-            width: "10%",
+            width: "8%",
+            render: (startTime) => {
+                const date = new Date(startTime);
+                return date.toLocaleDateString(); // Chỉ lấy ngày/tháng/năm
+            },
         },
         {
             title: "End Date",
+            dataIndex: "endTime",
+            sorter: true,
+            width: "8%",
+            render: (endTime) => {
+                const date = new Date(endTime);
+                return date.toLocaleDateString(); // Chỉ lấy ngày/tháng/năm
+            },
+        },
+        {
+            title: "Enrollment Date",
+            dataIndex: "enrollmentDate",
+            sorter: true,
+            width: "8%",
+            render: (enrollmentDate) => {
+                const date = new Date(enrollmentDate);
+                return date.toLocaleDateString(); // Chỉ lấy ngày/tháng/năm
+            },
+        },
+        {
+            title: "Price",
+            dataIndex: "price",
             sorter: true,
             width: "10%",
         },
         {
             title: "Total Student",
-            dataIndex: "phone",
+            dataIndex: "totalStudent",
             sorter: true,
-            width: "10%",
+            width: "8%",
         },
         {
             title: "Location",
+            dataIndex: "location",
             sorter: true,
-            width: "12%",
+            width: "15%",
         },
         {
             title: "Status",
-            sorter: true,
-            width: "12%",
+            dataIndex: "status",
+            width: "10%",
+            render: (status) => (
+                <span
+                    className={`course_status_indicator ${
+                        status ? "active" : "inactive"
+                    }`}
+                />
+            ),
         },
         {
             title: "Action",
             render: (_, record) => (
-                <>
+                <div className="course_buttons">
                     <Popup
                         trigger={
-                            <Button
-                                type="link"
-                                className="instructor_button_edit"
-                            >
+                            <Button type="link" className="course_button_edit">
                                 <MdModeEditOutline />
                             </Button>
                         }
@@ -163,8 +141,14 @@ const AllCourse = () => {
                         closeOnDocumentClick
                         onOpen={() =>
                             form.setFieldsValue({
-                                name: record.name,
-                                email: record.email,
+                                courseName: record.courseName,
+                                mode: record.mode,
+                                startTime: record.startTime,
+                                endTime: record.endTime,
+                                location: record.location,
+                                enrollmentDate: record.enrollmentDate,
+                                price: record.price,
+                                status: record.status,
                             })
                         }
                     >
@@ -174,94 +158,100 @@ const AllCourse = () => {
                                 <Form
                                     form={form}
                                     onFinish={(values) => {
-                                        handleEdit(values, record.login.uuid);
+                                        handleEdit(values, record.id);
                                         close(); // Đóng popup sau khi lưu
                                     }}
                                 >
-                                    <div className="all_instructor_input">
+                                    <div className="all_course_input">
                                         <Form.Item
-                                            name="name"
+                                            name="courseName"
                                             label="Course Name"
                                         >
                                             <input
                                                 type="text"
-                                                className="all_instructor_form"
+                                                className="all_course_form"
                                                 placeholder="Enter full name"
                                             />
                                         </Form.Item>
                                         <Form.Item name="mode" label="Mode">
                                             <input
                                                 type="text"
-                                                className="all_instructor_form"
+                                                className="all_course_form"
                                                 placeholder="Enter Mode"
                                             />
                                         </Form.Item>
                                     </div>
-                                    <div className="all_instructor_input">
+                                    <div className="all_course_input">
                                         <Form.Item
-                                            name="start_date"
+                                            name="startTime"
                                             label="Start Date"
                                         >
                                             <input
                                                 type="date"
-                                                className="all_instructor_form"
+                                                className="all_course_form"
                                                 placeholder="Select start date"
                                             />
                                         </Form.Item>
-                                        <Form.Item
-                                            name="t_student"
+                                        {/* <Form.Item
+                                            name="totalStudent"
                                             label="Total Student"
                                         >
                                             <input
-                                                type="text"
-                                                className="all_instructor_form"
+                                                type="number"
+                                                className="all_course_form"
                                                 placeholder="Enter maximum student"
                                             />
-                                        </Form.Item>
-                                    </div>
-                                    <div className="all_instructor_input">
+                                        </Form.Item> */}
                                         <Form.Item
-                                            name="end_date"
+                                            name="endTime"
                                             label="End Date"
                                         >
                                             <input
                                                 type="date"
-                                                className="all_instructor_form"
+                                                className="all_course_form"
                                                 placeholder="Select end date"
                                             />
                                         </Form.Item>
-                                        <Form.Item
-                                            name="end_register_date"
-                                            label="End register date"
-                                        >
-                                            <input
-                                                type="date"
-                                                className="all_instructor_form"
-                                            />
-                                        </Form.Item>
                                     </div>
-                                    <div className="all_instructor_input">
+                                    <div className="all_course_input">
                                         <Form.Item
                                             name="location"
                                             label="Location"
                                         >
                                             <input
                                                 type="text"
-                                                className="all_instructor_form"
+                                                className="all_course_form"
                                                 placeholder="Select location"
                                             />
                                         </Form.Item>
                                         <Form.Item
-                                            name="status"
-                                            label="End status"
+                                            name="enrollmentDate"
+                                            label="End register date"
                                         >
                                             <input
-                                                type="text"
-                                                className="all_instructor_form"
-                                                placeholder="Select status"
+                                                type="date"
+                                                className="all_course_form"
                                             />
                                         </Form.Item>
                                     </div>
+                                    <div className="all_course_input">
+                                        <Form.Item name="status" label="Status">
+                                            <Radio.Group className="status-radio-group">
+                                                <Radio value={true}>True</Radio>
+                                                <Radio value={false}>
+                                                    False
+                                                </Radio>
+                                            </Radio.Group>
+                                        </Form.Item>
+                                        <Form.Item name="price" label="Price">
+                                            <input
+                                                type="number"
+                                                className="all_course_form"
+                                                placeholder="Enter price"
+                                            />
+                                        </Form.Item>
+                                    </div>
+                                    <div className="all_course_input"></div>
                                     <div className="popup_buttons">
                                         <Button
                                             className="button_save"
@@ -285,93 +275,127 @@ const AllCourse = () => {
                     <Button
                         type="link"
                         danger
-                        onClick={() => handleDelete(record.login.uuid)}
-                        className="instructor_button_delete"
+                        onClick={() => handleDelete(record.id)}
+                        className="course_button_delete"
                     >
                         <RiDeleteBin6Line />
                     </Button>
-                </>
+                </div>
             ),
             width: "10%",
         },
     ];
 
-    const handleEdit = (values, uuid) => {
-        const updatedData = data.map((item) =>
-            item.login.uuid === uuid ? { ...item, ...values } : item
-        );
-        setData(updatedData);
-        form.resetFields();
+    const handleEdit = async (values, id) => {
+        try {
+            // Lấy thông tin cũ của record (có chứa Instructor name)
+            const existingRecord = data.find((item) => item.id === id);
+
+            // Chỉ ghi đè các trường đã thay đổi trong form, các trường không có trong form sẽ giữ nguyên
+            const updatedRecord = {
+                ...existingRecord, // giữ nguyên dữ liệu cũ (bao gồm Instructor name)
+                ...values, // chỉ cập nhật các trường có trong form
+            };
+
+            // Gửi yêu cầu update với record đã cập nhật
+            const response = await axios.put(
+                `https://swdsapelearningapi.azurewebsites.net/api/Course/${id}`,
+                updatedRecord // gửi toàn bộ bản ghi đã được cập nhật
+            );
+
+            if (response.status === 200) {
+                // Cập nhật lại dữ liệu trên frontend
+                const updatedData = data.map((item) =>
+                    item.id === id ? { ...item, ...updatedRecord } : item
+                );
+                setData(updatedData);
+                form.resetFields(); // reset form sau khi hoàn thành
+            } else {
+                console.error("Update failed:", response);
+            }
+        } catch (error) {
+            console.error("Error updating course:", error);
+        }
+    };
+    const handleDelete = (id) => {
+        setData((prevData) => prevData.filter((item) => item.id !== id));
     };
 
-    const handleDelete = (uuid) => {
-        setData((prevData) =>
-            prevData.filter((item) => item.login.uuid !== uuid)
-        );
-    };
-
-    const fetchData = () => {
+    const fetchData = async (pagination) => {
         setLoading(true);
-        fetch(
-            `https://randomuser.me/api?${qs.stringify(
-                getRandomuserParams(tableParams)
-            )}`
-        )
-            .then((res) => res.json())
-            .then(({ results }) => {
-                // Thêm trường status vào dữ liệu
-                const updatedResults = results.map((item) => ({
-                    ...item,
-                    status: Math.random() > 0.5 ? "online" : "offline", // Giả lập trạng thái
-                }));
-                setData(updatedResults);
-                setLoading(false);
+        try {
+            const response = await axios.get(
+                `https://swdsapelearningapi.azurewebsites.net/api/Course/get-all`
+            );
+            const results = response.data.$values; // Lấy dữ liệu từ response
+
+            // Kiểm tra xem results có phải là mảng không
+            if (Array.isArray(results)) {
+                const startIndex =
+                    (pagination.current - 1) * pagination.pageSize;
+                const paginatedData = results.slice(
+                    startIndex,
+                    startIndex + pagination.pageSize
+                ); // Phân trang dữ liệu
+
+                setData(paginatedData);
                 setTableParams((prevParams) => ({
                     ...prevParams,
                     pagination: {
-                        ...prevParams.pagination,
-                        total: 200,
+                        ...pagination,
+                        total: results.length,
                     },
                 }));
-            })
-            .catch(() => setLoading(false));
-    };
-
-    useEffect(() => {
-        fetchData();
-    }, [tableParams.pagination?.current, tableParams.pagination?.pageSize]);
-
-    const handleTableChange = (pagination) => {
-        setTableParams({ pagination });
-        if (pagination.pageSize !== tableParams.pagination?.pageSize) {
-            setData([]);
+            } else {
+                console.error("Fetched data is not an array:", results);
+                setData([]); // Đặt lại dữ liệu nếu không hợp lệ
+            }
+        } catch (error) {
+            console.error("Error fetching data:", error);
+        } finally {
+            setLoading(false);
         }
     };
 
+    useEffect(() => {
+        fetchData(tableParams.pagination);
+    }, [tableParams.pagination.current, tableParams.pagination.pageSize]);
+
+    const handleTableChange = (pagination, filters, sorter) => {
+        setTableParams({
+            pagination,
+            filters,
+            sortOrder: Array.isArray(sorter) ? undefined : sorter.order,
+            sortField: Array.isArray(sorter) ? undefined : sorter.field,
+        });
+    };
+
     return (
-        <div className="instructor">
-            <div className="instructor_title_container">
-                <div className="instructor_title_left">
-                    <div className="instructor_title">All Courses</div>
+        <div className="course">
+            <div className="course_title_container">
+                <div className="course_title_left">
+                    <div className="course_title">All Courses</div>
                 </div>
-                <div className="instructor_instructor_right">
-                    <div className="instructor_instructor">Course</div>
-                    <SlArrowRight className="instructor_icon_right" />
-                    <div className="instructor_all_instructors">
-                        All Courses
-                    </div>
+                <div className="course_course_right">
+                    <div className="course_course">Course</div>
+                    <SlArrowRight className="course_icon_right" />
+                    <div className="course_all_courses">All Courses</div>
                 </div>
             </div>
 
-            <div className="instructor_table_container">
+            <div className="course_table_container">
                 <Link to={PATH_NAME.ADD_COURSE}>
-                    <button className="instructor_add">Add New</button>
+                    <button className="course_add">Add New</button>
                 </Link>
                 <Table
                     columns={columns}
-                    rowKey={(record) => record.login.uuid}
-                    dataSource={data}
-                    pagination={tableParams.pagination}
+                    rowKey={(record) => record.id}
+                    dataSource={Array.isArray(data) ? data : []}
+                    pagination={{
+                        ...tableParams.pagination,
+                        showSizeChanger: true,
+                        pageSizeOptions: ["10", "20", "50"],
+                    }}
                     loading={loading}
                     onChange={handleTableChange}
                 />

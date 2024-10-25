@@ -1,111 +1,229 @@
-.all-course {
-    margin-bottom: 400px;
-}
-
-.all-course-header {
-    background-color: #fff;
-    border-radius: 10px;
-    border-bottom: 1px solid rgba(224, 224, 224, 1);
-    margin-bottom: 74px;
-    padding: 13px 40px 13px 18px;
-    color: rgba(2, 62, 115, 0.8);
-    font-size: 17.9px;
-    font-weight: 600;
-    line-height: 26.25px;
-}
-
-.all-course-table {
-    background-color: #fff;
-    border-radius: 10px;
-}
-
-.all-course-title {
-    padding: 20px;
-    border-bottom: 1px solid rgba(224, 224, 224, 1);
-    font-size: 18px;
-    color: #333;
-    font-weight: 600;
-}
-
-.table .status {
-    padding: 5px;
-    border-radius: 5px;
-}
-
-.table .status.Available {
-    color: rgb(15, 54, 89);
-    vertical-align: middle;
-    box-sizing: border-box;
-    height: 24px;
-    font-size: 0.875rem;
-    background-color: rgb(220, 252, 231);
-    border-radius: 8px;
-}
-
-.table .status.Expired {
-    color: rgb(15, 54, 89);
-    vertical-align: middle;
-    box-sizing: border-box;
-    height: 24px;
-    background-color: rgb(255, 226, 229);
-    border-radius: 8px;
-}
-
-.edit-icon {
+.course {
     display: flex;
+    flex-direction: column;
+    gap: 30px;
+    margin-bottom: 30px;
+    margin-top: 10px;
+    height: 100vh;
+}
+
+.course_title_container {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
     align-items: center;
-    background-color: #6a73fa;
+    background-color: #fff;
+    padding: 15px;
+    border-radius: 3px;
+}
+
+.course_course_right {
+    display: flex;
+    flex-direction: row;
+    gap: 10px;
+}
+
+.course_title {
+    font-size: 18px;
+    font-weight: 550;
+}
+
+.course_title,
+.course_all_courses {
+    color: #023e73;
+}
+
+.course_course,
+.course_all_courses,
+.course_icon_right {
+    font-size: 13px;
+}
+
+.course_course,
+.course_icon_right {
+    color: #828690;
+}
+
+.course_buttons {
+    display: flex;
+}
+
+.course_button_delete {
+    padding: revert !important;
+    background-color: #ffd8d8;
+    color: #ff1616 !important;
+    font-size: 16px !important;
+}
+
+.course_button_delete:hover {
+    background-color: #ff1616 !important;
+    color: #fff !important;
+}
+
+.course_button_edit {
+    padding: revert !important;
+    background-color: #d8e7ff;
+    color: #033e8c !important;
+    font-size: 16px !important;
+    margin-right: 5px;
+}
+
+.course_button_edit:hover {
+    background-color: #033e8c !important;
+    color: #fff !important;
+}
+
+.course_table_container {
+    background-color: #fff;
+    padding: 10px;
+    border-radius: 3px;
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+
+.course_table_container a {
+    display: flex;
+    justify-content: flex-end;
+}
+
+.course_add {
+    padding: 10px;
+    width: 100px;
+    border-radius: 5px;
     color: #fff;
-    border: none;
-    padding: 5px 10px;
-    border-radius: 5px;
-    margin-right: 10px;
-    cursor: pointer;
-    transition: background-color 0.3s ease;
-}
-
-.edit-btn,
-.delete-btn {
-    display: inline-flex;
-    align-items: center;
-    text-decoration: none;
-    width: 22.75px;
-    height: 22.75px;
-    padding: 5.625px 6.125px 7.125px 6.125px;
-    border-radius: 5px;
-    transition: background-color 0.3s ease;
-    margin-right: 10px;
-}
-
-.edit-btn {
     background-color: #033e8c;
-    border: 1px solid #033e8c;
+    border: none;
+    cursor: pointer;
 }
 
-.edit-btn:hover {
-    background-color: #0b2c6e;
+.course_add:hover {
+    background-color: #1e78ff;
 }
 
-.delete-btn {
-    border: 1px solid #ff1616;
+.popup_container {
+    padding: 20px;
+    background: #fff;
+    border-radius: 5px;
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+    z-index: 9999 !important;
+}
+
+.popup_container h2 {
+    font-size: 20px;
+    text-align: center;
+    margin-bottom: 20px;
+    color: #333;
+}
+
+:where(.css-dev-only-do-not-override-5wsri9).ant-form {
+    display: flex;
+    flex-direction: column;
+    gap: 30px;
+}
+
+.popup-overlay {
+    z-index: 9999 !important;
+}
+
+.popup_buttons {
+    margin-top: 10px;
+    display: flex;
+    justify-content: space-between;
+}
+
+.popup-content {
+    background: none !important;
+    border: none !important;
+    width: 50% !important;
+}
+
+.all_course_input {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+}
+
+.all_course_form {
+    width: 250px;
+    max-width: 100%;
+    padding: 10px;
+    border-radius: 5px;
+    border: 1px solid #d9d9d9;
+    color: #333;
+}
+
+.all_course_form:focus {
+    border-color: #033e8c;
+}
+
+.button_save {
+    box-shadow: none !important;
+    background-color: #033e8c !important;
+    color: #fff !important;
+    padding: 10px !important;
+    font-size: 14px !important;
+    width: 75px;
+}
+
+.button_save:hover {
+    background-color: #1e78ff !important;
+}
+
+.button_cancel {
+    box-shadow: none !important;
+    background-color: #ffd8d8 !important;
+    color: #ff1616 !important;
+    padding: 10px !important;
+    font-size: 14px !important;
+    width: 75px;
+}
+
+.button_cancel:hover {
+    background-color: #ff1616 !important;
+    color: #fff !important;
+}
+:where(.css-dev-only-do-not-override-5wsri9).ant-form-item
+    .ant-form-item-label {
+    text-align: start !important;
+}
+
+:where(.css-dev-only-do-not-override-5wsri9).ant-row {
+    flex-direction: column;
+}
+
+.course_status_indicator {
+    display: inline-block;
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+}
+
+.course_status_indicator.active {
+    background-color: #32cd32;
+}
+
+.course_status_indicator.inactive {
     background-color: #ff1616;
 }
 
-.delete-btn:hover {
-    background-color: #b8001f;
-}
-
-.tableCell svg {
-    font-size: 24px;
-    color: #fff;
-}
-
 .status-online {
-    color: #fff;
+    box-shadow: none !important;
+    color: #fff !important;
+    padding: 10px !important;
+    font-size: 14px !important;
+    width: 75px;
     background-color: rgba(54, 235, 123, 0.8);
+
+    border-radius: 5px;
 }
 
 .status-offline {
-    color: #fff;
+    box-shadow: none !important;
+    color: #fff !important;
+    padding: 10px !important;
+    font-size: 14px !important;
+    width: 75px;
+    border-radius: 5px;
     background-color: rgba(54, 163, 235, 0.8);
 }

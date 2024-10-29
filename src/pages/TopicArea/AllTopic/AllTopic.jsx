@@ -5,6 +5,9 @@ import { RiDeleteBin6Line } from "react-icons/ri";
 import { MdModeEditOutline } from "react-icons/md";
 import axios from "axios";
 import Popup from "reactjs-popup";
+import { PATH_NAME } from "../../../constant/pathname";
+import "reactjs-popup/dist/index.css";
+import { Link } from "react-router-dom";
 import "./AllTopic.css";
 
 const AllTopic = () => {
@@ -173,10 +176,8 @@ const AllTopic = () => {
         }
     };
 
-    const handleDelete = (uuid) => {
-        setData((prevData) =>
-            prevData.filter((item) => item.login.uuid !== uuid)
-        );
+    const handleDelete = (id) => {
+        setData((prevData) => prevData.filter((item) => item.id !== id));
     };
 
     const fetchData = async (pagination) => {
@@ -249,6 +250,9 @@ const AllTopic = () => {
             </div>
 
             <div className="topic_table_container">
+                <Link to={PATH_NAME.ADD_TOPIC}>
+                    <button className="topic_add">Add New</button>
+                </Link>
                 <Table
                     columns={columns}
                     rowKey={(record) => record.id}

@@ -16,7 +16,7 @@ const AddSession = () => {
                     <div className="add_session_title">Add Session</div>
                 </div>
                 <div className="add_session_session_right">
-                    <div className="add_instructor_instructor">Sessions</div>
+                    <div className="add_session_session">Sessions</div>
                     <SlArrowRight className="add_session_icon_right" />
                     <div className="add_session_add_sessions">Add Session</div>
                 </div>

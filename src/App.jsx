@@ -183,7 +183,7 @@ const App = () => {
                     }
                 />
                 <Route
-                    path={PATH_NAME.SAMPLE_TEST}
+                    path={PATH_NAME.TEST}
                     element={
                         <LayOut>
                             <AllSample />

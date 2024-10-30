@@ -24,6 +24,7 @@ import AllCertificate from "./pages/Certificate/AllCertificate/AllCertificate";
 import AddCertificate from "./pages/Certificate/AddCertificate/AddCertificate";
 import AllQuestionBank from "./pages/QuestionBank/AllQuestionBank/AllQuestionBank";
 import AllSample from "./pages/SampleTest/AllSample/AllSample";
+import AllQuesInTest from "./pages/QuestionInTest/AllQuesInTest/AllQuesInTest";
 
 const LayOut = ({ children }) => {
     const [collapsed, setCollapsed] = useState(false);
@@ -187,6 +188,14 @@ const App = () => {
                     element={
                         <LayOut>
                             <AllSample />
+                        </LayOut>
+                    }
+                />
+                <Route
+                    path={PATH_NAME.QUESTION_IN_TEST}
+                    element={
+                        <LayOut>
+                            <AllQuesInTest />
                         </LayOut>
                     }
                 />

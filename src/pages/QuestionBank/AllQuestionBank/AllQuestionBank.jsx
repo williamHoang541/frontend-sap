@@ -143,7 +143,7 @@ const AllQuestionBank = () => {
 
             // Gửi yêu cầu update với record đã cập nhật
             const response = await axios.put(
-                `https://swdsapelearningapi.azurewebsites.net/api/Course/${id}`,
+                `https://swdsapelearningapi.azurewebsites.net/api/CertificateQuestion/update?id=${id}`,
                 updatedRecord // gửi toàn bộ bản ghi đã được cập nhật
             );
 

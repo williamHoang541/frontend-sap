@@ -176,8 +176,27 @@ const AllTopic = () => {
         }
     };
 
-    const handleDelete = (id) => {
-        setData((prevData) => prevData.filter((item) => item.id !== id));
+    const handleDelete = async (id) => {
+        try {
+            // Gửi yêu cầu xóa đến API
+            const response = await axios.delete(
+                ` https://swdsapelearningapi.azurewebsites.net/api/TopicArea/${id}`
+            );
+
+            if (response.status === 204) {
+                // Nếu xóa thành công, cập nhật state để loại bỏ mục đã xóa
+                setData((prevData) =>
+                    prevData.filter((item) => item.id !== id)
+                );
+            } else {
+                console.error("Error deleting data:", response.data);
+            }
+        } catch (error) {
+            console.error(
+                "Error deleting data:",
+                error.response ? error.response.data : error.message
+            );
+        }
     };
 
     const fetchData = async (pagination) => {

@@ -246,7 +246,7 @@ const AllQuestionBank = () => {
             </div>
 
             <div className="bank_table_container">
-                <Link to={PATH_NAME.ADD_QUESTION}>
+                <Link to={PATH_NAME.ADD_QUESTION_BANK}>
                     <button className="bank_add">Add New</button>
                 </Link>
                 <Table

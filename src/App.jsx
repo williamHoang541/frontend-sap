@@ -23,10 +23,11 @@ import AddSAPModule from "./pages/SapModule/AddSAPModule/AddSAPModule";
 import AllCertificate from "./pages/Certificate/AllCertificate/AllCertificate";
 import AddCertificate from "./pages/Certificate/AddCertificate/AddCertificate";
 import AllQuestionBank from "./pages/QuestionBank/AllQuestionBank/AllQuestionBank";
+import AddQuestionBank from "./pages/QuestionBank/AddQuestionBank/AddQuestionBank";
 import AllSample from "./pages/SampleTest/AllSample/AllSample";
 import AddSample from "./pages/SampleTest/AddSample/AddSample";
 import AllQuesInTest from "./pages/QuestionInTest/AllQuesInTest/AllQuesInTest";
-import AddQuestionBank from "./pages/QuestionBank/AddQuestionBank/AddQuestionBank";
+import AddQuesInTest from "./pages/QuestionInTest/AddQuesInTest/AddQuesInTest";
 
 const LayOut = ({ children }) => {
     const [collapsed, setCollapsed] = useState(false);
@@ -186,7 +187,7 @@ const App = () => {
                     }
                 />
                 <Route
-                    path={PATH_NAME.ADD_QUESTION}
+                    path={PATH_NAME.ADD_QUESTION_BANK}
                     element={
                         <LayOut>
                             <AddQuestionBank />
@@ -214,6 +215,14 @@ const App = () => {
                     element={
                         <LayOut>
                             <AllQuesInTest />
+                        </LayOut>
+                    }
+                />
+                <Route
+                    path={PATH_NAME.ADD_QUESTION_IN_TEST}
+                    element={
+                        <LayOut>
+                            <AddQuesInTest />
                         </LayOut>
                     }
                 />

@@ -161,10 +161,28 @@ const AllQuestionBank = () => {
             console.error("Error updating course:", error);
         }
     };
-    const handleDelete = (id) => {
-        setData((prevData) => prevData.filter((item) => item.id !== id));
-    };
+    const handleDelete = async (id) => {
+        try {
+            // Gửi yêu cầu xóa đến API
+            const response = await axios.delete(
+                `https://swdsapelearningapi.azurewebsites.net/api/CertificateQuestion/delete?id=${id}`
+            );
 
+            if (response.status >= 200 && response.status < 300) {
+                // Nếu xóa thành công, cập nhật state để loại bỏ mục đã xóa
+                setData((prevData) =>
+                    prevData.filter((item) => item.id !== id)
+                );
+            } else {
+                console.error("Error deleting data:", response.data);
+            }
+        } catch (error) {
+            console.error(
+                "Error deleting data:",
+                error.response ? error.response.data : error.message
+            );
+        }
+    };
     const fetchData = async (pagination) => {
         setLoading(true);
         try {
@@ -228,7 +246,7 @@ const AllQuestionBank = () => {
             </div>
 
             <div className="bank_table_container">
-                <Link to={PATH_NAME.ADD_COURSE}>
+                <Link to={PATH_NAME.ADD_QUESTION}>
                     <button className="bank_add">Add New</button>
                 </Link>
                 <Table

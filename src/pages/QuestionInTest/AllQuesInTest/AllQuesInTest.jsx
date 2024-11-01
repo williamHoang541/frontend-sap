@@ -84,7 +84,10 @@ const AllQuesInTest = () => {
                 <>
                     <Popup
                         trigger={
-                            <Button type="link" className="test_button_edit">
+                            <Button
+                                type="link"
+                                className="question_button_edit"
+                            >
                                 <MdModeEditOutline />
                             </Button>
                         }
@@ -107,14 +110,14 @@ const AllQuesInTest = () => {
                                         close(); // Đóng popup sau khi lưu
                                     }}
                                 >
-                                    <div className="all_test_input">
+                                    <div className="all_question_input">
                                         <Form.Item
                                             name="sampleTestName"
                                             label="Test Name"
                                         >
                                             <input
                                                 type="text"
-                                                className="all_test_form"
+                                                className="all_question_form"
                                                 placeholder="Enter Topic Name"
                                             />
                                         </Form.Item>
@@ -128,7 +131,7 @@ const AllQuesInTest = () => {
                                         </Form.Item>
                                     </div>
 
-                                    <div className="popup_buttons">
+                                    <div className="question_buttons">
                                         <Button
                                             className="button_save"
                                             type="primary"
@@ -261,21 +264,21 @@ const AllQuesInTest = () => {
     };
 
     return (
-        <div className="test">
-            <div className="test_title_container">
-                <div className="test_title_left">
-                    <div className="test_title">All Tests</div>
+        <div className="question_in_test">
+            <div className="question_title_container">
+                <div className="question_title_left">
+                    <div className="question_title">All Tests</div>
                 </div>
-                <div className="sample_test_right">
-                    <div className="test_test">Question in Test</div>
-                    <SlArrowRight className="test_icon_right" />
-                    <div className="test_all_tests">All Tests</div>
+                <div className="question_question_right">
+                    <div className="question_question">Question in Test</div>
+                    <SlArrowRight className="question_icon_right" />
+                    <div className="question_all_questions">All Tests</div>
                 </div>
             </div>
 
-            <div className="test_table_container">
+            <div className="question_table_container">
                 <Link to={PATH_NAME.ADD_TOPIC}>
-                    <button className="topic_add">Add New</button>
+                    <button className="question_add">Add New</button>
                 </Link>
                 <Table
                     columns={columns}

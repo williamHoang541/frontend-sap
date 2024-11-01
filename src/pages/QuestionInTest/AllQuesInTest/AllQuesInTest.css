@@ -1,4 +1,4 @@
-.question_bank {
+.question_in_test {
     display: flex;
     flex-direction: column;
     gap: 30px;
@@ -7,7 +7,7 @@
     height: 100vh;
 }
 
-.bank_title_container {
+.question_title_container {
     display: flex;
     flex-direction: row;
     justify-content: space-between;
@@ -17,34 +17,34 @@
     border-radius: 3px;
 }
 
-.bank_bank_right {
+.question_question_right {
     display: flex;
     flex-direction: row;
     gap: 10px;
 }
 
-.bank_title {
+.question_title {
     font-size: 18px;
     font-weight: 550;
 }
 
-.bank_title,
-.bank_all_banks {
+.question_title,
+.question_all_questions {
     color: #023e73;
 }
 
-.bank_bank,
-.bank_all_banks,
+.question_question,
+.question_all_questions,
 .bank_icon_right {
     font-size: 13px;
 }
 
-.bank_bank,
-.bank_icon_right {
+.question_question,
+.question_icon_right {
     color: #828690;
 }
 
-.bank_buttons {
+.question_buttons {
     display: flex;
 }
 
@@ -60,7 +60,7 @@
     color: #fff !important;
 }
 
-.bank_button_edit {
+.question_button_edit {
     padding: revert !important;
     background-color: #d8e7ff;
     color: #033e8c !important;
@@ -68,12 +68,12 @@
     margin-right: 5px;
 }
 
-.bank_button_edit:hover {
+.question_button_edit:hover {
     background-color: #033e8c !important;
     color: #fff !important;
 }
 
-.bank_table_container {
+.question_table_container {
     background-color: #fff;
     padding: 10px;
     border-radius: 3px;
@@ -82,12 +82,12 @@
     gap: 20px;
 }
 
-.bank_table_container a {
+.question_table_container a {
     display: flex;
     justify-content: flex-end;
 }
 
-.bank_add {
+.question_add {
     padding: 10px;
     width: 100px;
     border-radius: 5px;
@@ -138,13 +138,13 @@
     width: 50% !important;
 }
 
-.all_bank_input {
+.all_question_input {
     display: flex;
     flex-direction: row;
     justify-content: space-between;
 }
 
-.all_bank_form {
+.all_question_form {
     width: 250px;
     max-width: 100%;
     padding: 10px;

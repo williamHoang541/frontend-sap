@@ -60,7 +60,7 @@ const AllQuesInTest = () => {
             },
         },
         {
-            title: "Index in Text",
+            title: "Index in Test",
             dataIndex: "displayInTest",
             sorter: (a, b) =>
                 (a.displayInTest || "").localeCompare(b.displayInTest || ""),
@@ -95,7 +95,7 @@ const AllQuesInTest = () => {
                         closeOnDocumentClick
                         onOpen={() =>
                             form.setFieldsValue({
-                                sampleTestName: record.sampleTestName,
+                                displayInTest: record.displayInTest,
                                 status: record.status,
                             })
                         }
@@ -112,22 +112,14 @@ const AllQuesInTest = () => {
                                 >
                                     <div className="all_question_input">
                                         <Form.Item
-                                            name="sampleTestName"
-                                            label="Test Name"
+                                            name="displayInTest"
+                                            label="Index In Test"
                                         >
                                             <input
                                                 type="text"
                                                 className="all_question_form"
-                                                placeholder="Enter Topic Name"
+                                                placeholder="Enter number"
                                             />
-                                        </Form.Item>
-                                        <Form.Item name="status" label="Status">
-                                            <Radio.Group className="status-radio-group">
-                                                <Radio value={true}>True</Radio>
-                                                <Radio value={false}>
-                                                    False
-                                                </Radio>
-                                            </Radio.Group>
                                         </Form.Item>
                                     </div>
 
@@ -169,10 +161,9 @@ const AllQuesInTest = () => {
         try {
             // Gửi yêu cầu PUT đến API với dữ liệu cập nhật
             const response = await axios.put(
-                `https://swdsapelearningapi.azurewebsites.net/api/TopicArea/${id}`,
+                `https://swdsapelearningapi.azurewebsites.net/api/CertificateTestQuestion/update?id=${id}`,
                 {
-                    topicName: values.topicName, // Dữ liệu cần chỉnh sửa, ở đây là topicName
-                    status: values.status,
+                    displayInTest: values.displayInTest,
                 }
             );
 

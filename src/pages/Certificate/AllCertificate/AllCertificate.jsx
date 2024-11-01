@@ -239,39 +239,6 @@ const AllCertificate = () => {
     setDescriptionPopupOpen(true);
   };
 
-  // const handleEdit = async (values, id) => {
-  //   try {
-  //     // Lấy thông tin cũ của record
-  //     const existingRecord = data.find((item) => item.id === id);
-
-  //     // Chỉ ghi đè các trường đã thay đổi trong form, các trường không có trong form sẽ giữ nguyên
-  //     const updatedRecord = {
-  //       ...existingRecord, // giữ nguyên dữ liệu cũ (bao gồm Instructor name)
-  //       ...values, // chỉ cập nhật các trường có trong form
-  //     };
-
-  //     console.log("Update Data:", updatedRecord);
-
-  //     // Gửi yêu cầu update với record đã cập nhật
-  //     const response = await axios.put(
-  //       `https://swdsapelearningapi.azurewebsites.net/api/Certificate/update/${id}`,
-  //       updatedRecord // gửi toàn bộ bản ghi đã được cập nhật
-  //     );
-
-  //     if (response.status === 200) {
-  //       // Cập nhật lại dữ liệu trên frontend
-  //       const updatedData = data.map((item) =>
-  //         item.id === id ? { ...item, ...updatedRecord } : item
-  //       );
-  //       setData(updatedData);
-  //       form.resetFields(); // reset form sau khi hoàn thành
-  //     } else {
-  //       console.error("Update failed:", response);
-  //     }
-  //   } catch (error) {
-  //     console.error("Error updating course:", error);
-  //   }
-  // };
 
   const handleEdit = async (values, id) => {
     try {
@@ -297,10 +264,26 @@ const AllCertificate = () => {
     }
   };
 
-  const handleDelete = (id) => {
-    setData((prevData) => prevData.filter((item) => item.id !== id));
-  };
+  const handleDelete = async (id) => {
+    try {
+      // Gửi yêu cầu xóa đến API
+      const response = await axios.delete(
+        `https://swdsapelearningapi.azurewebsites.net/api/Certificate/delete/${id}`
+      );
 
+      if (response.status === 200) {
+        // Nếu xóa thành công, cập nhật state để loại bỏ mục đã xóa
+        setData((prevData) => prevData.filter((item) => item.id !== id));
+      } else {
+        console.error("Error deleting data:", response.data);
+      }
+    } catch (error) {
+      console.error(
+        "Error deleting data:",
+        error.response ? error.response.data : error.message
+      );
+    }
+  };
   const fetchData = async (pagination) => {
     setLoading(true);
     try {

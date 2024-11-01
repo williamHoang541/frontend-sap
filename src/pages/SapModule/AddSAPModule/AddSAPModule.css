@@ -12,3 +12,8 @@
   border-radius: 3px;
   padding-bottom: 20px;
 }
+
+.error-message{
+  color: red;
+  text-align: center;
+}

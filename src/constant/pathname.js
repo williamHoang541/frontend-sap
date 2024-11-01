@@ -1,5 +1,5 @@
 export const PATH_NAME = {
-    LOGIN: "/login",
+    LOGIN: "/",
     DASHBOARD: "/dashboard",
     STUDENT: "/student/all_students",
     INSTRUCTOR: "/instructor/all_instructors",

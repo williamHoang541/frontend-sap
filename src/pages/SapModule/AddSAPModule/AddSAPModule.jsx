@@ -1,4 +1,4 @@
-import { Button, Radio } from "antd";
+import { Button} from "antd";
 import "./AddSAPModule.css";
 import { useNavigate } from "react-router-dom"; 
 import { SlArrowRight } from "react-icons/sl";
@@ -11,8 +11,9 @@ const AddSAPModule = () => {
   const [formData, setFormData] = useState({
     moduleName: "",
     moduleDescription: "",
-    status: true, // Mặc định là Active
   });
+
+  const [errorMessage, setErrorMessage] = useState("");
 
   const navigate = useNavigate();
 
@@ -24,31 +25,27 @@ const AddSAPModule = () => {
     });
   };
 
-  const handleStatusChange = (e) => {
-    setFormData({
-      ...formData,
-      status: e.target.value === "active", // Chuyển đổi giá trị thành boolean
-    });
-  };
-
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
       const response = await axios.post(`https://swdsapelearningapi.azurewebsites.net/api/SapModule/create`, {
         moduleName: formData.moduleName,
         moduleDescription: formData.moduleDescription,
-        status: formData.status,
+        
       });
 
       if (response.status === 201) {
         // Redirect hoặc thông báo thành công
         alert('SAP Module added successfully');
         navigate(PATH_NAME.SAP_MODULE); // Hoặc bất kỳ route nào bạn muốn chuyển hướng
-      } else {
-        console.error("Error adding SAP Module:", response.data);
       }
-    } catch (error) {
-      console.error("Error adding SAP Module:", error.response ? error.response.data : error.message);
+    }catch (error) {
+      // Kiểm tra mã lỗi hoặc thông báo từ server
+      if (error.response && error.response.status === 500) {
+        setErrorMessage(error.response.data.message || "Module name already exists.");
+      } else {
+        console.error("Error adding SAP Module:", error.response ? error.response.data : error.message);
+      }
     }
   };
 
@@ -67,6 +64,7 @@ const AddSAPModule = () => {
 
       <div className="add_sap_module_form_container">
         <div className="add_instructor_label">Basic Info</div>
+        {errorMessage && <p className="error-message">{errorMessage}</p>}
         <form className="add_instructor_form" onSubmit={handleSubmit}>
           <div className="add_instructor_input_row">
             <div className="add_instructor_input_colum">
@@ -90,15 +88,6 @@ const AddSAPModule = () => {
                 value={formData.moduleDescription}
                 onChange={handleChange}
               />
-            </div>
-          </div>
-          <div className="add_instructor_input_row">
-            <div className="add_instructor_input_colum">
-              <label>Status</label>
-              <Radio.Group onChange={handleStatusChange} value={formData.status ? "active" : "inactive"}>
-                <Radio value="active">Active</Radio>
-                <Radio value="inactive">Inactive</Radio>
-              </Radio.Group>
             </div>
           </div>
           <Button className="add_instructor_button_submit" type="primary" htmlType="submit">

@@ -106,23 +106,23 @@ const AddCourse = () => {
     };
 
     return (
-        <div className="add_topic">
-            <div className="add_topic_title_container">
-                <div className="add_topic_title_left">
-                    <div className="add_topic_title">Add Course</div>
+        <div className="add_course">
+            <div className="add_course_title_container">
+                <div className="add_course_title_left">
+                    <div className="add_course_title">Add Course</div>
                 </div>
-                <div className="add_topic_topic_right">
-                    <div className="add_topic_topic">Courses</div>
-                    <SlArrowRight className="add_topic_icon_right" />
-                    <div className="add_topic_add_topics">Add Course</div>
+                <div className="add_course_course_right">
+                    <div className="add_course_course">Courses</div>
+                    <SlArrowRight className="add_course_icon_right" />
+                    <div className="add_course_add_courses">Add Course</div>
                 </div>
             </div>
 
-            <div className="add_topic_form_container">
-                <div className="add_topic_label">Basic Info</div>
-                <form className="add_topic_form" onSubmit={handleSubmit}>
-                    <div className="add_topic_input_row">
-                        <div className="add_topic_input_colum">
+            <div className="add_course_form_container">
+                <div className="add_course_label">Basic Info</div>
+                <form className="add_course_form" onSubmit={handleSubmit}>
+                    <div className="add_course_input_row">
+                        <div className="add_course_input_colum">
                             <label>Instructor</label>
                             <select
                                 value={selectedInstructor}
@@ -143,7 +143,7 @@ const AddCourse = () => {
                                 ))}
                             </select>
                         </div>
-                        <div className="add_topic_input_colum">
+                        <div className="add_course_input_colum">
                             <label>Certificate Name</label>
                             <select
                                 value={selectedCertification}
@@ -164,7 +164,7 @@ const AddCourse = () => {
                                 ))}
                             </select>
                         </div>
-                        <div className="add_topic_input_colum">
+                        <div className="add_course_input_colum">
                             <label htmlFor="name">Mode</label>
                             <input
                                 type="text"
@@ -174,8 +174,8 @@ const AddCourse = () => {
                             />
                         </div>
                     </div>
-                    <div className="add_topic_input_row">
-                        <div className="add_topic_input_colum">
+                    <div className="add_course_input_row">
+                        <div className="add_course_input_colum">
                             <label htmlFor="name">Course Name</label>
                             <input
                                 type="text"
@@ -184,7 +184,7 @@ const AddCourse = () => {
                                 placeholder="Enter the full name"
                             />
                         </div>
-                        <div className="add_topic_input_colum">
+                        <div className="add_course_input_colum">
                             <label htmlFor="name">Start Time</label>
                             <input
                                 type="date"
@@ -192,7 +192,7 @@ const AddCourse = () => {
                                 onChange={(e) => setStartTime(e.target.value)}
                             />
                         </div>
-                        <div className="add_topic_input_colum">
+                        <div className="add_course_input_colum">
                             <label htmlFor="name">End Time</label>
                             <input
                                 type="date"
@@ -201,8 +201,8 @@ const AddCourse = () => {
                             />
                         </div>
                     </div>
-                    <div className="add_topic_input_row">
-                        <div className="add_topic_input_colum">
+                    <div className="add_course_input_row">
+                        <div className="add_course_input_colum">
                             <label htmlFor="name">Enrollment Date</label>
                             <input
                                 type="date"
@@ -212,7 +212,7 @@ const AddCourse = () => {
                                 }
                             />
                         </div>
-                        <div className="add_topic_input_colum">
+                        <div className="add_course_input_colum">
                             <label htmlFor="name">Location</label>
                             <input
                                 type="text"
@@ -221,7 +221,7 @@ const AddCourse = () => {
                                 placeholder="Enter location"
                             />
                         </div>
-                        <div className="add_topic_input_colum">
+                        <div className="add_course_input_colum">
                             <label htmlFor="name">Price</label>
                             <input
                                 type="text"
@@ -233,7 +233,7 @@ const AddCourse = () => {
                     </div>
 
                     <button
-                        className="add_topic_button_submit"
+                        className="add_course_button_submit"
                         type="submit"
                         disabled={loading}
                     >

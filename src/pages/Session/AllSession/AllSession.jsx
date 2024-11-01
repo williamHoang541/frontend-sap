@@ -304,16 +304,39 @@ const AllSession = () => {
         }
     };
 
+    // const handleDelete = async (id) => {
+    //     try {
+    //         await axios.delete(
+    //             `https://swdsapelearningapi.azurewebsites.net/api/CourseSession/${id}`
+    //         );
+    //         setData((prevData) => prevData.filter((item) => item.id !== id));
+    //     } catch (error) {
+    //         console.error(
+    //             "Error deleting session:",
+    //             error.response?.data || error.message
+    //         );
+    //     }
+    // };
+
     const handleDelete = async (id) => {
         try {
-            await axios.delete(
+            // Gửi yêu cầu xóa đến API
+            const response = await axios.delete(
                 `https://swdsapelearningapi.azurewebsites.net/api/CourseSession/${id}`
             );
-            setData((prevData) => prevData.filter((item) => item.id !== id));
+
+            if (response.status === 200) {
+                // Nếu xóa thành công, cập nhật state để loại bỏ mục đã xóa
+                setData((prevData) =>
+                    prevData.filter((item) => item.id !== id)
+                );
+            } else {
+                console.error("Error deleting data:", response.data);
+            }
         } catch (error) {
             console.error(
-                "Error deleting session:",
-                error.response?.data || error.message
+                "Error deleting data:",
+                error.response ? error.response.data : error.message
             );
         }
     };

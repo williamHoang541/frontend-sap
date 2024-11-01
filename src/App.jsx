@@ -24,6 +24,7 @@ import AllCertificate from "./pages/Certificate/AllCertificate/AllCertificate";
 import AddCertificate from "./pages/Certificate/AddCertificate/AddCertificate";
 import AllQuestionBank from "./pages/QuestionBank/AllQuestionBank/AllQuestionBank";
 import AllSample from "./pages/SampleTest/AllSample/AllSample";
+import AddSample from "./pages/SampleTest/AddSample/AddSample";
 import AllQuesInTest from "./pages/QuestionInTest/AllQuesInTest/AllQuesInTest";
 import AddQuestionBank from "./pages/QuestionBank/AddQuestionBank/AddQuestionBank";
 
@@ -197,6 +198,14 @@ const App = () => {
                     element={
                         <LayOut>
                             <AllSample />
+                        </LayOut>
+                    }
+                />
+                <Route
+                    path={PATH_NAME.ADD_TEST}
+                    element={
+                        <LayOut>
+                            <AddSample />
                         </LayOut>
                     }
                 />

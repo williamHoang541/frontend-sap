@@ -81,10 +81,28 @@ const AllSample = () => {
         },
     ];
 
-    const handleDelete = (id) => {
-        setData((prevData) => prevData.filter((item) => item.id !== id));
-    };
+    const handleDelete = async (id) => {
+        try {
+            // Gửi yêu cầu xóa đến API
+            const response = await axios.delete(
+                `https://swdsapelearningapi.azurewebsites.net/api/CourseSession/${id}`
+            );
 
+            if (response.status === 200) {
+                // Nếu xóa thành công, cập nhật state để loại bỏ mục đã xóa
+                setData((prevData) =>
+                    prevData.filter((item) => item.id !== id)
+                );
+            } else {
+                console.error("Error deleting data:", response.data);
+            }
+        } catch (error) {
+            console.error(
+                "Error deleting data:",
+                error.response ? error.response.data : error.message
+            );
+        }
+    };
     const fetchData = async (pagination) => {
         setLoading(true);
         try {
@@ -155,7 +173,7 @@ const AllSample = () => {
             </div>
 
             <div className="test_table_container">
-                <Link to={PATH_NAME.ADD_TOPIC}>
+                <Link to={PATH_NAME.ADD_TEST}>
                     <button className="topic_add">Add New</button>
                 </Link>
                 <Table

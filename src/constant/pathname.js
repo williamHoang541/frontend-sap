@@ -17,8 +17,8 @@ export const PATH_NAME = {
     CERTIFICATE: "/certificate/all_certificates",
     ADD_CERTIFICATE: "/certificate/add_certificate",
     TEST: "/test/all_tests",
+    ADD_TEST: "/test/add_test",
     QUESTION_IN_TEST: "/question_in_test/all_questions",
     QUESTION_BANK: "/question_bank/all_questions",
-    ADD_QUESTION: "/question_bank/add_question",
     ACCOUNT_SETTING: "/account_setting",
 };

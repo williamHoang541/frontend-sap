@@ -22,6 +22,12 @@ import SapModule from "./pages/SapModule/AllSAPModule/SapModule";
 import AddSAPModule from "./pages/SapModule/AddSAPModule/AddSAPModule";
 import AllCertificate from "./pages/Certificate/AllCertificate/AllCertificate";
 import AddCertificate from "./pages/Certificate/AddCertificate/AddCertificate";
+import AllQuestionBank from "./pages/QuestionBank/AllQuestionBank/AllQuestionBank";
+import AddQuestionBank from "./pages/QuestionBank/AddQuestionBank/AddQuestionBank";
+import AllSample from "./pages/SampleTest/AllSample/AllSample";
+import AddSample from "./pages/SampleTest/AddSample/AddSample";
+import AllQuesInTest from "./pages/QuestionInTest/AllQuesInTest/AllQuesInTest";
+import AddQuesInTest from "./pages/QuestionInTest/AddQuesInTest/AddQuesInTest";
 
 const LayOut = ({ children }) => {
     const [collapsed, setCollapsed] = useState(false);
@@ -101,41 +107,37 @@ const App = () => {
                     }
                 />
                 <Route
-          path={PATH_NAME.SAP_MODULE}
-          element={
-            <LayOut>
-              <SapModule />
-            </LayOut>
-
-          }
-        />
-        <Route
-          path={PATH_NAME.ADD_SAP_MODULE}
-          element={
-            <LayOut>
-              <AddSAPModule />
-            </LayOut>
-
-          }
-        />
-        <Route
-          path={PATH_NAME.CERTIFICATE}
-          element={
-            <LayOut>
-              <AllCertificate />
-            </LayOut>
-
-          }
-        />
-        <Route
-          path={PATH_NAME.ADD_CERTIFICATE}
-          element={
-            <LayOut>
-              <AddCertificate />
-            </LayOut>
-
-          }
-        />
+                    path={PATH_NAME.SAP_MODULE}
+                    element={
+                        <LayOut>
+                            <SapModule />
+                        </LayOut>
+                    }
+                />
+                <Route
+                    path={PATH_NAME.ADD_SAP_MODULE}
+                    element={
+                        <LayOut>
+                            <AddSAPModule />
+                        </LayOut>
+                    }
+                />
+                <Route
+                    path={PATH_NAME.CERTIFICATE}
+                    element={
+                        <LayOut>
+                            <AllCertificate />
+                        </LayOut>
+                    }
+                />
+                <Route
+                    path={PATH_NAME.ADD_CERTIFICATE}
+                    element={
+                        <LayOut>
+                            <AddCertificate />
+                        </LayOut>
+                    }
+                />
                 <Route
                     path={PATH_NAME.ANALYTIC}
                     element={
@@ -173,6 +175,54 @@ const App = () => {
                     element={
                         <LayOut>
                             <AddSession />
+                        </LayOut>
+                    }
+                />
+                <Route
+                    path={PATH_NAME.QUESTION_BANK}
+                    element={
+                        <LayOut>
+                            <AllQuestionBank />
+                        </LayOut>
+                    }
+                />
+                <Route
+                    path={PATH_NAME.ADD_QUESTION_BANK}
+                    element={
+                        <LayOut>
+                            <AddQuestionBank />
+                        </LayOut>
+                    }
+                />
+                <Route
+                    path={PATH_NAME.TEST}
+                    element={
+                        <LayOut>
+                            <AllSample />
+                        </LayOut>
+                    }
+                />
+                <Route
+                    path={PATH_NAME.ADD_TEST}
+                    element={
+                        <LayOut>
+                            <AddSample />
+                        </LayOut>
+                    }
+                />
+                <Route
+                    path={PATH_NAME.QUESTION_IN_TEST}
+                    element={
+                        <LayOut>
+                            <AllQuesInTest />
+                        </LayOut>
+                    }
+                />
+                <Route
+                    path={PATH_NAME.ADD_QUESTION_IN_TEST}
+                    element={
+                        <LayOut>
+                            <AddQuesInTest />
                         </LayOut>
                     }
                 />

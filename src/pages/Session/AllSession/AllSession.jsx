@@ -107,12 +107,17 @@ const AllSession = () => {
                         modal
                         closeOnDocumentClick
                         onOpen={() => {
-                            console.log("ID:", record.$id); // Kiểm tra giá trị ID
+                            const instructorId = getInstructorIdByName(
+                                record.instructorId
+                            );
+                            console.log("Instructor ID:", instructorId); // Kiểm tra xem instructorId có đúng không
                             form.setFieldsValue({
                                 instructorId: record.instructorId,
+                                fullname: record.fullname,
                                 sessionName: record.sessionName,
                                 sessionDescription: record.sessionDescription,
                                 sessionDate: record.sessionDate,
+                                status: record.status,
                             });
                         }}
                     >
@@ -122,14 +127,21 @@ const AllSession = () => {
                                 <Form
                                     form={form}
                                     onFinish={(values) => {
-                                        handleEdit(values, record.$id);
-                                        close(); // Đóng popup sau khi lưu
+                                        handleEdit(values, record.id);
+                                        close();
                                     }}
                                 >
                                     <div className="all_session_input">
                                         <Form.Item
                                             name="sessionName"
                                             label="Session Name"
+                                            rules={[
+                                                {
+                                                    required: true,
+                                                    message:
+                                                        "Please enter session name",
+                                                },
+                                            ]}
                                         >
                                             <input
                                                 type="text"
@@ -137,20 +149,33 @@ const AllSession = () => {
                                                 placeholder="Enter session name"
                                             />
                                         </Form.Item>
-                                        {/* <Form.Item
+                                        <Form.Item
                                             name="instructorId"
                                             label="Instructor"
+                                            rules={[
+                                                {
+                                                    required: true,
+                                                    message:
+                                                        "Please select an instructor",
+                                                },
+                                            ]}
                                         >
-                                            <Select
-                                                placeholder="Select instructor"
-                                                options={instructors.map(
-                                                    (inst) => ({
-                                                        label: inst.instructorIdName,
-                                                        value: inst.instructorName,
-                                                    })
-                                                )}
-                                            />
-                                        </Form.Item> */}
+                                            <select className="all_session_form">
+                                                <option value="">
+                                                    Select instructor
+                                                </option>
+                                                {instructors.map((inst) => (
+                                                    <option
+                                                        key={inst.instructorId}
+                                                        value={
+                                                            inst.instructorId
+                                                        }
+                                                    >
+                                                        {inst.fullname}
+                                                    </option>
+                                                ))}
+                                            </select>
+                                        </Form.Item>
                                     </div>
                                     <div className="all_session_input">
                                         <Form.Item
@@ -168,6 +193,13 @@ const AllSession = () => {
                                         <Form.Item
                                             name="sessionDate"
                                             label="Session Date"
+                                            rules={[
+                                                {
+                                                    required: true,
+                                                    message:
+                                                        "Please select session date",
+                                                },
+                                            ]}
                                         >
                                             <input
                                                 type="date"
@@ -176,9 +208,11 @@ const AllSession = () => {
                                         </Form.Item>
                                         <Form.Item name="status" label="Status">
                                             <Radio.Group className="status-group">
-                                                <Radio value={true}>True</Radio>
+                                                <Radio value={true}>
+                                                    Active
+                                                </Radio>
                                                 <Radio value={false}>
-                                                    False
+                                                    Inactive
                                                 </Radio>
                                             </Radio.Group>
                                         </Form.Item>
@@ -217,68 +251,99 @@ const AllSession = () => {
         },
     ];
 
+    const getInstructorIdByName = (fullname) => {
+        const instructor = instructors.find(
+            (inst) => inst.fullname === fullname
+        );
+        return instructor ? instructor.id : undefined;
+    };
+
     const handleEdit = async (values, id) => {
         if (!id) {
-            console.error("ID is undefined. Cannot update record.");
-            return; // Dừng lại nếu ID không hợp lệ
+            console.error("Missing ID for update.");
+            return;
         }
 
         try {
-            const existingRecord = data.find((item) => item.$id === id);
-            const updatedRecord = { ...existingRecord, ...values };
+            const updateData = { ...values };
+            updateData.instructorId = getInstructorIdByName(
+                values.instructorId
+            );
+
+            console.log("Data sent to API:", updateData);
 
             const response = await axios.put(
                 `https://swdsapelearningapi.azurewebsites.net/api/CourseSession/${id}`,
-                updatedRecord
+                updateData,
+                { headers: { "Content-Type": "application/json" } }
             );
 
             if (response.status === 200) {
-                const updatedData = data.map((item) =>
-                    item.$id === id ? { ...item, ...updatedRecord } : item
+                // Cập nhật state ngay lập tức sau khi cập nhật thành công
+                setData((prevData) =>
+                    prevData.map((item) =>
+                        item.id === id ? { ...item, ...updateData } : item
+                    )
                 );
-                setData(updatedData);
                 form.resetFields();
+                alert("Update successful!");
             } else {
-                console.error("Update failed:", response);
+                console.error(
+                    "Failed to update. Response status:",
+                    response.status
+                );
             }
         } catch (error) {
-            console.error("Error updating course:", error);
+            console.error(
+                "Error updating session:",
+                error.response?.data || error.message
+            );
+            if (error.response && error.response.data) {
+                console.error("API error response:", error.response.data);
+            }
         }
     };
 
-    const handleDelete = (id) => {
-        setData((prevData) => prevData.filter((item) => item.id !== id));
+    // const handleDelete = async (id) => {
+    //     try {
+    //         await axios.delete(
+    //             `https://swdsapelearningapi.azurewebsites.net/api/CourseSession/${id}`
+    //         );
+    //         setData((prevData) => prevData.filter((item) => item.id !== id));
+    //     } catch (error) {
+    //         console.error(
+    //             "Error deleting session:",
+    //             error.response?.data || error.message
+    //         );
+    //     }
+    // };
+
+    const handleDelete = async (id) => {
+        try {
+            // Gửi yêu cầu xóa đến API
+            const response = await axios.delete(
+                `https://swdsapelearningapi.azurewebsites.net/api/CourseSession/${id}`
+            );
+
+            if (response.status === 200) {
+                // Nếu xóa thành công, cập nhật state để loại bỏ mục đã xóa
+                setData((prevData) =>
+                    prevData.filter((item) => item.id !== id)
+                );
+            } else {
+                console.error("Error deleting data:", response.data);
+            }
+        } catch (error) {
+            console.error(
+                "Error deleting data:",
+                error.response ? error.response.data : error.message
+            );
+        }
     };
 
     const fetchData = async (pagination) => {
         setLoading(true);
         try {
-            // const response = await axios.get(
-            //     `https://swdsapelearningapi.azurewebsites.net/api/CourseSession/get-all`
-            // );
-            // const results = response.data.$values;
-
-            // if (Array.isArray(results)) {
-            //     console.log("Fetched data:", results); // Kiểm tra dữ liệu
-            //     const startIndex =
-            //         (pagination.current - 1) * pagination.pageSize;
-            //     const paginatedData = results.slice(
-            //         startIndex,
-            //         startIndex + pagination.pageSize
-            //     );
-            //     setData(paginatedData);
-            //     setTableParams((prevParams) => ({
-            //         ...prevParams,
-            //         pagination: {
-            //             ...pagination,
-            //             total: results.length,
-            //         },
-            //     }));
-            // } else {
-            //     console.error("Fetched data is not an array:", results);
-            //     setData([]);
-            // }
-
             const [courseResponse, instructorResponse] = await Promise.all([
                 axios.get(
                     `https://swdsapelearningapi.azurewebsites.net/api/CourseSession/get-all`
@@ -297,7 +362,7 @@ const AllSession = () => {
                 const paginatedData = courseResults.slice(
                     startIndex,
                     startIndex + pagination.pageSize
-                ); // Phân trang dữ liệu
+                );
 
                 setData(paginatedData);
                 setTableParams((prevParams) => ({
@@ -310,7 +375,7 @@ const AllSession = () => {
             }
 
             if (Array.isArray(instructorResults)) {
-                setInstructors(instructorResults); // Lưu danh sách chứng chỉ
+                setInstructors(instructorResults);
             }
         } catch (error) {
             console.error("Error fetching data:", error);

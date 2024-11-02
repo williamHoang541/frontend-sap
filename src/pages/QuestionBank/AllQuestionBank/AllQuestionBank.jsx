@@ -1,24 +1,23 @@
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
+import { Button, Table, Form, Radio } from "antd";
+import Popup from "reactjs-popup";
 import { SlArrowRight } from "react-icons/sl";
-import { Button, Popconfirm, Table, Form, Radio } from "antd";
 import { RiDeleteBin6Line } from "react-icons/ri";
 import { MdModeEditOutline } from "react-icons/md";
-import axios from "axios";
-import Popup from "reactjs-popup";
+import { Link } from "react-router-dom";
+import qs from "qs";
 import { PATH_NAME } from "../../../constant/pathname";
 import "reactjs-popup/dist/index.css";
-import { Link } from "react-router-dom";
-import "./AllTopic.css";
+import axios from "axios";
+import "./AllQuestionBank.css";
 
-const AllTopic = () => {
-    const [data, setData] = useState([]); // Khởi tạo mảng dữ liệu
-    const [certificates, setCertificates] = useState([]); // Khởi tạo mảng chứng chỉ
+const AllQuestionBank = () => {
+    const [data, setData] = useState([]);
     const [loading, setLoading] = useState(false);
     const [tableParams, setTableParams] = useState({
         pagination: {
             current: 1,
             pageSize: 10,
-            total: 0,
         },
     });
     const [form] = Form.useForm();
@@ -35,44 +34,26 @@ const AllTopic = () => {
                 1,
         },
         {
-            title: "Certificate Name",
-            dataIndex: "certificateId",
-            sorter: true,
-            width: "15%",
-            render: (certificateId) => {
-                // Tìm certificate name dựa vào certificateId
-                const certificate = certificates.find(
-                    (cert) => cert.id === certificateId
-                );
-                return certificate ? certificate.certificateName : "N/A";
-            },
-        },
-        {
-            title: "Topic Name",
-            dataIndex: "topicName",
+            title: "Question",
+            dataIndex: "questionText",
             sorter: (a, b) =>
-                (a.topicName || "").localeCompare(b.topicName || ""),
+                (a.questionText || "").localeCompare(b.questionText || ""),
             width: "15%",
         },
         {
-            title: "Status",
-            dataIndex: "status",
-            width: "10%",
-            render: (status) => (
-                <span
-                    className={`topic_status_indicator ${
-                        status ? "active" : "inactive"
-                    }`}
-                />
-            ),
+            title: "Answer",
+            dataIndex: "answer",
+            sorter: (a, b) => (a.answer || "").localeCompare(b.answer || ""),
+            width: "12%",
         },
+
         {
             title: "Action",
             render: (_, record) => (
-                <>
+                <div className="bank_buttons">
                     <Popup
                         trigger={
-                            <Button type="link" className="topic_button_edit">
+                            <Button type="link" className="bank_button_edit">
                                 <MdModeEditOutline />
                             </Button>
                         }
@@ -80,14 +61,14 @@ const AllTopic = () => {
                         closeOnDocumentClick
                         onOpen={() =>
                             form.setFieldsValue({
-                                topicName: record.topicName,
-                                status: record.status,
+                                questionText: record.questionText || "",
+                                answer: record.answer || "",
                             })
                         }
                     >
                         {(close) => (
                             <div className="popup_container">
-                                <h2>Edit Topic</h2>
+                                <h2>Edit Course</h2>
                                 <Form
                                     form={form}
                                     onFinish={(values) => {
@@ -95,24 +76,23 @@ const AllTopic = () => {
                                         close(); // Đóng popup sau khi lưu
                                     }}
                                 >
-                                    <div className="all_topic_input">
+                                    <div className="all_bank_input">
                                         <Form.Item
-                                            name="topicName"
-                                            label="Topic Name"
+                                            name="questionText"
+                                            label="Question"
                                         >
                                             <input
                                                 type="text"
-                                                className="all_topic_form"
-                                                placeholder="Enter Topic Name"
+                                                className="all_bank_form"
+                                                placeholder="Enter question"
                                             />
                                         </Form.Item>
-                                        <Form.Item name="status" label="Status">
-                                            <Radio.Group className="status-radio-group">
-                                                <Radio value={true}>True</Radio>
-                                                <Radio value={false}>
-                                                    False
-                                                </Radio>
-                                            </Radio.Group>
+                                        <Form.Item name="answer" label="Answer">
+                                            <input
+                                                type="text"
+                                                className="all_bank_form"
+                                                placeholder="Enter answer"
+                                            />
                                         </Form.Item>
                                     </div>
 
@@ -140,11 +120,11 @@ const AllTopic = () => {
                         type="link"
                         danger
                         onClick={() => handleDelete(record.id)}
-                        className="topic_button_delete"
+                        className="bank_button_delete"
                     >
                         <RiDeleteBin6Line />
                     </Button>
-                </>
+                </div>
             ),
             width: "10%",
         },
@@ -152,38 +132,43 @@ const AllTopic = () => {
 
     const handleEdit = async (values, id) => {
         try {
-            // Gửi yêu cầu PUT đến API với dữ liệu cập nhật
+            // Lấy thông tin cũ của record (có chứa Instructor name)
+            const existingRecord = data.find((item) => item.id === id);
+
+            // Chỉ ghi đè các trường đã thay đổi trong form, các trường không có trong form sẽ giữ nguyên
+            const updatedRecord = {
+                ...existingRecord, // giữ nguyên dữ liệu cũ (bao gồm Instructor name)
+                ...values, // chỉ cập nhật các trường có trong form
+            };
+
+            // Gửi yêu cầu update với record đã cập nhật
             const response = await axios.put(
-                `https://swdsapelearningapi.azurewebsites.net/api/TopicArea/${id}`,
-                {
-                    topicName: values.topicName, // Dữ liệu cần chỉnh sửa, ở đây là topicName
-                    status: values.status,
-                }
+                `https://swdsapelearningapi.azurewebsites.net/api/CertificateQuestion/update?id=${id}`,
+                updatedRecord // gửi toàn bộ bản ghi đã được cập nhật
             );
 
-            // Nếu API thành công, cập nhật lại dữ liệu trên giao diện
             if (response.status === 200) {
+                // Cập nhật lại dữ liệu trên frontend
                 const updatedData = data.map((item) =>
-                    item.id === id ? { ...item, ...values } : item
+                    item.id === id ? { ...item, ...updatedRecord } : item
                 );
                 setData(updatedData);
-                form.resetFields();
+                form.resetFields(); // reset form sau khi hoàn thành
             } else {
-                console.error("Error updating topic:", response);
+                console.error("Update failed:", response);
             }
         } catch (error) {
-            console.error("Error during API PUT request:", error);
+            console.error("Error updating course:", error);
         }
     };
-
     const handleDelete = async (id) => {
         try {
             // Gửi yêu cầu xóa đến API
             const response = await axios.delete(
-                ` https://swdsapelearningapi.azurewebsites.net/api/TopicArea/${id}`
+                `https://swdsapelearningapi.azurewebsites.net/api/CertificateQuestion/delete?id=${id}`
             );
 
-            if (response.status === 204) {
+            if (response.status >= 200 && response.status < 300) {
                 // Nếu xóa thành công, cập nhật state để loại bỏ mục đã xóa
                 setData((prevData) =>
                     prevData.filter((item) => item.id !== id)
@@ -198,26 +183,19 @@ const AllTopic = () => {
             );
         }
     };
-
     const fetchData = async (pagination) => {
         setLoading(true);
         try {
-            const [topicResponse, certificateResponse] = await Promise.all([
-                axios.get(
-                    `https://swdsapelearningapi.azurewebsites.net/api/TopicArea/get-all`
-                ),
-                axios.get(
-                    `https://swdsapelearningapi.azurewebsites.net/api/Certificate/get-all`
-                ),
-            ]);
+            const response = await axios.get(
+                `https://swdsapelearningapi.azurewebsites.net/api/CertificateQuestion/get-all`
+            );
+            const results = response.data.$values; // Lấy dữ liệu từ response
 
-            const topicResults = topicResponse.data.$values;
-            const certificateResults = certificateResponse.data.$values;
-
-            if (Array.isArray(topicResults)) {
+            // Kiểm tra xem results có phải là mảng không
+            if (Array.isArray(results)) {
                 const startIndex =
                     (pagination.current - 1) * pagination.pageSize;
-                const paginatedData = topicResults.slice(
+                const paginatedData = results.slice(
                     startIndex,
                     startIndex + pagination.pageSize
                 ); // Phân trang dữ liệu
@@ -227,13 +205,12 @@ const AllTopic = () => {
                     ...prevParams,
                     pagination: {
                         ...pagination,
-                        total: topicResults.length,
+                        total: results.length,
                     },
                 }));
-            }
-
-            if (Array.isArray(certificateResults)) {
-                setCertificates(certificateResults); // Lưu danh sách chứng chỉ
+            } else {
+                console.error("Fetched data is not an array:", results);
+                setData([]); // Đặt lại dữ liệu nếu không hợp lệ
             }
         } catch (error) {
             console.error("Error fetching data:", error);
@@ -256,21 +233,21 @@ const AllTopic = () => {
     };
 
     return (
-        <div className="topic-area">
-            <div className="topic_title_container">
-                <div className="topic_title_left">
-                    <div className="topic_title">All Topic</div>
+        <div className="question_bank">
+            <div className="bank_title_container">
+                <div className="bank_title_left">
+                    <div className="bank_title">Question Bank</div>
                 </div>
-                <div className="topic_area_right">
-                    <div className="topic_topic">Topic Area</div>
-                    <SlArrowRight className="topic_icon_right" />
-                    <div className="topic_all_topics">All Topic</div>
+                <div className="bank_bank_right">
+                    <div className="bank_bank">Question Bank</div>
+                    <SlArrowRight className="bank_icon_right" />
+                    <div className="bank_all_banks">All Questions</div>
                 </div>
             </div>
 
-            <div className="topic_table_container">
-                <Link to={PATH_NAME.ADD_TOPIC}>
-                    <button className="topic_add">Add New</button>
+            <div className="bank_table_container">
+                <Link to={PATH_NAME.ADD_QUESTION_BANK}>
+                    <button className="bank_add">Add New</button>
                 </Link>
                 <Table
                     columns={columns}
@@ -289,4 +266,4 @@ const AllTopic = () => {
     );
 };
 
-export default AllTopic;
+export default AllQuestionBank;

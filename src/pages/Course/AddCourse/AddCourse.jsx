@@ -1,613 +1,246 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import "./AddCourse.css";
 import "./CourseSteps.css";
-import { Link } from "react-router-dom";
-import {
-    FaListUl,
-    FaImage,
-    FaShoppingCart,
-    FaRegMoneyBillAlt,
-} from "react-icons/fa";
+import { Link, useNavigate } from "react-router-dom";
+import { FaRegMoneyBillAlt } from "react-icons/fa";
+import { SlArrowRight } from "react-icons/sl";
+import axios from "axios"; // Thêm axios
+import { PATH_NAME } from "../../../constant/pathname";
 
 const AddCourse = () => {
-    const [activeTab, setActiveTab] = useState("tab_step1");
-    const tabs = ["tab_step1", "tab_step3", "tab_step4", "tab_step5"];
-    // const tabNames = ["Basic", "Curriculum", "Media", "Price", "Publish"];
-    const tabNames = ["Basic", "Media", "Price", "Publish"];
+    const [certificates, setCertificates] = useState([]);
+    const [selectedCertification, setSelectedCertification] = useState("");
+    const [instructors, setInstructors] = useState([]);
+    const [selectedInstructor, setSelectedInstructor] = useState("");
+    const [courseName, setCourseName] = useState("");
+    const [mode, setMode] = useState("");
+    const [startTime, setStartTime] = useState("");
+    const [endTime, setEndTime] = useState("");
+    const [enrollmentDate, setEnrollmentDate] = useState("");
+    const [location, setLocation] = useState("");
+    const [price, setPrice] = useState("");
+    const [error, setError] = useState("");
+    const [loading, setLoading] = useState(false);
+    const navigate = useNavigate();
 
-    const handleTabClick = (tabId) => {
-        if (tabId !== activeTab) {
-            setActiveTab(tabId);
-        }
+    // Lấy danh sách chứng chỉ từ API
+    useEffect(() => {
+        const fetchCertificates = async () => {
+            try {
+                const response = await axios.get(
+                    "https://swdsapelearningapi.azurewebsites.net/api/Certificate/get-all"
+                );
+                const data = response.data.$values;
+                if (Array.isArray(data)) {
+                    setCertificates(data);
+                } else {
+                    setError("Unexpected response format. Expected an array.");
+                }
+            } catch (error) {
+                console.error("Error fetching certificates:", error);
+                setError("An error occurred while fetching certificates.");
+            }
+        };
+
+        const fetchInstructors = async () => {
+            try {
+                const response = await axios.get(
+                    "https://swdsapelearningapi.azurewebsites.net/api/Instructor/get-all"
+                );
+                const data = response.data.$values;
+                if (Array.isArray(data)) {
+                    setInstructors(data);
+                } else {
+                    setError("Unexpected response format. Expected an array.");
+                }
+            } catch (error) {
+                console.error("Error fetching instructors:", error);
+                setError("An error occurred while fetching instructors.");
+            }
+        };
+
+        fetchCertificates();
+        fetchInstructors();
+    }, []);
+
+    const handleChangeCertification = (event) => {
+        const value = event.target.value;
+        console.log("Selected Certification Value:", value); // In giá trị
+        setSelectedCertification(value);
     };
 
-    const isDone = (tabId) => {
-        return tabs.indexOf(tabId) < tabs.indexOf(activeTab);
-    };
+    const handleSubmit = async (event) => {
+        event.preventDefault();
 
-    const handleContinue = () => {
-        const currentIndex = tabs.indexOf(activeTab);
-        if (currentIndex < tabs.length - 1) {
-            setActiveTab(tabs[currentIndex + 1]);
-        }
-    };
+        const requestData = {
+            courseName,
+            mode,
+            startTime,
+            endTime,
+            enrollmentDate,
+            location,
+            price,
+            certificateId: selectedCertification,
+            instructorId: selectedInstructor,
+        };
 
-    const handlePrevious = () => {
-        const currentIndex = tabs.indexOf(activeTab);
-        if (currentIndex > 0) {
-            setActiveTab(tabs[currentIndex - 1]);
+        try {
+            const response = await axios.post(
+                "https://swdsapelearningapi.azurewebsites.net/api/Course/create",
+                requestData,
+                { headers: { "Content-Type": "application/json" } }
+            );
+
+            if (response.status >= 200 && response.status < 300) {
+                alert("Course added successfully!");
+                navigate(PATH_NAME.COURSE); // Điều hướng tới trang khóa học sau khi thêm thành công
+            }
+        } catch (error) {
+            console.error("Error adding course:", error);
+            if (error.response) {
+                console.error("Response data:", error.response.data);
+                console.error("Response status:", error.response.status);
+            }
+            setError("An error occurred while adding the course.");
         }
     };
 
     return (
-        <div className="page-container">
-            <div className="page-header">Add Course</div>
-            <div className="row">
-                <div className="col-12">
-                    <div className="course_tabs_1">
-                        <div id="add-course-tab" className="step-app">
-                            <ul className="step-steps">
-                                {tabs.map((tab, index) => (
-                                    <li
-                                        key={index}
-                                        className={
-                                            activeTab === tab
-                                                ? "active"
-                                                : isDone(tab)
-                                                ? "done"
-                                                : ""
-                                        }
+        <div className="add_course">
+            <div className="add_course_title_container">
+                <div className="add_course_title_left">
+                    <div className="add_course_title">Add Course</div>
+                </div>
+                <div className="add_course_course_right">
+                    <div className="add_course_course">Courses</div>
+                    <SlArrowRight className="add_course_icon_right" />
+                    <div className="add_course_add_courses">Add Course</div>
+                </div>
+            </div>
+
+            <div className="add_course_form_container">
+                <div className="add_course_label">Basic Info</div>
+                <form className="add_course_form" onSubmit={handleSubmit}>
+                    <div className="add_course_input_row">
+                        <div className="add_course_input_colum">
+                            <label>Instructor</label>
+                            <select
+                                value={selectedInstructor}
+                                onChange={(e) =>
+                                    setSelectedInstructor(e.target.value)
+                                }
+                            >
+                                <option value="" disabled>
+                                    Select Instructor
+                                </option>
+                                {instructors.map((inst) => (
+                                    <option
+                                        key={inst.id}
+                                        value={inst.id} // Đảm bảo value là certificateId
                                     >
-                                        <Link
-                                            onClick={() => handleTabClick(tab)}
-                                        >
-                                            <span className="number"></span>
-                                            <span className="step-name">
-                                                {tabNames[index]}
-                                            </span>
-                                        </Link>
-                                    </li>
+                                        {inst.fullname}
+                                    </option>
                                 ))}
-                            </ul>
-                            <div className="step-content">
-                                {/* Step 1 */}
-                                <div
-                                    className={`step-tab-panel step-tab-info ${
-                                        activeTab === "tab_step1"
-                                            ? "active"
-                                            : "done"
-                                    }`}
-                                    id="tab_step1"
-                                >
-                                    <div className="tab-from-content">
-                                        <div className="course__form">
-                                            <div className="general_info10">
-                                                <div className="row-2">
-                                                    <div className="col-sm-6">
-                                                        <div className="form-group">
-                                                            <label
-                                                                className="form-label"
-                                                                htmlFor="course_name"
-                                                            >
-                                                                Course Name
-                                                            </label>
-                                                            <input
-                                                                type="text"
-                                                                className="form-control"
-                                                                id="course_name"
-                                                                placeholder="Enter Course Name"
-                                                                required
-                                                            />
-                                                        </div>
-                                                    </div>
-                                                    <div className="col-sm-6">
-                                                        <div className="form-group">
-                                                            <label
-                                                                className="form-label"
-                                                                htmlFor="course_code"
-                                                            >
-                                                                Course Code
-                                                            </label>
-                                                            <input
-                                                                type="text"
-                                                                className="form-control"
-                                                                id="course_code"
-                                                                placeholder="Enter Course Code"
-                                                                required
-                                                            />
-                                                        </div>
-                                                    </div>
-                                                    <div className="col-lg-12 col-md-12 col-sm-12">
-                                                        <div className="form-group">
-                                                            <label
-                                                                className="form-label"
-                                                                htmlFor="course_details"
-                                                            >
-                                                                Course Details
-                                                            </label>
-                                                            <textarea
-                                                                type="text"
-                                                                className="form-control"
-                                                                id="course_details"
-                                                                placeholder="Course Details"
-                                                                rows={5}
-                                                                required
-                                                            />
-                                                        </div>
-                                                    </div>
-                                                    <div className="col-sm-6">
-                                                        <div className="form-group">
-                                                            <label
-                                                                className="form-label"
-                                                                htmlFor="datePicker"
-                                                            >
-                                                                Start Date
-                                                            </label>
-                                                            <input
-                                                                type="date"
-                                                                className="form-control"
-                                                                id="datePicker"
-                                                            />
-                                                        </div>
-                                                    </div>
-                                                    <div className="col-sm-6">
-                                                        <div className="form-group">
-                                                            <label
-                                                                className="form-label"
-                                                                htmlFor="datePicker"
-                                                            >
-                                                                End Date
-                                                            </label>
-                                                            <input
-                                                                type="date"
-                                                                className="form-control"
-                                                                id="datePicker"
-                                                            />
-                                                        </div>
-                                                    </div>
-                                                    <div className="col-sm-6">
-                                                        <div className="form-group">
-                                                            <label
-                                                                className="form-label"
-                                                                htmlFor="datePicker"
-                                                            >
-                                                                End Register
-                                                                Date
-                                                            </label>
-                                                            <input
-                                                                type="date"
-                                                                className="form-control"
-                                                                id="datePicker"
-                                                            />
-                                                        </div>
-                                                    </div>
-                                                    <div className="col-sm-6">
-                                                        <div className="form-group">
-                                                            <label
-                                                                className="form-label"
-                                                                htmlFor="instructor_name"
-                                                            >
-                                                                Instructor Name
-                                                            </label>
-                                                            <input
-                                                                type="text"
-                                                                className="form-control"
-                                                                id="instructor_name"
-                                                                placeholder="Enter Instructor Name"
-                                                                required
-                                                            />
-                                                        </div>
-                                                    </div>
-                                                    <div className="col-sm-6">
-                                                        <div className="form-group">
-                                                            <label
-                                                                className="form-label"
-                                                                htmlFor="max_students"
-                                                            >
-                                                                Maximum Students
-                                                            </label>
-                                                            <input
-                                                                type="number"
-                                                                className="form-control"
-                                                                id="max_students"
-                                                                placeholder="Enter Maximum Students"
-                                                                required
-                                                            />
-                                                        </div>
-                                                    </div>
-                                                    <div className="col-sm-6">
-                                                        <div className="form-group">
-                                                            <label
-                                                                className="form-label"
-                                                                htmlFor="location"
-                                                            >
-                                                                Location
-                                                            </label>
-                                                            <input
-                                                                type="text"
-                                                                className="form-control"
-                                                                id="location"
-                                                                placeholder="Enter Location"
-                                                                required
-                                                            />
-                                                        </div>
-                                                    </div>
-                                                    <div className="col-lg-12 col-md-12 col-sm-12">
-                                                        <div className="btn-group">
-                                                            <button
-                                                                type="button"
-                                                                className="btn btn-secondary"
-                                                                onClick={
-                                                                    handlePrevious
-                                                                }
-                                                                disabled={
-                                                                    activeTab ===
-                                                                    "tab_step1"
-                                                                }
-                                                            >
-                                                                Previous
-                                                            </button>
-                                                            <button
-                                                                type="button"
-                                                                className="btn btn-primary"
-                                                                onClick={
-                                                                    handleContinue
-                                                                }
-                                                                disabled={
-                                                                    activeTab ===
-                                                                    "tab_step5"
-                                                                }
-                                                            >
-                                                                Continue
-                                                            </button>
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-
-                                {/* Step 3 */}
-                                <div
-                                    className={`step-tab-panel step-tab-location ${
-                                        activeTab === "tab_step3"
-                                            ? "active"
-                                            : "done"
-                                    }`}
-                                    id="tab_step3"
-                                >
-                                    <div className="tab-from-content">
-                                        <div className="title-icon">
-                                            <h3 className="title">
-                                                <div className="icon">
-                                                    <FaImage />
-                                                </div>
-                                                Media
-                                            </h3>
-                                        </div>
-                                        <div className="lecture-video-dt mb-30">
-                                            <span className="video-info">
-                                                Course Material File (.pptx)
-                                            </span>
-                                            <div className="video-category">
-                                                <label>
-                                                    <input
-                                                        type="radio"
-                                                        name="colorRadio"
-                                                        value="mp4"
-                                                        defaultChecked
-                                                    />
-                                                    <span>
-                                                        Material (.pptx)
-                                                    </span>
-                                                </label>
-                                                <div
-                                                    className="mp4 intro-box"
-                                                    style={{ display: "block" }}
-                                                >
-                                                    <div className="row">
-                                                        <div className="col-lg-5 col-md-12">
-                                                            <div className="upload-file-dt mt-30">
-                                                                <div className="upload-btn">
-                                                                    <input
-                                                                        className="uploadBtn-main-input"
-                                                                        type="file"
-                                                                        id="IntroFile__input--source"
-                                                                    />
-                                                                    <label
-                                                                        htmlFor="IntroFile__input--source"
-                                                                        title="Zip"
-                                                                    >
-                                                                        Upload
-                                                                        Video
-                                                                    </label>
-                                                                </div>
-                                                                <span className="uploadBtn-main-file">
-                                                                    File Format:
-                                                                    .pptx
-                                                                </span>
-                                                                <span className="uploaded-id"></span>
-                                                            </div>
-                                                        </div>
-                                                    </div>
-                                                    <div className="col-lg-12 col-md-12 col-sm-12">
-                                                        <div className="btn-group">
-                                                            <button
-                                                                type="button"
-                                                                className="btn btn-secondary"
-                                                                onClick={
-                                                                    handlePrevious
-                                                                }
-                                                                disabled={
-                                                                    activeTab ===
-                                                                    "tab_step1"
-                                                                }
-                                                            >
-                                                                Previous
-                                                            </button>
-                                                            <button
-                                                                type="button"
-                                                                className="btn btn-primary"
-                                                                onClick={
-                                                                    handleContinue
-                                                                }
-                                                                disabled={
-                                                                    activeTab ===
-                                                                    "tab_step5"
-                                                                }
-                                                            >
-                                                                Continue
-                                                            </button>
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-
-                                {/* Step 4 */}
-                                <div
-                                    className={`step-tab-panel step-tab-amenities ${
-                                        activeTab === "tab_step4"
-                                            ? "active"
-                                            : "done"
-                                    }`}
-                                    id="tab_step4"
-                                >
-                                    <div className="tab-from-content">
-                                        <div className="title-icon">
-                                            <h3 className="title">
-                                                <div className="icon">
-                                                    <FaRegMoneyBillAlt />
-                                                </div>
-                                                Price
-                                            </h3>
-                                        </div>
-                                        <div className="course__form">
-                                            <div className="price-block">
-                                                <div className="row-2">
-                                                    <div className="col-md-12">
-                                                        <div className="course-main-tabs">
-                                                            <div className="tab-content">
-                                                                <div
-                                                                    className="tab-pane"
-                                                                    id="nav-paid"
-                                                                    role="tabpanel"
-                                                                >
-                                                                    <div className="license_pricing mt-30">
-                                                                        <label className="label25">
-                                                                            Regular
-                                                                            Price*
-                                                                        </label>
-                                                                        <div className="row">
-                                                                            <div className="col-lg-4 col-md-6 col-sm-6">
-                                                                                <div className="loc_group">
-                                                                                    <div className="ui left icon input swdh19">
-                                                                                        <input
-                                                                                            className="prompt srch_explore"
-                                                                                            type="text"
-                                                                                            placeholder="$0"
-                                                                                            name=""
-                                                                                            id=""
-                                                                                            value=""
-                                                                                        />
-                                                                                    </div>
-                                                                                    <span className="slry-dt">
-                                                                                        USD
-                                                                                    </span>
-                                                                                </div>
-                                                                            </div>
-                                                                        </div>
-                                                                    </div>
-                                                                    <div className="license_pricing mt-30 mb-30">
-                                                                        <label className="label25">
-                                                                            Discount
-                                                                            Price*
-                                                                        </label>
-                                                                        <div className="row">
-                                                                            <div className="col-lg-4 col-md-6 col-sm-6">
-                                                                                <div className="loc_group">
-                                                                                    <div className="ui left icon input swdh19">
-                                                                                        <input
-                                                                                            className="prompt srch_explore"
-                                                                                            type="text"
-                                                                                            placeholder="$0"
-                                                                                            name=""
-                                                                                            id=""
-                                                                                            value=""
-                                                                                        />
-                                                                                    </div>
-                                                                                    <span className="slry-dt">
-                                                                                        USD
-                                                                                    </span>
-                                                                                </div>
-                                                                            </div>
-                                                                        </div>
-                                                                    </div>
-                                                                </div>
-                                                            </div>
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                                <div className="col-lg-12 col-md-12 col-sm-12">
-                                                    <div className="btn-group">
-                                                        <button
-                                                            type="button"
-                                                            className="btn btn-secondary"
-                                                            onClick={
-                                                                handlePrevious
-                                                            }
-                                                            disabled={
-                                                                activeTab ===
-                                                                "tab_step1"
-                                                            }
-                                                        >
-                                                            Previous
-                                                        </button>
-                                                        <button
-                                                            type="button"
-                                                            className="btn btn-primary"
-                                                            onClick={
-                                                                handleContinue
-                                                            }
-                                                            disabled={
-                                                                activeTab ===
-                                                                "tab_step5"
-                                                            }
-                                                        >
-                                                            Continue
-                                                        </button>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-
-                                {/* Step 5 */}
-                                <div
-                                    className={`step-tab-panel step-tab-amenities ${
-                                        activeTab === "tab_step5"
-                                            ? "active"
-                                            : "done"
-                                    }`}
-                                    id="tab_step4"
-                                >
-                                    <div className="tab-from-content">
-                                        <div className="title-icon">
-                                            <h3 className="title">
-                                                <div className="icon">
-                                                    <FaRegMoneyBillAlt />
-                                                </div>
-                                                Price
-                                            </h3>
-                                        </div>
-                                        <div className="course__form">
-                                            <div className="price-block">
-                                                <div className="row-2">
-                                                    <div className="col-md-12">
-                                                        <div className="course-main-tabs">
-                                                            <div className="tab-content">
-                                                                <div
-                                                                    className="tab-pane"
-                                                                    id="nav-paid"
-                                                                    role="tabpanel"
-                                                                >
-                                                                    <div className="license_pricing mt-30">
-                                                                        <label className="label25">
-                                                                            Regular
-                                                                            Price*
-                                                                        </label>
-                                                                        <div className="row">
-                                                                            <div className="col-lg-4 col-md-6 col-sm-6">
-                                                                                <div className="loc_group">
-                                                                                    <div className="ui left icon input swdh19">
-                                                                                        <input
-                                                                                            className="prompt srch_explore"
-                                                                                            type="text"
-                                                                                            placeholder="$0"
-                                                                                            name=""
-                                                                                            id=""
-                                                                                            value=""
-                                                                                        />
-                                                                                    </div>
-                                                                                    <span className="slry-dt">
-                                                                                        USD
-                                                                                    </span>
-                                                                                </div>
-                                                                            </div>
-                                                                        </div>
-                                                                    </div>
-                                                                    <div className="license_pricing mt-30 mb-30">
-                                                                        <label className="label25">
-                                                                            Discount
-                                                                            Price*
-                                                                        </label>
-                                                                        <div className="row">
-                                                                            <div className="col-lg-4 col-md-6 col-sm-6">
-                                                                                <div className="loc_group">
-                                                                                    <div className="ui left icon input swdh19">
-                                                                                        <input
-                                                                                            className="prompt srch_explore"
-                                                                                            type="text"
-                                                                                            placeholder="$0"
-                                                                                            name=""
-                                                                                            id=""
-                                                                                            value=""
-                                                                                        />
-                                                                                    </div>
-                                                                                    <span className="slry-dt">
-                                                                                        USD
-                                                                                    </span>
-                                                                                </div>
-                                                                            </div>
-                                                                        </div>
-                                                                    </div>
-                                                                </div>
-                                                            </div>
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                                <div className="col-lg-12 col-md-12 col-sm-12">
-                                                    <div className="btn-group">
-                                                        <button
-                                                            type="button"
-                                                            className="btn btn-secondary"
-                                                            onClick={
-                                                                handlePrevious
-                                                            }
-                                                            disabled={
-                                                                activeTab ===
-                                                                "tab_step1"
-                                                            }
-                                                        >
-                                                            Previous
-                                                        </button>
-                                                        <button
-                                                            type="button"
-                                                            className="btn btn-primary"
-                                                            onClick={
-                                                                handleContinue
-                                                            }
-                                                            disabled={
-                                                                activeTab ===
-                                                                "tab_step5"
-                                                            }
-                                                        >
-                                                            Continue
-                                                        </button>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
+                            </select>
+                        </div>
+                        <div className="add_course_input_colum">
+                            <label>Certificate Name</label>
+                            <select
+                                value={selectedCertification}
+                                onChange={(e) =>
+                                    setSelectedCertification(e.target.value)
+                                }
+                            >
+                                <option value="" disabled>
+                                    Select Certification
+                                </option>
+                                {certificates.map((cert) => (
+                                    <option
+                                        key={cert.id}
+                                        value={cert.id} // Đảm bảo value là certificateId
+                                    >
+                                        {cert.certificateName}
+                                    </option>
+                                ))}
+                            </select>
+                        </div>
+                        <div className="add_course_input_colum">
+                            <label htmlFor="name">Mode</label>
+                            <input
+                                type="text"
+                                value={mode}
+                                onChange={(e) => setMode(e.target.value)}
+                                placeholder="Enter Mode"
+                            />
                         </div>
                     </div>
-                </div>
+                    <div className="add_course_input_row">
+                        <div className="add_course_input_colum">
+                            <label htmlFor="name">Course Name</label>
+                            <input
+                                type="text"
+                                value={courseName}
+                                onChange={(e) => setCourseName(e.target.value)}
+                                placeholder="Enter the full name"
+                            />
+                        </div>
+                        <div className="add_course_input_colum">
+                            <label htmlFor="name">Start Time</label>
+                            <input
+                                type="date"
+                                value={startTime}
+                                onChange={(e) => setStartTime(e.target.value)}
+                            />
+                        </div>
+                        <div className="add_course_input_colum">
+                            <label htmlFor="name">End Time</label>
+                            <input
+                                type="date"
+                                value={endTime}
+                                onChange={(e) => setEndTime(e.target.value)}
+                            />
+                        </div>
+                    </div>
+                    <div className="add_course_input_row">
+                        <div className="add_course_input_colum">
+                            <label htmlFor="name">Enrollment Date</label>
+                            <input
+                                type="date"
+                                value={enrollmentDate}
+                                onChange={(e) =>
+                                    setEnrollmentDate(e.target.value)
+                                }
+                            />
+                        </div>
+                        <div className="add_course_input_colum">
+                            <label htmlFor="name">Location</label>
+                            <input
+                                type="text"
+                                value={location}
+                                onChange={(e) => setLocation(e.target.value)}
+                                placeholder="Enter location"
+                            />
+                        </div>
+                        <div className="add_course_input_colum">
+                            <label htmlFor="name">Price</label>
+                            <input
+                                type="text"
+                                value={price}
+                                onChange={(e) => setPrice(e.target.value)}
+                                placeholder="Enter price"
+                            />
+                        </div>
+                    </div>
+
+                    <button
+                        className="add_course_button_submit"
+                        type="submit"
+                        disabled={loading}
+                    >
+                        {loading ? "Submitting..." : "Submit"}
+                    </button>
+                </form>
+                {error && <div className="error_message">{error}</div>}
             </div>
         </div>
     );

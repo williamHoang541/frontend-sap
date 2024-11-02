@@ -8,11 +8,12 @@ import Popup from "reactjs-popup";
 import { PATH_NAME } from "../../../constant/pathname";
 import "reactjs-popup/dist/index.css";
 import { Link } from "react-router-dom";
-import "./AllTopic.css";
+import "./AllQuesInTest.css";
 
-const AllTopic = () => {
+const AllQuesInTest = () => {
     const [data, setData] = useState([]); // Khởi tạo mảng dữ liệu
-    const [certificates, setCertificates] = useState([]); // Khởi tạo mảng chứng chỉ
+    const [sampleTests, setSampleTests] = useState([]); // Khởi tạo mảng chứng chỉ
+    const [questions, setQuestions] = useState([]); // Khởi tạo mảng chứng chỉ
     const [loading, setLoading] = useState(false);
     const [tableParams, setTableParams] = useState({
         pagination: {
@@ -35,24 +36,35 @@ const AllTopic = () => {
                 1,
         },
         {
-            title: "Certificate Name",
-            dataIndex: "certificateId",
+            title: "Sample Test Name",
+            dataIndex: "sampleTestId",
             sorter: true,
             width: "15%",
-            render: (certificateId) => {
-                // Tìm certificate name dựa vào certificateId
-                const certificate = certificates.find(
-                    (cert) => cert.id === certificateId
+            render: (sampleTestId) => {
+                const sampleTest = sampleTests.find(
+                    (sample) => sample.id === sampleTestId
                 );
-                return certificate ? certificate.certificateName : "N/A";
+                return sampleTest ? sampleTest.sampleTestName : "N/A";
             },
         },
         {
-            title: "Topic Name",
-            dataIndex: "topicName",
-            sorter: (a, b) =>
-                (a.topicName || "").localeCompare(b.topicName || ""),
+            title: "Question bank name",
+            dataIndex: "questionId",
+            sorter: true,
             width: "15%",
+            render: (questionId) => {
+                const question = questions.find(
+                    (question) => question.id === questionId
+                );
+                return question ? question.questionText : "N/A";
+            },
+        },
+        {
+            title: "Index in Test",
+            dataIndex: "displayInTest",
+            sorter: (a, b) =>
+                (a.displayInTest || "").localeCompare(b.displayInTest || ""),
+            width: "8%",
         },
         {
             title: "Status",
@@ -60,7 +72,7 @@ const AllTopic = () => {
             width: "10%",
             render: (status) => (
                 <span
-                    className={`topic_status_indicator ${
+                    className={`test_status_indicator ${
                         status ? "active" : "inactive"
                     }`}
                 />
@@ -72,7 +84,10 @@ const AllTopic = () => {
                 <>
                     <Popup
                         trigger={
-                            <Button type="link" className="topic_button_edit">
+                            <Button
+                                type="link"
+                                className="question_button_edit"
+                            >
                                 <MdModeEditOutline />
                             </Button>
                         }
@@ -80,7 +95,7 @@ const AllTopic = () => {
                         closeOnDocumentClick
                         onOpen={() =>
                             form.setFieldsValue({
-                                topicName: record.topicName,
+                                displayInTest: record.displayInTest,
                                 status: record.status,
                             })
                         }
@@ -95,28 +110,20 @@ const AllTopic = () => {
                                         close(); // Đóng popup sau khi lưu
                                     }}
                                 >
-                                    <div className="all_topic_input">
+                                    <div className="all_question_input">
                                         <Form.Item
-                                            name="topicName"
-                                            label="Topic Name"
+                                            name="displayInTest"
+                                            label="Index In Test"
                                         >
                                             <input
                                                 type="text"
-                                                className="all_topic_form"
-                                                placeholder="Enter Topic Name"
+                                                className="all_question_form"
+                                                placeholder="Enter number"
                                             />
-                                        </Form.Item>
-                                        <Form.Item name="status" label="Status">
-                                            <Radio.Group className="status-radio-group">
-                                                <Radio value={true}>True</Radio>
-                                                <Radio value={false}>
-                                                    False
-                                                </Radio>
-                                            </Radio.Group>
                                         </Form.Item>
                                     </div>
 
-                                    <div className="popup_buttons">
+                                    <div className="question_buttons">
                                         <Button
                                             className="button_save"
                                             type="primary"
@@ -140,13 +147,13 @@ const AllTopic = () => {
                         type="link"
                         danger
                         onClick={() => handleDelete(record.id)}
-                        className="topic_button_delete"
+                        className="test_button_delete"
                     >
                         <RiDeleteBin6Line />
                     </Button>
                 </>
             ),
-            width: "10%",
+            width: "8%",
         },
     ];
 
@@ -154,10 +161,9 @@ const AllTopic = () => {
         try {
             // Gửi yêu cầu PUT đến API với dữ liệu cập nhật
             const response = await axios.put(
-                `https://swdsapelearningapi.azurewebsites.net/api/TopicArea/${id}`,
+                `https://swdsapelearningapi.azurewebsites.net/api/CertificateTestQuestion/update?id=${id}`,
                 {
-                    topicName: values.topicName, // Dữ liệu cần chỉnh sửa, ở đây là topicName
-                    status: values.status,
+                    displayInTest: values.displayInTest,
                 }
             );
 
@@ -180,10 +186,10 @@ const AllTopic = () => {
         try {
             // Gửi yêu cầu xóa đến API
             const response = await axios.delete(
-                ` https://swdsapelearningapi.azurewebsites.net/api/TopicArea/${id}`
+                `https://swdsapelearningapi.azurewebsites.net/api/CertificateTestQuestion/delete?id=${id}`
             );
 
-            if (response.status === 204) {
+            if (response.status >= 200 && response.status < 300) {
                 // Nếu xóa thành công, cập nhật state để loại bỏ mục đã xóa
                 setData((prevData) =>
                     prevData.filter((item) => item.id !== id)
@@ -198,26 +204,33 @@ const AllTopic = () => {
             );
         }
     };
-
     const fetchData = async (pagination) => {
         setLoading(true);
         try {
-            const [topicResponse, certificateResponse] = await Promise.all([
+            const [
+                certificateTestResponse,
+                certificateSampleResponse,
+                certificateQuestionResponse,
+            ] = await Promise.all([
                 axios.get(
-                    `https://swdsapelearningapi.azurewebsites.net/api/TopicArea/get-all`
+                    `https://swdsapelearningapi.azurewebsites.net/api/CertificateTestQuestion/get-all`
                 ),
                 axios.get(
-                    `https://swdsapelearningapi.azurewebsites.net/api/Certificate/get-all`
+                    `https://swdsapelearningapi.azurewebsites.net/api/CertificateSampletest/get-all`
+                ),
+                axios.get(
+                    `https://swdsapelearningapi.azurewebsites.net/api/CertificateQuestion/get-all`
                 ),
             ]);
 
-            const topicResults = topicResponse.data.$values;
-            const certificateResults = certificateResponse.data.$values;
+            const bankResults = certificateTestResponse.data.$values;
+            const sampleResults = certificateSampleResponse.data.$values;
+            const questionResults = certificateQuestionResponse.data.$values;
 
-            if (Array.isArray(topicResults)) {
+            if (Array.isArray(bankResults)) {
                 const startIndex =
                     (pagination.current - 1) * pagination.pageSize;
-                const paginatedData = topicResults.slice(
+                const paginatedData = bankResults.slice(
                     startIndex,
                     startIndex + pagination.pageSize
                 ); // Phân trang dữ liệu
@@ -227,13 +240,17 @@ const AllTopic = () => {
                     ...prevParams,
                     pagination: {
                         ...pagination,
-                        total: topicResults.length,
+                        total: bankResults.length,
                     },
                 }));
             }
 
-            if (Array.isArray(certificateResults)) {
-                setCertificates(certificateResults); // Lưu danh sách chứng chỉ
+            if (Array.isArray(sampleResults)) {
+                setSampleTests(sampleResults); // Lưu danh sách chứng chỉ
+            }
+
+            if (Array.isArray(questionResults)) {
+                setQuestions(questionResults); // Lưu danh sách chứng chỉ
             }
         } catch (error) {
             console.error("Error fetching data:", error);
@@ -256,21 +273,21 @@ const AllTopic = () => {
     };
 
     return (
-        <div className="topic-area">
-            <div className="topic_title_container">
-                <div className="topic_title_left">
-                    <div className="topic_title">All Topic</div>
+        <div className="question_in_test">
+            <div className="question_title_container">
+                <div className="question_title_left">
+                    <div className="question_title">All Tests</div>
                 </div>
-                <div className="topic_area_right">
-                    <div className="topic_topic">Topic Area</div>
-                    <SlArrowRight className="topic_icon_right" />
-                    <div className="topic_all_topics">All Topic</div>
+                <div className="question_question_right">
+                    <div className="question_question">Question in Test</div>
+                    <SlArrowRight className="question_icon_right" />
+                    <div className="question_all_questions">All Tests</div>
                 </div>
             </div>
 
-            <div className="topic_table_container">
-                <Link to={PATH_NAME.ADD_TOPIC}>
-                    <button className="topic_add">Add New</button>
+            <div className="question_table_container">
+                <Link to={PATH_NAME.ADD_QUESTION_IN_TEST}>
+                    <button className="question_add">Add New</button>
                 </Link>
                 <Table
                     columns={columns}
@@ -289,4 +306,4 @@ const AllTopic = () => {
     );
 };
 
-export default AllTopic;
+export default AllQuesInTest;

@@ -3,18 +3,18 @@ import { useNavigate } from "react-router-dom";
 import { SlArrowRight } from "react-icons/sl";
 import axios from "axios"; // Thêm axios
 import { PATH_NAME } from "../../../constant/pathname";
-import "./AddTopic.css";
+import "./AddSample.css";
 
-const AddTopic = () => {
+const AddSample = () => {
     const [certificates, setCertificates] = useState([]); // Danh sách chứng chỉ
     const [selectedCertification, setSelectedCertification] = useState("");
-    const [topicName, setTopicName] = useState("");
+    const [testName, setTestName] = useState("");
+
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState(null);
     const [success, setSuccess] = useState(null);
     const navigate = useNavigate();
 
-    // Lấy danh sách chứng chỉ từ API
     useEffect(() => {
         const fetchCertificates = async () => {
             try {
@@ -44,15 +44,15 @@ const AddTopic = () => {
         setSelectedCertification(value);
     };
 
-    const handleChangeTopicName = (event) => {
-        setTopicName(event.target.value);
+    const handleChangeTestName = (event) => {
+        setTestName(event.target.value);
     };
 
     const handleSubmit = async (event) => {
         event.preventDefault(); // Ngăn chặn hành động mặc định của form
 
         // Kiểm tra thông tin trước khi gửi
-        if (!selectedCertification || !topicName) {
+        if (!selectedCertification || !testName) {
             setError("Please fill in all fields.");
             return;
         }
@@ -73,7 +73,7 @@ const AddTopic = () => {
 
         const requestData = {
             certificateId: certId, // Sử dụng certificateId đã chuyển đổi
-            topicName: topicName,
+            sampleTestName: testName,
             status: true, // Đặt status là true
         };
 
@@ -81,14 +81,14 @@ const AddTopic = () => {
 
         try {
             const response = await axios.post(
-                "https://swdsapelearningapi.azurewebsites.net/api/TopicArea/create",
+                "https://swdsapelearningapi.azurewebsites.net/api/CertificateSampletest/create",
                 requestData,
                 { headers: { "Content-Type": "application/json" } }
             );
 
             if (response.status >= 200 && response.status < 300) {
                 alert("Topic added successfully!"); // Thông báo thành công
-                navigate(PATH_NAME.TOPIC); // Điều hướng người dùng đến trang Topic
+                navigate(PATH_NAME.TEST); // Điều hướng người dùng đến trang Topic
 
                 // Reset form fields sau khi điều hướng
                 setSelectedCertification("");
@@ -109,23 +109,23 @@ const AddTopic = () => {
     };
 
     return (
-        <div className="add_topic">
-            <div className="add_topic_title_container">
-                <div className="add_topic_title_left">
-                    <div className="add_topic_title">Add Topic</div>
+        <div className="add_test">
+            <div className="add_test_title_container">
+                <div className="add_test_title_left">
+                    <div className="add_test_title">Add Test</div>
                 </div>
-                <div className="add_topic_topic_right">
-                    <div className="add_topic_topic">Topic Area</div>
-                    <SlArrowRight className="add_topic_icon_right" />
-                    <div className="add_topic_add_topics">Add Topic</div>
+                <div className="add_test_test_right">
+                    <div className="add_test_test">Test</div>
+                    <SlArrowRight className="add_test_icon_right" />
+                    <div className="add_test_add_tests">Add Test</div>
                 </div>
             </div>
 
-            <div className="add_topic_form_container">
-                <div className="add_topic_label">Basic Info</div>
-                <form className="add_topic_form" onSubmit={handleSubmit}>
-                    <div className="add_topic_input_row">
-                        <div className="add_topic_input_colum">
+            <div className="add_test_form_container">
+                <div className="add_test_label">Basic Info</div>
+                <form className="add_test_form" onSubmit={handleSubmit}>
+                    <div className="add_test_input_row">
+                        <div className="add_test_input_colum">
                             <label>Certificate Name</label>
                             <select
                                 value={selectedCertification}
@@ -145,16 +145,16 @@ const AddTopic = () => {
                             </select>
                         </div>
                     </div>
-                    <div className="add_topic_input_row">
-                        <div className="add_topic_input_colum">
-                            <label htmlFor="name">Topic Name</label>
+                    <div className="add_test_input_row">
+                        <div className="add_test_input_colum">
+                            <label htmlFor="name">Sample Test Name</label>
                             <input
                                 type="text"
                                 id="name"
                                 className="add_topic_input"
-                                placeholder="Enter the full name"
-                                value={topicName}
-                                onChange={handleChangeTopicName}
+                                placeholder="Enter the name"
+                                value={testName}
+                                onChange={handleChangeTestName}
                             />
                         </div>
                     </div>
@@ -164,7 +164,7 @@ const AddTopic = () => {
                         <div className="success-message">{success}</div>
                     )}
                     <button
-                        className="add_topic_button_submit"
+                        className="add_test_button_submit"
                         type="submit"
                         disabled={loading}
                     >
@@ -176,4 +176,4 @@ const AddTopic = () => {
     );
 };
 
-export default AddTopic;
+export default AddSample;

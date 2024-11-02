@@ -1,8 +1,10 @@
 import React, { useEffect, useState } from "react";
 import { SlArrowRight } from "react-icons/sl";
-import { Button, Table } from "antd";
+import { Button, Table, Form, Radio } from "antd";
 import { RiDeleteBin6Line } from "react-icons/ri";
+import { MdModeEditOutline } from "react-icons/md";
 import axios from "axios";
+import Popup from "reactjs-popup";
 import { PATH_NAME } from "../../../constant/pathname";
 import "reactjs-popup/dist/index.css";
 import { Link } from "react-router-dom";
@@ -19,6 +21,8 @@ const AllSample = () => {
             total: 0,
         },
     });
+
+    const [form] = Form.useForm();
 
     const columns = [
         {
@@ -67,6 +71,72 @@ const AllSample = () => {
             title: "Action",
             render: (_, record) => (
                 <>
+                    <Popup
+                        trigger={
+                            <Button type="link" className="topic_button_edit">
+                                <MdModeEditOutline />
+                            </Button>
+                        }
+                        modal
+                        closeOnDocumentClick
+                        onOpen={() =>
+                            form.setFieldsValue({
+                                sampleTestName: record.sampleTestName,
+                                status: record.status,
+                            })
+                        }
+                    >
+                        {(close) => (
+                            <div className="popup_container">
+                                <h2>Edit Topic</h2>
+                                <Form
+                                    form={form}
+                                    onFinish={(values) => {
+                                        handleEdit(values, record.id);
+                                        close(); // Đóng popup sau khi lưu
+                                    }}
+                                >
+                                    <div className="all_topic_input">
+                                        <Form.Item
+                                            name="sampleTestName"
+                                            label="Test Name"
+                                        >
+                                            <input
+                                                type="text"
+                                                className="all_topic_form"
+                                                placeholder="Enter Test Name"
+                                            />
+                                        </Form.Item>
+                                        <Form.Item name="status" label="Status">
+                                            <Radio.Group className="status-radio-group">
+                                                <Radio value={true}>True</Radio>
+                                                <Radio value={false}>
+                                                    False
+                                                </Radio>
+                                            </Radio.Group>
+                                        </Form.Item>
+                                    </div>
+
+                                    <div className="popup_buttons">
+                                        <Button
+                                            className="button_save"
+                                            type="primary"
+                                            htmlType="submit"
+                                        >
+                                            Save
+                                        </Button>
+                                        <Button
+                                            className="button_cancel"
+                                            type="button"
+                                            onClick={close}
+                                        >
+                                            Cancel
+                                        </Button>
+                                    </div>
+                                </Form>
+                            </div>
+                        )}
+                    </Popup>
                     <Button
                         type="link"
                         danger
@@ -81,11 +151,37 @@ const AllSample = () => {
         },
     ];
 
+    const handleEdit = async (values, id) => {
+        try {
+            // Gửi yêu cầu PUT đến API với dữ liệu cập nhật
+            const response = await axios.put(
+                `https://swdsapelearningapi.azurewebsites.net/api/CertificateSampletest/update?id=${id}`,
+                {
+                    sampleTestName: values.sampleTestName, // Dữ liệu cần chỉnh sửa, ở đây là topicName
+                    status: values.status,
+                }
+            );
+
+            // Nếu API thành công, cập nhật lại dữ liệu trên giao diện
+            if (response.status === 200) {
+                const updatedData = data.map((item) =>
+                    item.id === id ? { ...item, ...values } : item
+                );
+                setData(updatedData);
+                form.resetFields();
+            } else {
+                console.error("Error updating topic:", response);
+            }
+        } catch (error) {
+            console.error("Error during API PUT request:", error);
+        }
+    };
+
     const handleDelete = async (id) => {
         try {
             // Gửi yêu cầu xóa đến API
             const response = await axios.delete(
-                `https://swdsapelearningapi.azurewebsites.net/api/CourseSession/${id}`
+                `https://swdsapelearningapi.azurewebsites.net/api/CertificateSampletest/delete?id=${id}`
             );
 
             if (response.status === 200) {

@@ -1,6 +1,6 @@
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { SlArrowRight } from "react-icons/sl";
-import { Button, Table } from "antd";
+import { Table } from "antd";
 import { RiDeleteBin6Line } from "react-icons/ri";
 import axios from "axios";
 import { PATH_NAME } from "../../../constant/pathname";
@@ -67,14 +67,13 @@ const AllSample = () => {
             title: "Action",
             render: (_, record) => (
                 <>
-                    <Button
-                        type="link"
-                        danger
+                    <button
+                        type="button"
                         onClick={() => handleDelete(record.id)}
                         className="test_button_delete"
                     >
                         <RiDeleteBin6Line />
-                    </Button>
+                    </button>
                 </>
             ),
             width: "8%",

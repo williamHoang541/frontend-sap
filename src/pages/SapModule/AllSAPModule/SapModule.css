@@ -77,6 +77,8 @@
 .button_view {
   font-size: 14px !important;
   color: #033e8c !important;
+  border: 0;
+  background-color: transparent;
 }
 
 .button_view:hover {
@@ -90,8 +92,10 @@
   padding: 10px !important;
   font-size: 14px !important;
   width: 75px;
+  border-radius: 10px;
+  border: 0;
   margin-top: 20px;
-  
+  cursor: pointer;
 }
 
 .button_close:hover {
@@ -99,7 +103,7 @@
   color: #fff !important;
 }
 
-.popup_button_1{
+.popup_button_1 {
   display: flex;
   justify-content: end;
 }

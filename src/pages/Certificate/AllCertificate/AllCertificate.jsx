@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import "./AllCertificate.css";
 import { SlArrowRight } from "react-icons/sl";
-import { Button, Checkbox, Form, Radio, Table } from "antd";
+import { Checkbox, Form, Radio, Table } from "antd";
 import Popup from "reactjs-popup";
 import { MdModeEditOutline } from "react-icons/md";
 import { RiDeleteBin6Line } from "react-icons/ri";
@@ -105,13 +105,13 @@ const AllCertificate = () => {
       title: "Description",
       dataIndex: "description",
       render: (text) => (
-        <Button
+        <button
           type="link"
           onClick={() => handleViewDetail(text)}
           className="button_view"
         >
           View
-        </Button>
+        </button>
       ),
       width: "16%",
     },
@@ -121,9 +121,9 @@ const AllCertificate = () => {
         <>
           <Popup
             trigger={
-              <Button type="link" className="instructor_button_edit">
+              <button type="button" className="instructor_button_edit">
                 <MdModeEditOutline />
-              </Button>
+              </button>
             }
             modal
             closeOnDocumentClick
@@ -201,33 +201,31 @@ const AllCertificate = () => {
                     </Form.Item>
                   </div>
                   <div className="popup_buttons">
-                    <Button
+                    <button
                       className="button_save"
-                      type="primary"
-                      htmlType="submit"
+                      type="submit"
                     >
                       Save
-                    </Button>
-                    <Button
+                    </button>
+                    <button
                       className="button_cancel"
                       type="button"
                       onClick={close}
                     >
                       Cancel
-                    </Button>
+                    </button>
                   </div>
                 </Form>
               </div>
             )}
           </Popup>
-          <Button
-            type="link"
-            danger
+          <button
+            type="button"
             onClick={() => handleDelete(record.id)}
             className="instructor_button_delete"
           >
             <RiDeleteBin6Line />
-          </Button>
+          </button>
         </>
       ),
       width: "10%",
@@ -371,13 +369,13 @@ const AllCertificate = () => {
           <h2>Description Detail</h2>
           <p>{selectedDescription}</p>
           <div className="popup_button_1">
-            <Button
+            <button
               type="button"
               onClick={() => setDescriptionPopupOpen(false)}
               className="button_close"
             >
               Close
-            </Button>
+            </button>
           </div>
         </div>
       </Popup>

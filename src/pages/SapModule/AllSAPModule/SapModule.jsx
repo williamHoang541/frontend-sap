@@ -1,4 +1,4 @@
-import { Button, Form, Radio, Table } from "antd";
+import { Form, Radio, Table } from "antd";
 import { useEffect, useState } from "react";
 import "./SapModule.css";
 import { SlArrowRight } from "react-icons/sl";
@@ -38,13 +38,13 @@ const SapModule = () => {
       title: "Description",
       dataIndex: "moduleDescription",
       render: (text) => (
-        <Button
+        <button
           type="link"
           onClick={() => handleViewDetail(text)}
           className="button_view"
         >
           View
-        </Button>
+        </button>
       ),
       width: "20%",
     },
@@ -66,9 +66,9 @@ const SapModule = () => {
         <>
           <Popup
             trigger={
-              <Button type="link" className="instructor_button_edit">
+              <button type="button" className="instructor_button_edit">
                 <MdModeEditOutline />
-              </Button>
+              </button>
             }
             modal
             closeOnDocumentClick
@@ -113,33 +113,32 @@ const SapModule = () => {
                     </Radio.Group>
                   </Form.Item>
                   <div className="popup_button">
-                    <Button
+                    <button
                       className="button_save"
-                      type="primary"
-                      htmlType="submit"
+                      type="submit"
+                      
                     >
                       Save
-                    </Button>
-                    <Button
+                    </button>
+                    <button
                       className="button_cancel"
                       type="button"
                       onClick={close}
                     >
                       Cancel
-                    </Button>
+                    </button>
                   </div>
                 </Form>
               </div>
             )}
           </Popup>
-          <Button
-            type="link"
-            danger
+          <button
+            type="button"
             onClick={() => handleDelete(record.id)}
             className="instructor_button_delete"
           >
             <RiDeleteBin6Line />
-          </Button>
+          </button>
         </>
       ),
       width: "10%",
@@ -288,13 +287,13 @@ const SapModule = () => {
           <h2>Description Detail</h2>
           <p>{selectedDescription}</p>
           <div className="popup_button_1">
-            <Button
+            <button
               type="button"
               onClick={() => setDescriptionPopupOpen(false)}
               className="button_close"
             >
               Close
-            </Button>
+            </button>
           </div>
         </div>
       </Popup>

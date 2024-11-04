@@ -1,11 +1,10 @@
 import { useEffect, useState } from "react";
-import { Button, Table, Form, Radio } from "antd";
+import { Table, Form, Radio } from "antd";
 import Popup from "reactjs-popup";
 import { SlArrowRight } from "react-icons/sl";
 import { RiDeleteBin6Line } from "react-icons/ri";
 import { MdModeEditOutline } from "react-icons/md";
 import { Link } from "react-router-dom";
-import qs from "qs";
 import { PATH_NAME } from "../../../constant/pathname";
 import "reactjs-popup/dist/index.css";
 import axios from "axios";
@@ -100,9 +99,9 @@ const AllSession = () => {
                 <>
                     <Popup
                         trigger={
-                            <Button type="link" className="session_button_edit">
+                            <button type="button" className="session_button_edit">
                                 <MdModeEditOutline />
-                            </Button>
+                            </button>
                         }
                         modal
                         closeOnDocumentClick
@@ -218,33 +217,32 @@ const AllSession = () => {
                                         </Form.Item>
                                     </div>
                                     <div className="popup_buttons">
-                                        <Button
+                                        <button
                                             className="button_save"
-                                            type="primary"
-                                            htmlType="submit"
+                                            type="submit"
+                                    
                                         >
                                             Save
-                                        </Button>
-                                        <Button
+                                        </button>
+                                        <button
                                             className="button_cancel"
                                             type="button"
                                             onClick={close}
                                         >
                                             Cancel
-                                        </Button>
+                                        </button>
                                     </div>
                                 </Form>
                             </div>
                         )}
                     </Popup>
-                    <Button
-                        type="link"
-                        danger
+                    <button
+                        type="button"
                         onClick={() => handleDelete(record.id)}
                         className="session_button_delete"
                     >
                         <RiDeleteBin6Line />
-                    </Button>
+                    </button>
                 </>
             ),
             width: "10%",
@@ -265,11 +263,10 @@ const AllSession = () => {
         }
 
         try {
-            const updateData = { ...values };
-            updateData.instructorId = getInstructorIdByName(
-                values.instructorId
-            );
-
+            // Get the instructor ID using the selected full name
+            const instructorId = getInstructorIdByName(values.instructorId);
+            const updateData = { ...values, instructorId };
+    
             console.log("Data sent to API:", updateData);
 
             const response = await axios.put(
@@ -282,7 +279,7 @@ const AllSession = () => {
                 // Cập nhật state ngay lập tức sau khi cập nhật thành công
                 setData((prevData) =>
                     prevData.map((item) =>
-                        item.id === id ? { ...item, ...updateData } : item
+                        item.id === id ? { ...item, ...updateData, instructorId } : item
                     )
                 );
                 form.resetFields();

@@ -1,6 +1,6 @@
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { SlArrowRight } from "react-icons/sl";
-import { Button, Popconfirm, Table, Form, Radio } from "antd";
+import { Table, Form } from "antd";
 import { RiDeleteBin6Line } from "react-icons/ri";
 import { MdModeEditOutline } from "react-icons/md";
 import axios from "axios";
@@ -84,12 +84,12 @@ const AllQuesInTest = () => {
                 <>
                     <Popup
                         trigger={
-                            <Button
-                                type="link"
+                            <button
+                                type="button"
                                 className="question_button_edit"
                             >
                                 <MdModeEditOutline />
-                            </Button>
+                            </button>
                         }
                         modal
                         closeOnDocumentClick
@@ -124,33 +124,32 @@ const AllQuesInTest = () => {
                                     </div>
 
                                     <div className="question_buttons">
-                                        <Button
+                                        <button
                                             className="button_save"
-                                            type="primary"
-                                            htmlType="submit"
+                                            type="submit"
+                                        
                                         >
                                             Save
-                                        </Button>
-                                        <Button
+                                        </button>
+                                        <button
                                             className="button_cancel"
                                             type="button"
                                             onClick={close}
                                         >
                                             Cancel
-                                        </Button>
+                                        </button>
                                     </div>
                                 </Form>
                             </div>
                         )}
                     </Popup>
-                    <Button
-                        type="link"
-                        danger
+                    <button
+                        type="button"
                         onClick={() => handleDelete(record.id)}
                         className="test_button_delete"
                     >
                         <RiDeleteBin6Line />
-                    </Button>
+                    </button>
                 </>
             ),
             width: "8%",

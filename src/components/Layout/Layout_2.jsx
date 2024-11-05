@@ -1,22 +1,19 @@
-import { Layout } from "antd";
-import React, { useState } from "react";
+import { Fragment } from "react";
 import SidebarIns from "../SidebarIns/SidebarIns";
-import Navbar from "../Navbar/Navbar";
-import { Container } from "react-bootstrap";
+import { Outlet } from "react-router-dom";
+import NavbarIns from "../SidebarIns/NavbarIns";
 
-const Layout_2 = ({ children }) => {
-  const [collapsed, setCollapsed] = useState(false);
-
+const Layout_2 = () => {
   return (
-    <Layout style={{ minHeight: "100vh" }}>
-      <SidebarIns collapsed={collapsed} />
-      <Layout>
-        <Navbar collapsed={collapsed} setCollapsed={setCollapsed} />
-        <Container fluid style={{ padding: "16px" }}>
-          {children}
-        </Container>
-      </Layout>
-    </Layout>
+    <Fragment>
+      <NavbarIns className="layout-manage-navbar" />
+      <SidebarIns className="layout-navbar" />
+      <div id="content">
+        <div className="content-outlet">
+          <Outlet />
+        </div>
+      </div>
+    </Fragment>
   );
 };
 

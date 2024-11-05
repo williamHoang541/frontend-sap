@@ -26,199 +26,59 @@ import AddQuesInTest from "./pages/QuestionInTest/AddQuesInTest/AddQuesInTest";
 import Layout_1 from "./components/Layout/Layout_1";
 import Layout_2 from "./components/Layout/Layout_2";
 import Calendar from "./pages/Calendar/Calendar";
+import CourseIns from "./pages/CourseIns/CourseIns";
 
 const App = () => {
   return (
     <div>
       <Routes>
         <Route path={PATH_NAME.LOGIN} element={<Login />} />
-        <Route
-          path={PATH_NAME.DASHBOARD}
-          element={
-            <Layout_1>
-              <DashBoard />
-            </Layout_1>
-          }
-        />
-        <Route
-          path={PATH_NAME.STUDENT}
-          element={
-            <Layout_1>
-              <Student />
-            </Layout_1>
-          }
-        />
-        <Route
-          path={PATH_NAME.INSTRUCTOR}
-          element={
-            <Layout_1>
-              <AllInstructor />
-            </Layout_1>
-          }
-        />
-        <Route
-          path={PATH_NAME.ADD_INSTRUCTOR}
-          element={
-            <Layout_1>
-              <AddInstructor />
-            </Layout_1>
-          }
-        />
-        <Route
-          path={PATH_NAME.PAYMENT}
-          element={
-            <Layout_1>
-              <Fee />
-            </Layout_1>
-          }
-        />
-        <Route
-          path={PATH_NAME.COURSE}
-          element={
-            <Layout_1>
-              <AllCourse />
-            </Layout_1>
-          }
-        />
-        <Route
-          path={PATH_NAME.ADD_COURSE}
-          element={
-            <Layout_1>
-              <AddCourse />
-            </Layout_1>
-          }
-        />
-        <Route
-          path={PATH_NAME.SAP_MODULE}
-          element={
-            <Layout_1>
-              <SapModule />
-            </Layout_1>
-          }
-        />
-        <Route
-          path={PATH_NAME.ADD_SAP_MODULE}
-          element={
-            <Layout_1>
-              <AddSAPModule />
-            </Layout_1>
-          }
-        />
-        <Route
-          path={PATH_NAME.CERTIFICATE}
-          element={
-            <Layout_1>
-              <AllCertificate />
-            </Layout_1>
-          }
-        />
-        <Route
-          path={PATH_NAME.ADD_CERTIFICATE}
-          element={
-            <Layout_1>
-              <AddCertificate />
-            </Layout_1>
-          }
-        />
-        <Route
-          path={PATH_NAME.ANALYTIC}
-          element={
-            <Layout_1>
-              <Analytic />
-            </Layout_1>
-          }
-        />
-        <Route
-          path={PATH_NAME.TOPIC}
-          element={
-            <Layout_1>
-              <AllTopic />
-            </Layout_1>
-          }
-        />
-        <Route
-          path={PATH_NAME.ADD_TOPIC}
-          element={
-            <Layout_1>
-              <AddTopic />
-            </Layout_1>
-          }
-        />
-        <Route
-          path={PATH_NAME.SESSION}
-          element={
-            <Layout_1>
-              <AllSession />
-            </Layout_1>
-          }
-        />
-        <Route
-          path={PATH_NAME.ADD_SESSION}
-          element={
-            <Layout_1>
-              <AddSession />
-            </Layout_1>
-          }
-        />
-        <Route
-          path={PATH_NAME.QUESTION_BANK}
-          element={
-            <Layout_1>
-              <AllQuestionBank />
-            </Layout_1>
-          }
-        />
-        <Route
-          path={PATH_NAME.ADD_QUESTION_BANK}
-          element={
-            <Layout_1>
-              <AddQuestionBank />
-            </Layout_1>
-          }
-        />
-        <Route
-          path={PATH_NAME.TEST}
-          element={
-            <Layout_1>
-              <AllSample />
-            </Layout_1>
-          }
-        />
-        <Route
-          path={PATH_NAME.ADD_TEST}
-          element={
-            <Layout_1>
-              <AddSample />
-            </Layout_1>
-          }
-        />
-        <Route
-          path={PATH_NAME.QUESTION_IN_TEST}
-          element={
-            <Layout_1>
-              <AllQuesInTest />
-            </Layout_1>
-          }
-        />
-        <Route
-          path={PATH_NAME.ADD_QUESTION_IN_TEST}
-          element={
-            <Layout_1>
-              <AddQuesInTest />
-            </Layout_1>
-          }
-        />
+
+        {/* admin */}
+
+        <Route element={<Layout_1 />}>
+          <Route path={PATH_NAME.DASHBOARD} element={<DashBoard />} />
+          <Route path={PATH_NAME.STUDENT} element={<Student />} />
+          <Route path={PATH_NAME.INSTRUCTOR} element={<AllInstructor />} />
+          <Route path={PATH_NAME.ADD_INSTRUCTOR} element={<AddInstructor />} />
+          <Route path={PATH_NAME.PAYMENT} element={<Fee />} />
+          <Route path={PATH_NAME.COURSE} element={<AllCourse />} />
+          <Route path={PATH_NAME.ADD_COURSE} element={<AddCourse />} />
+          <Route path={PATH_NAME.SAP_MODULE} element={<SapModule />} />
+          <Route path={PATH_NAME.ADD_SAP_MODULE} element={<AddSAPModule />} />
+          <Route path={PATH_NAME.CERTIFICATE} element={<AllCertificate />} />
+          <Route
+            path={PATH_NAME.ADD_CERTIFICATE}
+            element={<AddCertificate />}
+          />
+          <Route path={PATH_NAME.ANALYTIC} element={<Analytic />} />
+          <Route path={PATH_NAME.TOPIC} element={<AllTopic />} />
+          <Route path={PATH_NAME.ADD_TOPIC} element={<AddTopic />} />
+          <Route path={PATH_NAME.SESSION} element={<AllSession />} />
+          <Route path={PATH_NAME.ADD_SESSION} element={<AddSession />} />
+          <Route path={PATH_NAME.QUESTION_BANK} element={<AllQuestionBank />} />
+          <Route
+            path={PATH_NAME.ADD_QUESTION_BANK}
+            element={<AddQuestionBank />}
+          />
+          <Route path={PATH_NAME.TEST} element={<AllSample />} />
+          <Route path={PATH_NAME.ADD_TEST} element={<AddSample />} />
+          <Route
+            path={PATH_NAME.QUESTION_IN_TEST}
+            element={<AllQuesInTest />}
+          />
+          <Route
+            path={PATH_NAME.ADD_QUESTION_IN_TEST}
+            element={<AddQuesInTest />}
+          />
+        </Route>
 
         {/* instructor */}
 
-        <Route
-          path={PATH_NAME.CALENDAR}
-          element={
-            <Layout_2>
-              <Calendar />
-            </Layout_2>
-          }
-        />
+        <Route element={<Layout_2 />}>
+          <Route path={PATH_NAME.CALENDAR} element={<Calendar />} />
+          <Route path={PATH_NAME.COURSE_INSTRUCTOR} element={<CourseIns />} />
+        </Route>
       </Routes>
     </div>
   );

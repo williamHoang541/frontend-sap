@@ -1,15 +1,12 @@
-import "./Navbar.css";
-import { useState, useRef, useEffect } from "react";
-import { Layout } from "antd";
-
-import { GoSearch } from "react-icons/go";
-import { IoNotificationsOutline } from "react-icons/io5";
-import { IoSettingsOutline } from "react-icons/io5";
-import { CiLogout } from "react-icons/ci";
+import { useEffect, useRef, useState } from "react";
 import logo from "../../assets/LogoSAP.png";
+import { Layout } from "antd";
+import { GoSearch } from "react-icons/go";
+import { IoNotificationsOutline, IoSettingsOutline } from "react-icons/io5";
+import { CiLogout } from "react-icons/ci";
 
 const { Header } = Layout;
-const Navbar = () => {
+const NavbarIns = () => {
   const [isProfileDropdownOpen, setIsProfileDropdownOpen] = useState(false);
   const profileDropdownRef = useRef(null);
 
@@ -65,13 +62,13 @@ const Navbar = () => {
             ref={profileDropdownRef}
             onClick={toggleProfileDropdown}
           >
-            Admin
+            Ins
           </button>
           {isProfileDropdownOpen && (
             <div className="navbar-dropdowns">
               <div className="navbar-dropdown-item">
                 <div className="navbar-message">
-                  <h6>Admin</h6>
+                  <h6>Instructor</h6>
                 </div>
               </div>
               <div className="navbar-profile-wrapper">
@@ -90,4 +87,4 @@ const Navbar = () => {
   );
 };
 
-export default Navbar;
+export default NavbarIns;

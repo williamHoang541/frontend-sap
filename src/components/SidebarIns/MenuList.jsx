@@ -16,7 +16,7 @@ const MenuList = () => {
         {
           key: "course_ins",
           icon: <LiaGraduationCapSolid />,
-          label: <Link to={PATH_NAME.COURSE_INSTRUCTOR}>Student</Link>,
+          label: <Link to={PATH_NAME.COURSE_INSTRUCTOR}>Course</Link>,
         },
         
         {

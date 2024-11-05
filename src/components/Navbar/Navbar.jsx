@@ -7,9 +7,15 @@ import { IoNotificationsOutline } from "react-icons/io5";
 import { IoSettingsOutline } from "react-icons/io5";
 import { CiLogout } from "react-icons/ci";
 import logo from "../../assets/LogoSAP.png";
+import axios from "axios";
+import { useNavigate } from "react-router-dom";
+import { PATH_NAME } from "../../constant/pathname";
+import useAuth from "../hooks/useAuth";
 
 const { Header } = Layout;
 const Navbar = () => {
+  const {setAuth} = useAuth();
+  const navigate = useNavigate();
   const [isProfileDropdownOpen, setIsProfileDropdownOpen] = useState(false);
   const profileDropdownRef = useRef(null);
 
@@ -32,13 +38,15 @@ const Navbar = () => {
   const toggleProfileDropdown = () => {
     setIsProfileDropdownOpen((prev) => !prev);
   };
+
+  
   return (
     <Layout>
       <Header className="header">
         <div className="navbar">
           <div className="sidebar-logo">
             <div className="sidebar-logo-icon">
-              <img src={logo} alt="" className="sidebar-logo-img" />
+              <img src={logo} alt="" className="sidebar-logo-img"/>
             </div>
           </div>
 

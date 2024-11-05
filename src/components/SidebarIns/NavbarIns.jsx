@@ -4,9 +4,13 @@ import { Layout } from "antd";
 import { GoSearch } from "react-icons/go";
 import { IoNotificationsOutline, IoSettingsOutline } from "react-icons/io5";
 import { CiLogout } from "react-icons/ci";
+import axios from "axios";
+import { PATH_NAME } from "../../constant/pathname";
+import { useNavigate } from "react-router-dom";
 
 const { Header } = Layout;
 const NavbarIns = () => {
+    const navigate = useNavigate();
   const [isProfileDropdownOpen, setIsProfileDropdownOpen] = useState(false);
   const profileDropdownRef = useRef(null);
 
@@ -29,6 +33,8 @@ const NavbarIns = () => {
   const toggleProfileDropdown = () => {
     setIsProfileDropdownOpen((prev) => !prev);
   };
+
+
   return (
     <Layout>
       <Header className="header">

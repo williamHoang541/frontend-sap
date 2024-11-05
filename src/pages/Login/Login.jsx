@@ -70,28 +70,6 @@ const Login = () => {
     }
   };
 
-  // const handleToken = (token) => {
-  //   try {
-  //     const decoded = jwtDecode(token); // Decode the token
-  //     console.log("Decoded Token:", decoded); // Log the decoded token
-
-  //     // Check token expiration
-  //     const currentTime = Date.now() / 1000; // Current time in seconds
-  //     if (decoded.exp > currentTime) {
-  //       // Token is valid, navigate based on role
-  //       const role = decoded["http://schemas.microsoft.com/ws/2008/06/identity/claims/role"];
-  //       navigateBasedOnRole(role); // Assuming role is in the token
-  //     } else {
-  //       console.error("Token has expired");
-  //       setLoginError("Token has expired");
-  //       localStorage.removeItem("Authen"); // Clear auth data if expired
-  //     }
-  //   } catch (error) {
-  //     console.error("Error decoding token:", error);
-  //     setLoginError("Invalid token");
-  //   }
-  // };
-
   const navigateBasedOnRole = (role) => {
     console.log("Navigating based on role:", role);
     switch (role) {

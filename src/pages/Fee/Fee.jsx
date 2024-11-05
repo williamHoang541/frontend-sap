@@ -1,8 +1,9 @@
-import React, { useEffect, useState } from "react";
+import  { useEffect, useState } from "react";
 import "./Fee.css";
 import { SlArrowRight } from "react-icons/sl";
-import qs from "qs";
+
 import { Table } from "antd";
+import axios from "axios";
 
 const Fee = () => {
   const [data, setData] = useState([]); // Khởi tạo mảng dữ liệu
@@ -14,87 +15,44 @@ const Fee = () => {
     },
   });
 
-  const getRandomuserParams = (params) => ({
-    results: params.pagination?.pageSize,
-    page: params.pagination?.current,
-    ...params,
-  });
-
-  const columns = [
-    {
-      title: "No.",
-      sorter: true,
-      width: "7%",
-      render: (_, __, index) => index + 1,
-    },
-    {
-      title: "Student Name",
-      dataIndex: "name",
-      sorter: true,
-      render: (name) => `${name.first} ${name.last}`,
-      width: "15%",
-    },
-    {
-      title: "Invoice Number",
-      sorter: true,
-      width: "15%",
-    },
-    {
-      title: "Payment Type",
-      width: "15%",
-    },
-    {
-      title: "Date",
-      sorter: true,
-      width: "12%",
-    },
-    {
-      title: "Amount",
-      sorter: true,
-      width: "12%",
-    },
-    {
-    title: "Status",
-    dataIndex: "status",
-    filters: [
-      { text: "Paid", value: "paid" },
-      { text: "Unpaid", value: "unpaid" },
-    ],
-    render: (status) => (
-      <span className={status === "paid" ? "status-paid" : "status-unpaid"}>
-        {status.charAt(0).toUpperCase() + status.slice(1)}
-      </span>
-    ),
-    width: "10%",
-  },
-  ];
-
-
-  const fetchData = () => {
+  const fetchData = async () => {
     setLoading(true);
-    fetch(
-      `https://randomuser.me/api?${qs.stringify(
-        getRandomuserParams(tableParams)
-      )}`
-    )
-      .then((res) => res.json())
-      .then(({ results }) => {
-        // Thêm trường status vào dữ liệu
-        const updatedResults = results.map((item) => ({
-          ...item,
-          status: Math.random() > 0.5 ? "paid" : "unpaid", // Giả lập trạng thái
-        }));
-        setData(updatedResults);
-        setLoading(false);
-        setTableParams((prevParams) => ({
-          ...prevParams,
-          pagination: {
-            ...prevParams.pagination,
-            total: 200, // Giả lập tổng số bản ghi
-          },
-        }));
-      })
-      .catch(() => setLoading(false)); // Đảm bảo set loading false khi có lỗi
+    try {
+      
+      const paymentResponse = await axios.get('https://swdsapelearningapi.azurewebsites.net/api/Payment');
+      const paymentData = paymentResponse.data.$values;
+
+      
+      const studentResponse = await axios.get('https://swdsapelearningapi.azurewebsites.net/api/User/get-all-student');
+      const studentData = studentResponse.data.$values;
+
+      
+      const enrollmentResponse = await axios.get('https://swdsapelearningapi.azurewebsites.net/api/Enrollment/get-all');
+      const enrollmentData = enrollmentResponse.data.$values;
+
+      // Kết nối dữ liệu payment với student
+      const updatedResults = paymentData.map(payment => {
+        const enrollment = enrollmentData.find(enroll => enroll.id === payment.enrollmentId);
+        const student = studentData.find(student => student.id === (enrollment ? enrollment.userId : null));
+        return {
+          ...payment,
+          studentName: student ? student.fullname || 'Unknown' : 'Unknown',
+        };
+      });
+
+      setData(updatedResults);
+      setLoading(false);
+      setTableParams(prevParams => ({
+        ...prevParams,
+        pagination: {
+          ...prevParams.pagination,
+          total: updatedResults.length,
+        },
+      }));
+    } catch (error) {
+      console.error('Error fetching data:', error);
+      setLoading(false);
+    }
   };
 
   useEffect(() => {
@@ -114,23 +72,71 @@ const Fee = () => {
     }
   };
 
+  const columns = [
+    {
+      title: "No.",
+      sorter: true,
+      width: "7%",
+      render: (_, __, index) => index + 1,
+    },
+    {
+      title: "Student Name",
+      dataIndex: "studentName",
+      width: "15%",
+    },
+    {
+      title: "Transaction code",
+      dataIndex: "transactionId",
+      sorter: true,
+      width: "15%",
+    },
+    {
+      title: "Date",
+      dataIndex: "paymentDate",
+      width: "12%",
+      sorter: (a, b) =>
+        new Date(a.paymentDate) - new Date(b.paymentDate),
+      render: (date) => {
+        if (!date) return "N/A";
+        const dateObj = new Date(date);
+        return dateObj.toLocaleDateString("vi-VN");
+      },
+    },
+    {
+      title: "Amount",
+      dataIndex: "amount",
+      sorter: (a, b) => (a.amount || "").localeCompare(b.amount || ""),
+      width: "12%",
+    },
+    {
+    title: "Status",
+    dataIndex: "status",
+    render: (status) => (
+      <span className={`status-indicator ${status === "Success" ? "status-success" : (status === "Pending" ? "status-pending" : "status-cancelled")}`}>
+        {status.charAt(0).toUpperCase() + status.slice(1)}
+      </span>
+    ),
+    width: "10%",
+  },
+  ];
+
   return (
     <div className="fee">
       <div className="fee_title_container">
         <div className="fee_title_left">
-          <div className="fee_title">Fees Collection</div>
+          <div className="fee_title">Payment</div>
         </div>
         <div className="fee_fee_right">
-          <div className="fee_fee">Fee</div>
+          <div className="fee_fee">Payment</div>
           <SlArrowRight className="fee_icon_right" />
-          <div className="fee_collection">Fees Collection</div>
+          <div className="fee_collection">Payment</div>
         </div>
       </div>
 
       <div className="fee_table_container">
         <Table
           columns={columns}
-          rowKey={(record) => record.login.uuid}
+          rowKey={(record) => record.id}
           dataSource={data}
           pagination={tableParams.pagination}
           loading={loading}

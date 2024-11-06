@@ -14,6 +14,7 @@ import "./AllCourse.css";
 const AllCourse = () => {
     const [data, setData] = useState([]);
     const [loading, setLoading] = useState(false);
+    const [instructors, setInstructors] = useState([]);
     const [tableParams, setTableParams] = useState({
         pagination: {
             current: 1,
@@ -139,8 +140,13 @@ const AllCourse = () => {
                         }
                         modal
                         closeOnDocumentClick
-                        onOpen={() =>
+                        onOpen={() => {
+                            const instructorId = getInstructorIdByName(
+                                record.instructorId
+                            );
+                            console.log("Instructor ID:", instructorId);
                             form.setFieldsValue({
+                                instructorId: record.instructorId,
                                 courseName: record.courseName,
                                 mode: record.mode,
                                 startTime: record.startTime,
@@ -149,8 +155,8 @@ const AllCourse = () => {
                                 enrollmentDate: record.enrollmentDate,
                                 price: record.price,
                                 status: record.status,
-                            })
-                        }
+                            });
+                        }}
                     >
                         {(close) => (
                             <div className="popup_container">
@@ -180,6 +186,31 @@ const AllCourse = () => {
                                                 placeholder="Enter Mode"
                                             />
                                         </Form.Item>
+                                        <Form.Item
+                                            name="instructorId"
+                                            label="Instructor"
+                                            rules={[
+                                                {
+                                                    required: true,
+                                                    message:
+                                                        "Please select an instructor",
+                                                },
+                                            ]}
+                                        >
+                                            <select className="all_session_form">
+                                                <option value="">
+                                                    Select instructor
+                                                </option>
+                                                {instructors.map((inst) => (
+                                                    <option
+                                                        key={inst.id}
+                                                        value={inst.id}
+                                                    >
+                                                        {inst.fullname}
+                                                    </option>
+                                                ))}
+                                            </select>
+                                        </Form.Item>
                                     </div>
                                     <div className="all_course_input">
                                         <Form.Item
@@ -192,16 +223,6 @@ const AllCourse = () => {
                                                 placeholder="Select start date"
                                             />
                                         </Form.Item>
-                                        {/* <Form.Item
-                                            name="totalStudent"
-                                            label="Total Student"
-                                        >
-                                            <input
-                                                type="number"
-                                                className="all_course_form"
-                                                placeholder="Enter maximum student"
-                                            />
-                                        </Form.Item> */}
                                         <Form.Item
                                             name="endTime"
                                             label="End Date"
@@ -210,6 +231,15 @@ const AllCourse = () => {
                                                 type="date"
                                                 className="all_course_form"
                                                 placeholder="Select end date"
+                                            />
+                                        </Form.Item>
+                                        <Form.Item
+                                            name="enrollmentDate"
+                                            label="End register date"
+                                        >
+                                            <input
+                                                type="date"
+                                                className="all_course_form"
                                             />
                                         </Form.Item>
                                     </div>
@@ -224,25 +254,6 @@ const AllCourse = () => {
                                                 placeholder="Select location"
                                             />
                                         </Form.Item>
-                                        <Form.Item
-                                            name="enrollmentDate"
-                                            label="End register date"
-                                        >
-                                            <input
-                                                type="date"
-                                                className="all_course_form"
-                                            />
-                                        </Form.Item>
-                                    </div>
-                                    <div className="all_course_input">
-                                        <Form.Item name="status" label="Status">
-                                            <Radio.Group className="status-radio-group">
-                                                <Radio value={true}>True</Radio>
-                                                <Radio value={false}>
-                                                    False
-                                                </Radio>
-                                            </Radio.Group>
-                                        </Form.Item>
                                         <Form.Item name="price" label="Price">
                                             <input
                                                 type="number"
@@ -250,8 +261,16 @@ const AllCourse = () => {
                                                 placeholder="Enter price"
                                             />
                                         </Form.Item>
+                                        <Form.Item name="status" label="Status">
+                                            <Radio.Group className="all_course_form status-radio-grp">
+                                                <Radio value={true}>True</Radio>
+                                                <Radio value={false}>
+                                                    False
+                                                </Radio>
+                                            </Radio.Group>
+                                        </Form.Item>
                                     </div>
-                                    <div className="all_course_input"></div>
+
                                     <div className="popup_buttons">
                                         <Button
                                             className="button_save"
@@ -286,32 +305,126 @@ const AllCourse = () => {
         },
     ];
 
+    const getInstructorIdByName = (fullname) => {
+        const instructor = instructors.find(
+            (inst) => inst.fullname === fullname
+        );
+        return instructor ? instructor.id : undefined;
+    };
+
+    // const handleEdit = async (values, id) => {
+    //     if (!id) {
+    //         console.error("Missing ID for update.");
+    //         return;
+    //     }
+
+    //     try {
+    //         const updateData = { ...values };
+    //         updateData.instructorId = getInstructorIdByName(
+    //             values.instructorId
+    //         );
+
+    //         console.log("Data sent to API:", updateData);
+
+    //         const response = await axios.put(
+    //             `https://swdsapelearningapi.azurewebsites.net/api/Course/${id}`,
+    //             updateData,
+    //             { headers: { "Content-Type": "application/json" } }
+    //         );
+
+    //         if (response.status === 200) {
+    //             // Cập nhật state ngay lập tức sau khi cập nhật thành công
+    //             setData((prevData) =>
+    //                 prevData.map((item) =>
+    //                     item.id === id ? { ...item, ...updateData } : item
+    //                 )
+    //             );
+    //             form.resetFields();
+    //             alert("Update successful!");
+    //         } else {
+    //             console.error(
+    //                 "Failed to update. Response status:",
+    //                 response.status
+    //             );
+    //         }
+    //     } catch (error) {
+    //         console.error(
+    //             "Error updating session:",
+    //             error.response?.data || error.message
+    //         );
+    //         if (error.response && error.response.data) {
+    //             console.error("API error response:", error.response.data);
+    //         }
+    //     }
+    // };
+
+    // const handleEdit = async (values, id) => {
+    //     try {
+    //         const updateData = { ...values };
+    //         const instructor = instructors.find(
+    //             (inst) => inst.id === values.instructorId
+    //         );
+    //         if (instructor) updateData.instructorName = instructor.fullname;
+
+    //         const response = await axios.put(
+    //             `https://swdsapelearningapi.azurewebsites.net/api/Course/${id}`,
+    //             updateData,
+    //             { headers: { "Content-Type": "application/json" } }
+    //         );
+
+    //         if (response.status === 200) {
+    //             setData((prevData) =>
+    //                 prevData.map((item) =>
+    //                     item.id === id ? { ...item, ...updateData } : item
+    //                 )
+    //             );
+    //             form.resetFields();
+    //             alert("Update successful!");
+    //         } else {
+    //             console.error(
+    //                 "Failed to update. Response status:",
+    //                 response.status
+    //             );
+    //         }
+    //     } catch (error) {
+    //         console.error("Error updating course:", error);
+    //     }
+    // };
+
     const handleEdit = async (values, id) => {
         try {
-            // Lấy thông tin cũ của record (có chứa Instructor name)
-            const existingRecord = data.find((item) => item.id === id);
-
-            // Chỉ ghi đè các trường đã thay đổi trong form, các trường không có trong form sẽ giữ nguyên
-            const updatedRecord = {
-                ...existingRecord, // giữ nguyên dữ liệu cũ (bao gồm Instructor name)
-                ...values, // chỉ cập nhật các trường có trong form
-            };
-
-            // Gửi yêu cầu update với record đã cập nhật
-            const response = await axios.put(
-                `https://swdsapelearningapi.azurewebsites.net/api/Course/${id}`,
-                updatedRecord // gửi toàn bộ bản ghi đã được cập nhật
+            // Lấy instructor mới từ danh sách instructors dựa trên instructorId
+            const instructor = instructors.find(
+                (inst) => inst.id === values.instructorId
             );
 
+            // Chuẩn bị dữ liệu update, bao gồm instructorName từ instructor tìm thấy
+            const updateData = {
+                ...values,
+                instructorName: instructor ? instructor.fullname : null, // Đảm bảo instructorName được cập nhật từ fullname
+            };
+
+            // Gửi request PUT để cập nhật thông tin course
+            const response = await axios.put(
+                `https://swdsapelearningapi.azurewebsites.net/api/Course/${id}`,
+                updateData,
+                { headers: { "Content-Type": "application/json" } }
+            );
+
+            // Nếu cập nhật thành công, cập nhật lại state data để hiển thị ngay
             if (response.status === 200) {
-                // Cập nhật lại dữ liệu trên frontend
-                const updatedData = data.map((item) =>
-                    item.id === id ? { ...item, ...updatedRecord } : item
+                setData((prevData) =>
+                    prevData.map((item) =>
+                        item.id === id ? { ...item, ...updateData } : item
+                    )
                 );
-                setData(updatedData);
-                form.resetFields(); // reset form sau khi hoàn thành
+                form.resetFields();
+                alert("Update successful!");
             } else {
-                console.error("Update failed:", response);
+                console.error(
+                    "Failed to update. Response status:",
+                    response.status
+                );
             }
         } catch (error) {
             console.error("Error updating course:", error);
@@ -343,31 +456,38 @@ const AllCourse = () => {
     const fetchData = async (pagination) => {
         setLoading(true);
         try {
-            const response = await axios.get(
-                `https://swdsapelearningapi.azurewebsites.net/api/Course/get-all`
-            );
-            const results = response.data.$values; // Lấy dữ liệu từ response
+            const [courseResponse, instructorResponse] = await Promise.all([
+                axios.get(
+                    `https://swdsapelearningapi.azurewebsites.net/api/Course/get-all?PageSize=20`
+                ),
+                axios.get(
+                    `https://swdsapelearningapi.azurewebsites.net/api/Instructor/get-all`
+                ),
+            ]);
 
-            // Kiểm tra xem results có phải là mảng không
-            if (Array.isArray(results)) {
+            const courseResults = courseResponse.data.$values;
+            const instructorResults = instructorResponse.data.$values;
+
+            if (Array.isArray(courseResults)) {
                 const startIndex =
                     (pagination.current - 1) * pagination.pageSize;
-                const paginatedData = results.slice(
+                const paginatedData = courseResults.slice(
                     startIndex,
                     startIndex + pagination.pageSize
-                ); // Phân trang dữ liệu
+                );
 
                 setData(paginatedData);
                 setTableParams((prevParams) => ({
                     ...prevParams,
                     pagination: {
                         ...pagination,
-                        total: results.length,
+                        total: courseResults.length,
                     },
                 }));
-            } else {
-                console.error("Fetched data is not an array:", results);
-                setData([]); // Đặt lại dữ liệu nếu không hợp lệ
+            }
+
+            if (Array.isArray(instructorResults)) {
+                setInstructors(instructorResults);
             }
         } catch (error) {
             console.error("Error fetching data:", error);

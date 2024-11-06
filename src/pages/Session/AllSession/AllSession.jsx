@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
-import { Button, Table, Form, Radio } from "antd";
+import { Button, Table, Form, Radio, Badge, Dropdown, Space } from "antd";
+import { DownOutlined } from "@ant-design/icons";
 import Popup from "reactjs-popup";
 import { SlArrowRight } from "react-icons/sl";
 import { RiDeleteBin6Line } from "react-icons/ri";
@@ -26,21 +27,23 @@ const AllSession = () => {
     const columns = [
         {
             title: "No.",
-            sorter: true,
-            width: "7%",
             render: (_, __, index) =>
                 (tableParams.pagination.current - 1) *
                     tableParams.pagination.pageSize +
                 index +
                 1,
+            width: "5%",
         },
         {
             title: "Course Name",
             dataIndex: "courseName",
             sorter: (a, b) =>
                 (a.courseName || "").localeCompare(b.courseName || ""),
-            width: "15%",
+            width: "90%",
         },
+    ];
+
+    const expandedColumns = [
         {
             title: "Instructor Name",
             dataIndex: "instructorName",
@@ -251,12 +254,69 @@ const AllSession = () => {
         },
     ];
 
+    const expandedRowRender = (record) => {
+        return (
+            <Table
+                columns={expandedColumns}
+                dataSource={record.sessions}
+                pagination={false} // Không phân trang cho bảng mở rộng
+                rowKey={(record) => record.id} // Sử dụng id session làm key
+            />
+        );
+    };
+
     const getInstructorIdByName = (fullname) => {
         const instructor = instructors.find(
             (inst) => inst.fullname === fullname
         );
         return instructor ? instructor.id : undefined;
     };
+
+    // const handleEdit = async (values, id) => {
+    //     if (!id) {
+    //         console.error("Missing ID for update.");
+    //         return;
+    //     }
+
+    //     try {
+    //         const updateData = { ...values };
+    //         updateData.instructorId = getInstructorIdByName(
+    //             values.instructorId
+    //         );
+
+    //         console.log("Data sent to API:", updateData);
+
+    //         const response = await axios.put(
+    //             `https://swdsapelearningapi.azurewebsites.net/api/CourseSession/${id}`,
+    //             updateData,
+    //             { headers: { "Content-Type": "application/json" } }
+    //         );
+
+    //         if (response.status === 200) {
+    //             // Cập nhật state ngay lập tức sau khi cập nhật thành công
+    //             setData((prevData) =>
+    //                 prevData.map((item) =>
+    //                     item.id === id ? { ...item, ...updateData } : item
+    //                 )
+    //             );
+    //             form.resetFields();
+    //             alert("Update successful!");
+    //         } else {
+    //             console.error(
+    //                 "Failed to update. Response status:",
+    //                 response.status
+    //             );
+    //         }
+    //     } catch (error) {
+    //         console.error(
+    //             "Error updating session:",
+    //             error.response?.data || error.message
+    //         );
+    //         if (error.response && error.response.data) {
+    //             console.error("API error response:", error.response.data);
+    //         }
+    //     }
+    // };
 
     const handleEdit = async (values, id) => {
         if (!id) {
@@ -265,13 +325,28 @@ const AllSession = () => {
         }
 
         try {
-            const updateData = { ...values };
-            updateData.instructorId = getInstructorIdByName(
-                values.instructorId
-            );
+            // Filter out empty fields
+            const updateData = {};
+            for (const key in values) {
+                if (
+                    values[key] !== null &&
+                    values[key] !== undefined &&
+                    values[key] !== ""
+                ) {
+                    updateData[key] = values[key];
+                }
+            }
+
+            // Map instructor name to ID if needed
+            if (updateData.instructorId) {
+                updateData.instructorId = getInstructorIdByName(
+                    updateData.instructorId
+                );
+            }
 
             console.log("Data sent to API:", updateData);
 
+            // Send update request to API
             const response = await axios.put(
                 `https://swdsapelearningapi.azurewebsites.net/api/CourseSession/${id}`,
                 updateData,
@@ -279,7 +354,7 @@ const AllSession = () => {
             );
 
             if (response.status === 200) {
-                // Cập nhật state ngay lập tức sau khi cập nhật thành công
+                // Update local state with updated data to reflect changes without refreshing
                 setData((prevData) =>
                     prevData.map((item) =>
                         item.id === id ? { ...item, ...updateData } : item
@@ -298,25 +373,8 @@ const AllSession = () => {
                 "Error updating session:",
                 error.response?.data || error.message
             );
-            if (error.response && error.response.data) {
-                console.error("API error response:", error.response.data);
-            }
         }
     };
-
-    // const handleDelete = async (id) => {
-    //     try {
-    //         await axios.delete(
-    //             `https://swdsapelearningapi.azurewebsites.net/api/CourseSession/${id}`
-    //         );
-    //         setData((prevData) => prevData.filter((item) => item.id !== id));
-    //     } catch (error) {
-    //         console.error(
-    //             "Error deleting session:",
-    //             error.response?.data || error.message
-    //         );
-    //     }
-    // };
 
     const handleDelete = async (id) => {
         try {
@@ -341,6 +399,21 @@ const AllSession = () => {
         }
     };
 
+    const groupSessionsByCourse = (sessions) => {
+        const groupedData = {};
+        sessions.forEach((session) => {
+            if (!groupedData[session.courseName]) {
+                groupedData[session.courseName] = [];
+            }
+            groupedData[session.courseName].push(session);
+        });
+        return Object.keys(groupedData).map((courseName) => ({
+            courseName,
+            sessions: groupedData[courseName],
+            key: courseName, // Dùng courseName làm key duy nhất
+        }));
+    };
+
     const fetchData = async (pagination) => {
         setLoading(true);
         try {
@@ -357,9 +430,11 @@ const AllSession = () => {
             const instructorResults = instructorResponse.data.$values;
 
             if (Array.isArray(courseResults)) {
+                const groupedCourses = groupSessionsByCourse(courseResults);
+
                 const startIndex =
                     (pagination.current - 1) * pagination.pageSize;
-                const paginatedData = courseResults.slice(
+                const paginatedData = groupedCourses.slice(
                     startIndex,
                     startIndex + pagination.pageSize
                 );
@@ -369,7 +444,7 @@ const AllSession = () => {
                     ...prevParams,
                     pagination: {
                         ...pagination,
-                        total: courseResults.length,
+                        total: groupedCourses.length,
                     },
                 }));
             }
@@ -414,9 +489,13 @@ const AllSession = () => {
                 <Link to={PATH_NAME.ADD_SESSION}>
                     <button className="session_add">Add New</button>
                 </Link>
+
                 <Table
                     columns={columns}
-                    rowKey={(record) => record.id}
+                    expandable={{
+                        expandedRowRender, // Sử dụng hàm để render bảng mở rộng
+                        defaultExpandedRowKeys: 0, // Để trống để không tự động mở rộng hàng nào
+                    }}
                     dataSource={Array.isArray(data) ? data : []}
                     pagination={{
                         ...tableParams.pagination,

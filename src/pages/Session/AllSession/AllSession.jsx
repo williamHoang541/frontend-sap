@@ -56,7 +56,7 @@ const AllSession = () => {
             dataIndex: "topicName",
             sorter: (a, b) =>
                 (a.topicName || "").localeCompare(b.topicName || ""),
-            width: "12%",
+            width: "15%",
         },
         {
             title: "Session Name",
@@ -84,6 +84,19 @@ const AllSession = () => {
                 const date = new Date(sessionDate);
                 return date.toLocaleDateString(); // Chỉ lấy ngày/tháng/năm
             },
+        },
+        {
+            title: "Start Time",
+            dataIndex: "startTime",
+            sorter: (a, b) =>
+                (a.startTime || "").localeCompare(b.startTime || ""),
+            width: "8%",
+        },
+        {
+            title: "End Time",
+            dataIndex: "endTime",
+            sorter: (a, b) => (a.endTime || "").localeCompare(b.endTime || ""),
+            width: "8%",
         },
         {
             title: "Status",
@@ -120,6 +133,8 @@ const AllSession = () => {
                                 sessionName: record.sessionName,
                                 sessionDescription: record.sessionDescription,
                                 sessionDate: record.sessionDate,
+                                startTime: record.startTime,
+                                endTime: record.endTime,
                                 status: record.status,
                             });
                         }}
@@ -191,6 +206,16 @@ const AllSession = () => {
                                                 placeholder="Enter session description"
                                             />
                                         </Form.Item>
+                                        <Form.Item
+                                            name="startTime"
+                                            label="Start Time"
+                                        >
+                                            <input
+                                                type="text"
+                                                className="all_session_form"
+                                                placeholder="Enter Start Time"
+                                            />
+                                        </Form.Item>
                                     </div>
                                     <div className="all_session_input">
                                         <Form.Item
@@ -209,6 +234,19 @@ const AllSession = () => {
                                                 className="all_session_form"
                                             />
                                         </Form.Item>
+
+                                        <Form.Item
+                                            name="endTime"
+                                            label="End Time"
+                                        >
+                                            <input
+                                                type="text"
+                                                className="all_session_form"
+                                                placeholder="Enter End Time"
+                                            />
+                                        </Form.Item>
+                                    </div>
+                                    <div className="all_session_input">
                                         <Form.Item name="status" label="Status">
                                             <Radio.Group className="status-group">
                                                 <Radio value={true}>
@@ -353,14 +391,21 @@ const AllSession = () => {
                 { headers: { "Content-Type": "application/json" } }
             );
 
-            if (response.status === 200) {
+            if (response.status >= 200 && response.status < 300) {
                 // Update local state with updated data to reflect changes without refreshing
+                // Cập nhật lại dữ liệu trong state
                 setData((prevData) =>
                     prevData.map((item) =>
-                        item.id === id ? { ...item, ...updateData } : item
+                        item.id === id
+                            ? {
+                                  ...item,
+                                  ...values,
+                                  $values: values.instructorId,
+                              } // Đảm bảo moduleIds được cập nhật
+                            : item
                     )
                 );
-                form.resetFields();
+                fetchData(tableParams.pagination);
                 alert("Update successful!");
             } else {
                 console.error(
@@ -419,7 +464,7 @@ const AllSession = () => {
         try {
             const [courseResponse, instructorResponse] = await Promise.all([
                 axios.get(
-                    `https://swdsapelearningapi.azurewebsites.net/api/CourseSession/get-all`
+                    `https://swdsapelearningapi.azurewebsites.net/api/CourseSession/get-all?PageSize=30`
                 ),
                 axios.get(
                     `https://swdsapelearningapi.azurewebsites.net/api/Instructor/get-all`

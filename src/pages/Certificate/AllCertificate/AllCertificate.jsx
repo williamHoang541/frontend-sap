@@ -1,3 +1,4 @@
+
 import { useEffect, useState } from "react";
 import "./AllCertificate.css";
 import { SlArrowRight } from "react-icons/sl";
@@ -23,7 +24,7 @@ const AllCertificate = () => {
   const [sapModules, setSapModules] = useState([]);
   const [descriptionPopupOpen, setDescriptionPopupOpen] = useState(false);
   const [selectedDescription, setSelectedDescription] = useState("");
-  const [image, setImage] = useState(null);
+  const [fileList, setFileList] = useState([]);
 
   const fetchSapModules = async () => {
     try {
@@ -147,6 +148,7 @@ const AllCertificate = () => {
                 environment: record.environment || "",
                 status: record.status,
                 moduleIds: record.moduleIds.$values || [],
+                image: null, // Ensure image field is reset
               })
             }
           >
@@ -157,7 +159,7 @@ const AllCertificate = () => {
                   form={form}
                   onFinish={(values) => {
                     handleEdit(values, record.id);
-                    close(); // Đóng popup sau khi lưu
+                    close(); // Close popup after save
                   }}
                 >
                   <div className="sap_module_inputs">
@@ -213,13 +215,26 @@ const AllCertificate = () => {
                     </Form.Item>
                   </div>
 
-                  <Form.Item name="image" label="Image">
-                    <input
-                      type="file"
-                      accept=".jpg,.jpeg,.png,.gif,.svg"
-                      onChange={handleImageChange} // Handle file selection
-                    />
-                  </Form.Item>
+                  {/* Image upload input */}
+                  <div className="sap_module_input">
+                    <Form.Item
+                      name="image"
+                      label="Certificate Image"
+                      valuePropName="file"
+                    >
+                      <input
+                        type="file"
+                        className="sap_module_form"
+                        accept="image/*"
+                        onChange={(e) =>
+                          form.setFieldsValue({
+                            image: e.target.files[0],
+                          })
+                        }
+                      />
+                    </Form.Item>
+                  </div>
+
                   <div className="popup_buttons">
                     <button className="button_save" type="submit">
                       Save
@@ -254,31 +269,47 @@ const AllCertificate = () => {
     setDescriptionPopupOpen(true);
   };
 
-  const handleImageChange = (e) => {
-    const file = e.target.files[0]; // Get the selected file
-    if (file) {
-      setImage(URL.createObjectURL(file)); // Use a state to store the file preview or its URL
-    }
-  };
-
   const handleEdit = async (values, id) => {
     try {
-      // Cập nhật chứng chỉ qua API
+      const formData = new FormData();
+
+      // Append text fields to formData
+      Object.keys(values).forEach((key) => {
+        formData.append(key, values[key]);
+      });
+
+      // Append image file to formData if a new file was uploaded
+      if (fileList.length > 0) {
+        formData.append("image", fileList[0].originFileObj);
+      }
+
+      // Update certificate through the API
       await axios.put(
         `https://swdsapelearningapi.azurewebsites.net/api/Certificate/update/${id}`,
-        values
+        formData,
+        {
+          headers: {
+            "Content-Type": "multipart/form-data",
+          },
+        }
       );
 
-      // Cập nhật lại dữ liệu trong state
+      fetchData(tableParams.pagination);
+      // Update state with new data
       setData((prevData) =>
         prevData.map((item) =>
           item.id === id
-            ? { ...item, ...values, moduleIds: { $values: values.moduleIds } } // Đảm bảo moduleIds được cập nhật
+            ? {
+                ...item,
+                ...values,
+                moduleIds: { $values: values.moduleIds },
+              }
             : item
         )
       );
 
       alert("Update successfully!");
+      setFileList([]); // Clear file list after successful update
     } catch (error) {
       alert("Update failed!");
       console.error("Error updating certificate:", error);
@@ -382,26 +413,6 @@ const AllCertificate = () => {
           onChange={handleTableChange}
         />
       </div>
-
-      {/* Popup hiển thị mô tả */}
-      <Popup
-        open={descriptionPopupOpen}
-        onClose={() => setDescriptionPopupOpen(false)}
-      >
-        <div className="popup_container">
-          <h2>Description Detail</h2>
-          <p>{selectedDescription}</p>
-          <div className="popup_button_1">
-            <button
-              type="button"
-              onClick={() => setDescriptionPopupOpen(false)}
-              className="button_close"
-            >
-              Close
-            </button>
-          </div>
-        </div>
-      </Popup>
     </div>
   );
 };

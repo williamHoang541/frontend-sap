@@ -294,20 +294,9 @@ const AllCertificate = () => {
         }
       );
 
-      fetchData(tableParams.pagination);
       // Update state with new data
-      setData((prevData) =>
-        prevData.map((item) =>
-          item.id === id
-            ? {
-                ...item,
-                ...values,
-                moduleIds: { $values: values.moduleIds },
-              }
-            : item
-        )
-      );
-
+      fetchData(tableParams.pagination);
+      
       alert("Update successfully!");
       setFileList([]); // Clear file list after successful update
     } catch (error) {

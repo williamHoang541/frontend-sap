@@ -402,6 +402,26 @@ const AllCertificate = () => {
           onChange={handleTableChange}
         />
       </div>
+
+      <Popup
+        open={descriptionPopupOpen}
+        onClose={() => setDescriptionPopupOpen(false)}
+      >
+        <div className="popup_container">
+          <h2>Description Detail</h2>
+          <p>{selectedDescription}</p>
+          <div className="popup_button_1">
+            <button
+              type="button"
+              onClick={() => setDescriptionPopupOpen(false)}
+              className="button_close"
+            >
+              Close
+            </button>
+          </div>
+        </div>
+      </Popup>
+
     </div>
   );
 };

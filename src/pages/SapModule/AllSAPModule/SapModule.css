@@ -78,6 +78,7 @@
   color: #033e8c !important;
   border: 0;
   background-color: transparent;
+  cursor: pointer;
 }
 
 .button_view:hover {

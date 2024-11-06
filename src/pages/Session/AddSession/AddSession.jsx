@@ -13,8 +13,10 @@ const AddSession = () => {
     const [topics, setTopics] = useState([]);
     const [selectedTopic, setSelectedTopic] = useState("");
     const [sessionName, setSessionName] = useState("");
-    const [sessionDesc, setSessionDesc] = useState("");
+    const [sessionDescription, setSessionDescription] = useState("");
     const [sessionDate, setSessionDate] = useState("");
+    const [startTime, setStartTime] = useState("");
+    const [endTime, setEndTime] = useState("");
 
     const [error, setError] = useState("");
     const [loading, setLoading] = useState(false);
@@ -24,7 +26,7 @@ const AddSession = () => {
         const fetchCourses = async () => {
             try {
                 const response = await axios.get(
-                    "https://swdsapelearningapi.azurewebsites.net/api/Course/get-all"
+                    "https://swdsapelearningapi.azurewebsites.net/api/Course/get-all?PageSize=20"
                 );
                 const data = response.data.$values;
                 if (Array.isArray(data)) {
@@ -81,8 +83,10 @@ const AddSession = () => {
 
         const requestData = {
             sessionName,
-            sessionDesc,
+            sessionDescription,
             sessionDate,
+            startTime,
+            endTime,
             courseId: selectedCourse,
             instructorId: selectedInstructor,
             topicId: selectedTopic,
@@ -182,9 +186,11 @@ const AddSession = () => {
                             <label>Session Description</label>
                             <input
                                 type="text"
-                                value={sessionDesc}
+                                value={sessionDescription}
                                 className="add_session_input_colum"
-                                onChange={(e) => setSessionDesc(e.target.value)}
+                                onChange={(e) =>
+                                    setSessionDescription(e.target.value)
+                                }
                                 placeholder="Enter the session description"
                             />
                         </div>
@@ -219,6 +225,28 @@ const AddSession = () => {
                                 className="add_session_input"
                                 onChange={(e) => setSessionDate(e.target.value)}
                                 placeholder="Select the date"
+                            />
+                        </div>
+                    </div>
+                    <div className="add_course_input_row">
+                        <div className="add_course_input_colum">
+                            <label htmlFor="name">Start Time</label>
+                            <input
+                                type="text"
+                                value={startTime}
+                                className="add_session_input"
+                                onChange={(e) => setStartTime(e.target.value)}
+                                placeholder="Enter the start time (hh:mm AM/PM)"
+                            />
+                        </div>
+                        <div className="add_course_input_colum">
+                            <label htmlFor="name">End Time</label>
+                            <input
+                                type="text"
+                                value={endTime}
+                                className="add_session_input"
+                                onChange={(e) => setEndTime(e.target.value)}
+                                placeholder="Enter the start time (hh:mm AM/PM)"
                             />
                         </div>
                     </div>

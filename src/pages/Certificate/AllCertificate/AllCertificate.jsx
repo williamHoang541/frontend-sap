@@ -325,6 +325,7 @@ const AllCertificate = () => {
       );
     }
   };
+
   const fetchData = async (pagination) => {
     setLoading(true);
     try {

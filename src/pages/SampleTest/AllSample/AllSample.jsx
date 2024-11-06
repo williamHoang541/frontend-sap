@@ -73,9 +73,9 @@ const AllSample = () => {
                 <>
                     <Popup
                         trigger={
-                            <Button type="link" className="topic_button_edit">
+                            <button type="button" className="topic_button_edit">
                                 <MdModeEditOutline />
-                            </Button>
+                            </button>
                         }
                         modal
                         closeOnDocumentClick
@@ -118,26 +118,25 @@ const AllSample = () => {
                                     </div>
 
                                     <div className="popup_buttons">
-                                        <Button
+                                        <button
                                             className="button_save"
-                                            type="primary"
-                                            htmlType="submit"
+                                            type="submit"
                                         >
                                             Save
-                                        </Button>
-                                        <Button
+                                        </button>
+                                        <button
                                             className="button_cancel"
                                             type="button"
                                             onClick={close}
                                         >
                                             Cancel
-                                        </Button>
+                                        </button>
                                     </div>
                                 </Form>
                             </div>
                         )}
                     </Popup>
-                   
+
                     <button
                         type="button"
                         onClick={() => handleDelete(record.id)}

@@ -115,7 +115,10 @@ const AllSession = () => {
                 <>
                     <Popup
                         trigger={
-                            <button type="button" className="session_button_edit">
+                            <button
+                                type="button"
+                                className="session_button_edit"
+                            >
                                 <MdModeEditOutline />
                             </button>
                         }
@@ -261,7 +264,6 @@ const AllSession = () => {
                                         <button
                                             className="button_save"
                                             type="submit"
-                                    
                                         >
                                             Save
                                         </button>
@@ -431,6 +433,8 @@ const AllSession = () => {
                 setData((prevData) =>
                     prevData.filter((item) => item.id !== id)
                 );
+                fetchData(tableParams.pagination);
+                alert("Delete successful!");
             } else {
                 console.error("Error deleting data:", response.data);
             }

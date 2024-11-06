@@ -25,7 +25,7 @@ import AllQuesInTest from "./pages/QuestionInTest/AllQuesInTest/AllQuesInTest";
 import AddQuesInTest from "./pages/QuestionInTest/AddQuesInTest/AddQuesInTest";
 import Layout_1 from "./components/Layout/Layout_1";
 import Layout_2 from "./components/Layout/Layout_2";
-import Calendar from "./pages/Calendar/Calendar";
+import Calendar from "./pages/Calendar/CalendarIns";
 import CourseIns from "./pages/CourseIns/CourseIns";
 
 const App = () => {

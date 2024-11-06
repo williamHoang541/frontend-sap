@@ -18,25 +18,18 @@ const Login = () => {
   const [authen, setAuthen] = useState(null);
 
   // Hàm xử lý đăng nhập
+ 
   const handleLogin = async (event) => {
     event.preventDefault();
-    const loginData = {
-      username: username,
-      password: password,
-    };
-
-    const url =
-      "https://swdsapelearningapi.azurewebsites.net/api/User/login-web";
+    const loginData = { username, password };
+    const url = "https://swdsapelearningapi.azurewebsites.net/api/User/login-web";
 
     try {
-      console.log(loginData);
       const response = await axios.post(url, loginData);
-      console.log(response.data);
       const token = response.data;
-      localStorage.setItem("Authen", JSON.stringify(response.data));
-      setAuthen(response.data);
-      //
-      await fetchUserInfo(token);
+      localStorage.setItem("Authen", JSON.stringify(token));
+
+      await fetchUserInfo(token); // Fetch user information based on token
     } catch (error) {
       console.log(error);
       setLoginError("Username or password is incorrect.");
@@ -52,17 +45,21 @@ const Login = () => {
         }
       );
 
-      // Lấy thông tin người dùng từ response
+      console.log("User info response:", response.data);
+      
+
+      // Decoding and storing user info
+      const decodedToken = jwtDecode(token);
+      const userId = decodedToken.id;
+      console.log("Decoded token:", decodedToken);
       const userInfo = {
-        name: response.data.fullname,
-        email: response.data.email,
-        role: jwtDecode(token)[
-          "http://schemas.microsoft.com/ws/2008/06/identity/claims/role"
-        ], // Lấy vai trò từ token
+        userId: userId,
+        role: decodedToken["http://schemas.microsoft.com/ws/2008/06/identity/claims/role"],
       };
 
-      // Cập nhật thông tin người dùng
-      setAuth(userInfo); // Giả sử bạn có một hàm setAuth để lưu thông tin người dùng
+      console.log("User info to be set:", userInfo);
+
+      setAuth(userInfo); // Set user info in context
       navigateBasedOnRole(userInfo.role);
     } catch (error) {
       console.error("Error fetching user info:", error);
@@ -77,7 +74,7 @@ const Login = () => {
         navigate(PATH_NAME.DASHBOARD);
         break;
       case "instructor":
-        navigate(PATH_NAME.COURSE_INSTRUCTOR);
+        navigate(PATH_NAME.CALENDAR);
         break;
       default:
         setLoginError("Username does not exist");

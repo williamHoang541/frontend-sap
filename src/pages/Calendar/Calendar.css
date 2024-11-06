@@ -1,0 +1,54 @@
+.calendar {
+  display: flex;
+  flex-direction: column;
+  gap: 30px;
+  margin-bottom: 30px;
+  margin-top: 10px;
+}
+
+.calendar-container {
+  background-color: #fff;
+  padding: 15px;
+  border-radius: 3px;
+}
+.popup-content-1 {
+  background-color: #fff;
+  padding: 15px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  border-radius: 5px;
+  color: #333;
+}
+
+.popup-content-1 h3 {
+  font-size: 24px;
+  text-align: center;
+  color: #033e8c;
+}
+
+.popup-content-1 button {
+  box-shadow: none !important;
+  background-color: #ffd8d8 !important;
+  color: #ff1616 !important;
+  padding: 10px !important;
+  font-size: 14px !important;
+  width: 75px;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+}
+
+.popup-content-1 button:hover {
+  background-color: #ff1616 !important;
+  color: #fff !important;
+}
+
+.rbc-row-segment .rbc-event-content{
+    font-size: 14px;
+    white-space: normal !important;
+}
+
+.rbc-event{
+    background-color: #295895db !important;
+}

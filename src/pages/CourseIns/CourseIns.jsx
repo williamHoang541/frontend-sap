@@ -76,7 +76,7 @@ const CourseIns = () => {
                 <span className="info_1">Duration:</span>
                 <strong className="info_2">
                   {calculateDurationInMonths(course.startTime, course.endTime)}{" "}
-                  Month
+                  months
                 </strong>
               </li>
               <li className="info">

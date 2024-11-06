@@ -45,6 +45,17 @@ const AllCertificate = () => {
         1,
     },
     {
+      title: "Image",
+      dataIndex: "image",
+      render: (imageUrl) =>
+        imageUrl ? (
+          <img src={imageUrl} alt="Certificate" style={{ width: "50px" }} />
+        ) : (
+          "No Image"
+        ),
+      width: "10%",
+    },
+    {
       title: "Name Certificate",
       dataIndex: "certificateName",
       sorter: (a, b) =>
@@ -55,7 +66,7 @@ const AllCertificate = () => {
       title: "Level",
       dataIndex: "level",
       sorter: (a, b) => (a.level || "").localeCompare(b.level || ""),
-      width: "16%",
+      width: "10%",
     },
     {
       title: "Environment",
@@ -135,6 +146,7 @@ const AllCertificate = () => {
                 environment: record.environment || "",
                 status: record.status,
                 moduleIds: record.moduleIds.$values || [],
+                
               })
             }
           >

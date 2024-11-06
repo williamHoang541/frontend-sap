@@ -23,6 +23,7 @@ const AllCertificate = () => {
   const [sapModules, setSapModules] = useState([]);
   const [descriptionPopupOpen, setDescriptionPopupOpen] = useState(false);
   const [selectedDescription, setSelectedDescription] = useState("");
+  const [image, setImage] = useState(null);
 
   const fetchSapModules = async () => {
     try {
@@ -146,7 +147,6 @@ const AllCertificate = () => {
                 environment: record.environment || "",
                 status: record.status,
                 moduleIds: record.moduleIds.$values || [],
-                
               })
             }
           >
@@ -212,11 +212,16 @@ const AllCertificate = () => {
                       </Radio.Group>
                     </Form.Item>
                   </div>
+
+                  <Form.Item name="image" label="Image">
+                    <input
+                      type="file"
+                      accept=".jpg,.jpeg,.png,.gif,.svg"
+                      onChange={handleImageChange} // Handle file selection
+                    />
+                  </Form.Item>
                   <div className="popup_buttons">
-                    <button
-                      className="button_save"
-                      type="submit"
-                    >
+                    <button className="button_save" type="submit">
                       Save
                     </button>
                     <button
@@ -249,6 +254,12 @@ const AllCertificate = () => {
     setDescriptionPopupOpen(true);
   };
 
+  const handleImageChange = (e) => {
+    const file = e.target.files[0]; // Get the selected file
+    if (file) {
+      setImage(URL.createObjectURL(file)); // Use a state to store the file preview or its URL
+    }
+  };
 
   const handleEdit = async (values, id) => {
     try {

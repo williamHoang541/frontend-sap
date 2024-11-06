@@ -2,27 +2,48 @@ import { useEffect, useState } from "react";
 import "./Course.css";
 import { SlArrowRight } from "react-icons/sl";
 import axios from "axios";
+import useAuth from "../../components/hooks/useAuth";
 
 const CourseIns = () => {
+  const { auth } = useAuth();
   const [courses, setCourses] = useState([]);
   const [loading, setLoading] = useState(true);
 
-  const fetchCourses = async () => {
+  const fetchInstructorAndCourses = async () => {
     try {
-      const response = await axios.get(
-        "https://swdsapelearningapi.azurewebsites.net/api/Course/get-all"
+      // 1. Fetch API của instructor để tìm instructor có `userId` trùng với `userId` từ token
+      const instructorResponse = await axios.get("https://swdsapelearningapi.azurewebsites.net/api/Instructor/get-all");
+      const instructors = instructorResponse.data.$values;
+      const currentInstructor = instructors.find(
+        (instructor) => instructor.userId === auth.userId
       );
-      setCourses(response.data.$values);
-      setLoading(false);
+
+      if (currentInstructor) {
+        // 2. Nếu tìm thấy instructor, fetch course và lọc theo `instructorId`
+        const courseResponse = await axios.get("https://swdsapelearningapi.azurewebsites.net/api/Course/get-all");
+        const allCourses = courseResponse.data.$values;
+
+        // 3. Lọc các course có `instructorId` khớp với `id` của instructor
+        const instructorCourses = allCourses.filter(
+          (course) => course.instructorId === currentInstructor.id
+        );
+
+        setCourses(instructorCourses);
+      } else {
+        console.error("No matching instructor found for this user.");
+      }
     } catch (error) {
-      console.error("Error fetching courses:", error);
+      console.error("Error fetching instructor or courses:", error);
+    } finally {
       setLoading(false);
     }
   };
 
+
   useEffect(() => {
-    fetchCourses();
-  }, []);
+    console.log("Auth data on component load:", auth);
+    fetchInstructorAndCourses();
+  }, [auth.userId]);
 
   const calculateDurationInMonths = (startTime, endTime) => {
     const start = new Date(startTime);

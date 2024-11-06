@@ -12,7 +12,6 @@ import {
 import { PiCertificate, PiUsersThree, PiCoinsLight } from "react-icons/pi";
 import { LuUsers2 } from "react-icons/lu";
 import { IoAnalytics } from "react-icons/io5";
-import { IoSettingsOutline } from "react-icons/io5";
 import { MdOutlineTopic } from "react-icons/md";
 import { MdViewModule } from "react-icons/md";
 import { CiLogout } from "react-icons/ci";

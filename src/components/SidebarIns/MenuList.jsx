@@ -2,7 +2,6 @@
 import { PATH_NAME } from "../../constant/pathname";
 import { Link, useNavigate } from "react-router-dom";
 import { RxCalendar } from "react-icons/rx";
-import { IoSettingsOutline } from "react-icons/io5";
 import { LiaGraduationCapSolid } from "react-icons/lia";
 import { Menu } from "antd";
 import { CiLogout } from "react-icons/ci";

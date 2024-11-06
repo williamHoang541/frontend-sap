@@ -1,11 +1,9 @@
-import { Button} from "antd";
 import "./AddSAPModule.css";
-import { useNavigate } from "react-router-dom"; 
+import { useNavigate } from "react-router-dom";
 import { SlArrowRight } from "react-icons/sl";
 import { useState } from "react";
 import axios from "axios";
 import { PATH_NAME } from "../../../constant/pathname";
-
 
 const AddSAPModule = () => {
   const [formData, setFormData] = useState({
@@ -28,23 +26,30 @@ const AddSAPModule = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      const response = await axios.post(`https://swdsapelearningapi.azurewebsites.net/api/SapModule/create`, {
-        moduleName: formData.moduleName,
-        moduleDescription: formData.moduleDescription,
-        
-      });
+      const response = await axios.post(
+        `https://swdsapelearningapi.azurewebsites.net/api/SapModule/create`,
+        {
+          moduleName: formData.moduleName,
+          moduleDescription: formData.moduleDescription,
+        }
+      );
 
       if (response.status === 201) {
         // Redirect hoặc thông báo thành công
-        alert('SAP Module added successfully');
+        alert("SAP Module added successfully");
         navigate(PATH_NAME.SAP_MODULE); // Hoặc bất kỳ route nào bạn muốn chuyển hướng
       }
-    }catch (error) {
+    } catch (error) {
       // Kiểm tra mã lỗi hoặc thông báo từ server
       if (error.response && error.response.status === 500) {
-        setErrorMessage(error.response.data.message || "Module name already exists.");
+        setErrorMessage(
+          error.response.data.message || "Module name already exists."
+        );
       } else {
-        console.error("Error adding SAP Module:", error.response ? error.response.data : error.message);
+        console.error(
+          "Error adding SAP Module:",
+          error.response ? error.response.data : error.message
+        );
       }
     }
   };
@@ -90,9 +95,9 @@ const AddSAPModule = () => {
               />
             </div>
           </div>
-          <Button className="add_instructor_button_submit" type="primary" htmlType="submit">
+          <button className="add_instructor_button_submit" type="submit">
             Submit
-          </Button>
+          </button>
         </form>
       </div>
     </div>

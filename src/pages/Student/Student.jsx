@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { Button, Table } from "antd";
+import { Table } from "antd";
 import { SlArrowRight } from "react-icons/sl";
 import axios from "axios";
 import { RiDeleteBin6Line } from "react-icons/ri";
@@ -84,14 +84,13 @@ const Student = () => {
       title: "Action",
       dataIndex: "action",
       render: (_, record) => (
-        <Button
-          type="link"
-          danger
+        <button
+          type="button"
           onClick={() => handleDelete(record.id)}
           className="student_button_delete"
         >
           <RiDeleteBin6Line />
-        </Button>
+        </button>
       ),
       width: "10%",
     },

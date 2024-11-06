@@ -29,3 +29,16 @@
     color: #033e8c;
     font-size: 20px;
 }
+
+:where(.css-dev-only-do-not-override-5wsri9).ant-menu-light.ant-menu-root.ant-menu-inline{
+    border-inline-end: 0 !important;
+}
+
+:where(.css-dev-only-do-not-override-5wsri9).ant-layout-sider .ant-layout-sider-children{
+    overflow-y: scroll;
+    height: 600px;
+}
+
+:where(.css-dev-only-do-not-override-5wsri9).ant-layout-sider .ant-layout-sider-children::-webkit-scrollbar{
+    width: 10px;
+}

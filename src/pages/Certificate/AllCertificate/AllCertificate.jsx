@@ -1,7 +1,8 @@
+
 import { useEffect, useState } from "react";
 import "./AllCertificate.css";
 import { SlArrowRight } from "react-icons/sl";
-import { Button, Checkbox, Form, Radio, Table } from "antd";
+import { Checkbox, Form, Radio, Table } from "antd";
 import Popup from "reactjs-popup";
 import { MdModeEditOutline } from "react-icons/md";
 import { RiDeleteBin6Line } from "react-icons/ri";
@@ -23,6 +24,7 @@ const AllCertificate = () => {
   const [sapModules, setSapModules] = useState([]);
   const [descriptionPopupOpen, setDescriptionPopupOpen] = useState(false);
   const [selectedDescription, setSelectedDescription] = useState("");
+  const [fileList, setFileList] = useState([]);
 
   const fetchSapModules = async () => {
     try {
@@ -45,6 +47,17 @@ const AllCertificate = () => {
         1,
     },
     {
+      title: "Image",
+      dataIndex: "image",
+      render: (imageUrl) =>
+        imageUrl ? (
+          <img src={imageUrl} alt="Certificate" style={{ width: "50px" }} />
+        ) : (
+          "No Image"
+        ),
+      width: "10%",
+    },
+    {
       title: "Name Certificate",
       dataIndex: "certificateName",
       sorter: (a, b) =>
@@ -55,7 +68,7 @@ const AllCertificate = () => {
       title: "Level",
       dataIndex: "level",
       sorter: (a, b) => (a.level || "").localeCompare(b.level || ""),
-      width: "16%",
+      width: "10%",
     },
     {
       title: "Environment",
@@ -105,13 +118,13 @@ const AllCertificate = () => {
       title: "Description",
       dataIndex: "description",
       render: (text) => (
-        <Button
+        <button
           type="link"
           onClick={() => handleViewDetail(text)}
           className="button_view"
         >
           View
-        </Button>
+        </button>
       ),
       width: "16%",
     },
@@ -121,9 +134,9 @@ const AllCertificate = () => {
         <>
           <Popup
             trigger={
-              <Button type="link" className="instructor_button_edit">
+              <button type="button" className="instructor_button_edit">
                 <MdModeEditOutline />
-              </Button>
+              </button>
             }
             modal
             closeOnDocumentClick
@@ -135,6 +148,7 @@ const AllCertificate = () => {
                 environment: record.environment || "",
                 status: record.status,
                 moduleIds: record.moduleIds.$values || [],
+                image: null, // Ensure image field is reset
               })
             }
           >
@@ -145,7 +159,7 @@ const AllCertificate = () => {
                   form={form}
                   onFinish={(values) => {
                     handleEdit(values, record.id);
-                    close(); // Đóng popup sau khi lưu
+                    close(); // Close popup after save
                   }}
                 >
                   <div className="sap_module_inputs">
@@ -200,34 +214,50 @@ const AllCertificate = () => {
                       </Radio.Group>
                     </Form.Item>
                   </div>
-                  <div className="popup_buttons">
-                    <Button
-                      className="button_save"
-                      type="primary"
-                      htmlType="submit"
+
+                  {/* Image upload input */}
+                  <div className="sap_module_input">
+                    <Form.Item
+                      name="image"
+                      label="Certificate Image"
+                      valuePropName="file"
                     >
+                      <input
+                        type="file"
+                        className="sap_module_form"
+                        accept="image/*"
+                        onChange={(e) =>
+                          form.setFieldsValue({
+                            image: e.target.files[0],
+                          })
+                        }
+                      />
+                    </Form.Item>
+                  </div>
+
+                  <div className="popup_buttons">
+                    <button className="button_save" type="submit">
                       Save
-                    </Button>
-                    <Button
+                    </button>
+                    <button
                       className="button_cancel"
                       type="button"
                       onClick={close}
                     >
                       Cancel
-                    </Button>
+                    </button>
                   </div>
                 </Form>
               </div>
             )}
           </Popup>
-          <Button
-            type="link"
-            danger
+          <button
+            type="button"
             onClick={() => handleDelete(record.id)}
             className="instructor_button_delete"
           >
             <RiDeleteBin6Line />
-          </Button>
+          </button>
         </>
       ),
       width: "10%",
@@ -239,25 +269,36 @@ const AllCertificate = () => {
     setDescriptionPopupOpen(true);
   };
 
-
   const handleEdit = async (values, id) => {
     try {
-      // Cập nhật chứng chỉ qua API
+      const formData = new FormData();
+
+      // Append text fields to formData
+      Object.keys(values).forEach((key) => {
+        formData.append(key, values[key]);
+      });
+
+      // Append image file to formData if a new file was uploaded
+      if (fileList.length > 0) {
+        formData.append("image", fileList[0].originFileObj);
+      }
+
+      // Update certificate through the API
       await axios.put(
         `https://swdsapelearningapi.azurewebsites.net/api/Certificate/update/${id}`,
-        values
+        formData,
+        {
+          headers: {
+            "Content-Type": "multipart/form-data",
+          },
+        }
       );
 
-      // Cập nhật lại dữ liệu trong state
-      setData((prevData) =>
-        prevData.map((item) =>
-          item.id === id
-            ? { ...item, ...values, moduleIds: { $values: values.moduleIds } } // Đảm bảo moduleIds được cập nhật
-            : item
-        )
-      );
-
+      // Update state with new data
+      fetchData(tableParams.pagination);
+      
       alert("Update successfully!");
+      setFileList([]); // Clear file list after successful update
     } catch (error) {
       alert("Update failed!");
       console.error("Error updating certificate:", error);
@@ -284,6 +325,7 @@ const AllCertificate = () => {
       );
     }
   };
+
   const fetchData = async (pagination) => {
     setLoading(true);
     try {
@@ -362,7 +404,6 @@ const AllCertificate = () => {
         />
       </div>
 
-      {/* Popup hiển thị mô tả */}
       <Popup
         open={descriptionPopupOpen}
         onClose={() => setDescriptionPopupOpen(false)}
@@ -371,16 +412,17 @@ const AllCertificate = () => {
           <h2>Description Detail</h2>
           <p>{selectedDescription}</p>
           <div className="popup_button_1">
-            <Button
+            <button
               type="button"
               onClick={() => setDescriptionPopupOpen(false)}
               className="button_close"
             >
               Close
-            </Button>
+            </button>
           </div>
         </div>
       </Popup>
+
     </div>
   );
 };

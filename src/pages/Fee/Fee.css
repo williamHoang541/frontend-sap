@@ -4,7 +4,6 @@
   gap: 30px;
   margin-bottom: 30px;
   margin-top: 10px;
-  /* height: 100vh; */
 }
 
 .fee_title_container {
@@ -44,20 +43,24 @@
   color: #828690;
 }
 
-.status-paid,
-.status-unpaid {
+.status-indicator {
   padding: 5px;
   border-radius: 5px;
 }
 
-.status-paid {
+.status-indicator.status-success {
   color: #fff;
-  background-color: rgba(54, 235, 123, 0.8);
+  background-color: rgba(2, 174, 68, 0.8);
 }
 
-.status-unpaid {
+.status-indicator.status-cancelled {
   color: #fff;
   background-color: rgba(235, 54, 54, 0.8);
+}
+
+.status-indicator.status-pending {
+  color: #fff;
+  background-color: rgba(230, 212, 14, 0.8);
 }
 
 .fee_table_container {

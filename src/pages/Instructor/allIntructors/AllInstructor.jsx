@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { Button, Table, Form } from "antd";
+import { Table, Form } from "antd";
 import Popup from "reactjs-popup";
 import { SlArrowRight } from "react-icons/sl";
 import { RiDeleteBin6Line } from "react-icons/ri";
@@ -69,9 +69,9 @@ const AllInstructor = () => {
         <>
           <Popup
             trigger={
-              <Button type="link" className="instructor_button_edit">
+              <button type="button" className="instructor_button_edit">
                 <MdModeEditOutline />
-              </Button>
+              </button>
             }
             modal
             closeOnDocumentClick
@@ -119,33 +119,31 @@ const AllInstructor = () => {
                     </Form.Item>
                   </div>
                   <div className="popup_buttons">
-                    <Button
+                    <button
                       className="button_save"
-                      type="primary"
-                      htmlType="submit"
+                      type="submit"
                     >
                       Save
-                    </Button>
-                    <Button
+                    </button>
+                    <button
                       className="button_cancel"
                       type="button"
                       onClick={close}
                     >
                       Cancel
-                    </Button>
+                    </button>
                   </div>
                 </Form>
               </div>
             )}
           </Popup>
-          <Button
-            type="link"
-            danger
+          <button
+            type="button"
             onClick={() => handleDelete(record.userId)}
             className="instructor_button_delete"
           >
             <RiDeleteBin6Line />
-          </Button>
+          </button>
         </>
       ),
       width: "10%",

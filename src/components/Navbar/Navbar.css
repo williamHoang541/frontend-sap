@@ -75,6 +75,7 @@
 }
 .navbar-position {
   position: relative;
+  margin-left: 10px;
 }
 
 .navbar-form {

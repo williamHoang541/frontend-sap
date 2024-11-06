@@ -23,4 +23,6 @@ export const PATH_NAME = {
     QUESTION_BANK: "/question_bank/all_questions",
     ADD_QUESTION_BANK: "/question_bank/add_question",
     ACCOUNT_SETTING: "/account_setting",
+    CALENDAR: "/instructor/calendar",
+    COURSE_INSTRUCTOR: "/instructor/courses",
 };

@@ -137,9 +137,9 @@ const AllSample = () => {
                             </div>
                         )}
                     </Popup>
+                   
                     <button
-                        type="link"
-                        danger
+                        type="button"
                         onClick={() => handleDelete(record.id)}
                         className="test_button_delete"
                     >

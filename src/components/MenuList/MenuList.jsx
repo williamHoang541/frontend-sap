@@ -95,12 +95,6 @@ const MenuList = () => {
       icon: <IoAnalytics />,
       label: <Link to={PATH_NAME.ANALYTIC}>Analytic</Link>,
     },
-
-    {
-      key: "setting",
-      icon: <IoSettingsOutline />,
-      label: <Link to={PATH_NAME.ACCOUNT_SETTING}>Account Setting</Link>,
-    },
     {
       key: "logout",
       icon: <CiLogout />,

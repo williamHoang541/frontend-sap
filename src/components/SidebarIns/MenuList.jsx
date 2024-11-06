@@ -1,4 +1,4 @@
-import React from "react";
+
 import { PATH_NAME } from "../../constant/pathname";
 import { Link, useNavigate } from "react-router-dom";
 import { RxCalendar } from "react-icons/rx";
@@ -27,12 +27,6 @@ const MenuList = () => {
       key: "course_ins",
       icon: <LiaGraduationCapSolid />,
       label: <Link to={PATH_NAME.COURSE_INSTRUCTOR}>Course</Link>,
-    },
-
-    {
-      key: "setting",
-      icon: <IoSettingsOutline />,
-      label: <Link to={PATH_NAME.ACCOUNT_SETTING}>Account Setting</Link>,
     },
     {
       key: "logout",

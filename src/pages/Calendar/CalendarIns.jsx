@@ -15,29 +15,7 @@ const localizer = momentLocalizer(moment);
 
 
 const CalendarIns = () => {
-  // const [eventsData, setEventsData] = useState([]);
-
-  // const fetchSessions = async () => {
-  //   try {
-  //     const response = await axios.get("https://swdsapelearningapi.azurewebsites.net/api/CourseSession/get-all");
-
-  //     // Map all sessions to calendar events format
-  //     const allEvents = response.data.$values.map((session) => ({
-  //       id: session.id,
-  //       title: `${session.instructorName}: ${session.sessionName}`, // Include instructor's name in title
-  //       start: new Date(session.sessionDate),
-  //       end: new Date(session.sessionDate), // Adjust end date/time if sessions have durations
-  //     }));
-
-  //     setEventsData(allEvents);
-  //   } catch (error) {
-  //     console.error("Error fetching sessions:", error);
-  //   }
-  // };
-
-  // useEffect(() => {
-  //   fetchSessions();
-  // }, []);
+  
 
   const { auth } = useAuth(); // Access logged-in user's data
   const [eventsData, setEventsData] = useState([]);

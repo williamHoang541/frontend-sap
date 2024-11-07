@@ -100,7 +100,7 @@ const AddSession = () => {
             );
 
             if (response.status >= 200 && response.status < 300) {
-                alert("Course added successfully!");
+                alert("Session added successfully!");
                 navigate(PATH_NAME.SESSION); // Điều hướng tới trang khóa học sau khi thêm thành công
             }
         } catch (error) {

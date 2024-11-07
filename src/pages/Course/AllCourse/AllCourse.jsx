@@ -88,16 +88,7 @@ const AllCourse = () => {
                 return date.toLocaleDateString(); // Chỉ lấy ngày/tháng/năm
             },
         },
-        {
-            title: "Enrollment Date",
-            dataIndex: "enrollmentDate",
-            sorter: true,
-            width: "8%",
-            render: (enrollmentDate) => {
-                const date = new Date(enrollmentDate);
-                return date.toLocaleDateString(); // Chỉ lấy ngày/tháng/năm
-            },
-        },
+
         {
             title: "Price",
             dataIndex: "price",
@@ -116,18 +107,7 @@ const AllCourse = () => {
             sorter: true,
             width: "15%",
         },
-        {
-            title: "Status",
-            dataIndex: "status",
-            width: "10%",
-            render: (status) => (
-                <span
-                    className={`course_status_indicator ${
-                        status ? "active" : "inactive"
-                    }`}
-                />
-            ),
-        },
+
         {
             title: "Action",
             render: (_, record) => (
@@ -162,7 +142,7 @@ const AllCourse = () => {
                         }}
                     >
                         {(close) => (
-                            <div className="popup_container">
+                            <div className="popup_course_container">
                                 <h2>Edit Course</h2>
                                 <Form
                                     form={form}

@@ -164,6 +164,8 @@ const AddCourse = () => {
                                 ))}
                             </select>
                         </div>
+                    </div>
+                    <div className="add_course_input_row">
                         <div className="add_course_input_colum">
                             <label htmlFor="name">Mode</label>
                             <input
@@ -173,8 +175,6 @@ const AddCourse = () => {
                                 placeholder="Enter Mode"
                             />
                         </div>
-                    </div>
-                    <div className="add_course_input_row">
                         <div className="add_course_input_colum">
                             <label htmlFor="name">Course Name</label>
                             <input
@@ -184,6 +184,9 @@ const AddCourse = () => {
                                 placeholder="Enter the full name"
                             />
                         </div>
+                    </div>
+
+                    <div className="add_course_input_row">
                         <div className="add_course_input_colum">
                             <label htmlFor="name">Start Time</label>
                             <input
@@ -221,6 +224,8 @@ const AddCourse = () => {
                                 placeholder="Enter location"
                             />
                         </div>
+                    </div>
+                    <div className="add_course_input_row">
                         <div className="add_course_input_colum">
                             <label htmlFor="name">Price</label>
                             <input

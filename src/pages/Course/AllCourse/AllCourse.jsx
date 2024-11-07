@@ -134,9 +134,12 @@ const AllCourse = () => {
                 <div className="course_buttons">
                     <Popup
                         trigger={
-                            <Button type="link" className="course_button_edit">
+                            <button
+                                type="button"
+                                className="course_button_edit"
+                            >
                                 <MdModeEditOutline />
-                            </Button>
+                            </button>
                         }
                         modal
                         closeOnDocumentClick
@@ -272,33 +275,31 @@ const AllCourse = () => {
                                     </div>
 
                                     <div className="popup_buttons">
-                                        <Button
+                                        <button
                                             className="button_save"
-                                            type="primary"
-                                            htmlType="submit"
+                                            type="submit"
                                         >
                                             Save
-                                        </Button>
-                                        <Button
+                                        </button>
+                                        <button
                                             className="button_cancel"
                                             type="button"
                                             onClick={close}
                                         >
                                             Cancel
-                                        </Button>
+                                        </button>
                                     </div>
                                 </Form>
                             </div>
                         )}
                     </Popup>
-                    <Button
-                        type="link"
-                        danger
+                    <button
+                        type="button"
                         onClick={() => handleDelete(record.id)}
                         className="course_button_delete"
                     >
                         <RiDeleteBin6Line />
-                    </Button>
+                    </button>
                 </div>
             ),
             width: "10%",
